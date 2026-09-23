@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>でんきクエスト！電流・電圧・直列・並列</title>
+<style>
+:root{
+  --ink:#17324d; --blue:#3b82f6; --yellow:#ffd84d; --green:#20b486;
+  --orange:#ff9f43; --red:#ff6b6b; --card:#fff; --border:#d9e7f2;
+  --shadow:0 12px 30px rgba(31,71,104,.12);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans",
+  "Yu Gothic",Meiryo,sans-serif;color:var(--ink);
+  background:linear-gradient(#f9fcff,#eef8ff);line-height:1.7;
+}
+.wrap{max-width:1000px;margin:auto;padding:20px}
+.hero{
+  background:linear-gradient(135deg,#e8f5ff,#fff8c9);border:2px solid #d8e9f7;
+  border-radius:28px;padding:28px;box-shadow:var(--shadow);position:relative;overflow:hidden
+}
+.hero:after{content:"⚡";position:absolute;right:25px;top:5px;font-size:90px;opacity:.15}
+h1{font-size:clamp(30px,6vw,54px);line-height:1.1;margin:0 0 10px}
+h2{margin:0 0 12px;font-size:27px}
+h3{margin:0 0 8px}
+.badge{display:inline-block;background:#17324d;color:#fff;padding:5px 11px;border-radius:999px;font-weight:800;font-size:13px}
+.card{
+  background:#fff;border:2px solid var(--border);border-radius:22px;padding:20px;
+  box-shadow:var(--shadow)
+}
+.grid{display:grid;gap:18px}.two{grid-template-columns:1fr 1fr}
+.concept{text-align:center;border-top:8px solid var(--blue)}
+.concept.voltage{border-top-color:var(--orange)}
+.emoji{font-size:58px}.big{font-size:29px;font-weight:900}
+.memory{background:#17324d;color:white;border-radius:18px;padding:16px 18px;text-align:center;font-weight:900;font-size:19px;margin:20px 0}
+
+.game{
+  margin-top:22px;background:#10263c;color:#fff;border-radius:28px;padding:22px;
+  box-shadow:var(--shadow)
+}
+.game-title{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.stars{font-size:22px}
+.xp{height:13px;background:#29455f;border-radius:99px;overflow:hidden;margin:10px 0 16px}
+.xp>div{height:100%;width:0;background:linear-gradient(90deg,#4ade80,#bbf7d0);transition:.3s}
+
+.scene{
+  background:#0a1a29;border:1px solid #29455f;border-radius:20px;padding:16px;
+  min-height:330px;position:relative;overflow:hidden
+}
+.stage1-circuit{position:relative;height:250px}
+.battery{
+  position:absolute;left:20px;top:78px;width:94px;height:125px;background:#e7eef6;
+  border:5px solid #b8c8d7;border-radius:14px;color:#17324d;display:flex;
+  align-items:center;justify-content:center;font-weight:900;font-size:23px
+}
+.battery:before{content:"";position:absolute;top:-16px;left:26px;width:40px;height:16px;background:#c9d6e2;border-radius:6px 6px 0 0}
+.wire{position:absolute;height:8px;background:#b5c7d8;border-radius:8px}
+.wire.t{left:114px;top:108px;width:620px}
+.wire.b{left:114px;top:190px;width:620px}
+.bulb{
+  position:absolute;width:90px;height:90px;border-radius:50%;border:5px solid #f8d56b;
+  background:#5d542d;transition:.2s
+}
+.bulb.on{background:#ffe45c;box-shadow:0 0 35px rgba(255,228,92,.9),0 0 80px rgba(255,228,92,.45)}
+.bulb:after{content:"";position:absolute;left:24px;bottom:-34px;width:34px;height:38px;background:#adb8c2;border-radius:0 0 8px 8px}
+#stage1Bulb{right:30px;top:78px}
+.dot{position:absolute;width:18px;height:18px;border-radius:50%;background:#62c7ff;box-shadow:0 0 12px #62c7ff;transform:translate(-9px,-9px)}
+.controls{margin-top:12px;background:#183754;border-radius:16px;padding:15px}
+input[type=range]{width:100%}
+.meters{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.meter{background:#0f2b45;border-radius:14px;padding:11px;text-align:center}
+.meter strong{display:block;font-size:24px}
+.orange{color:#ffc26c}.blue{color:#7dd3fc}
+.mission{background:#fff;color:#17324d;border-radius:17px;padding:16px;margin-top:14px}
+button{
+  border:0;border-radius:999px;padding:10px 16px;font-size:15px;font-weight:900;
+  cursor:pointer;background:#4da3ff;color:#07131f;margin:4px
+}
+button.choice{background:#fff;color:#17324d;border:2px solid #cfdeea}
+button.choice:hover{transform:translateY(-1px)}
+.result{font-weight:900;min-height:28px;margin-top:8px}.ok{color:#07966b}.ng{color:#d43d3d}
+
+.stage2{
+  margin-top:22px;background:linear-gradient(180deg,#152b42,#0f2235);color:#fff;
+  border-radius:28px;padding:22px;box-shadow:var(--shadow)
+}
+.inventory{
+  background:#203c56;border-radius:17px;padding:14px;margin-bottom:14px;
+  display:flex;gap:12px;align-items:center;flex-wrap:wrap
+}
+.drag-bulb{
+  width:74px;height:74px;border-radius:50%;background:#ffe45c;border:5px solid #f6d05b;
+  box-shadow:0 0 18px rgba(255,228,92,.45);cursor:grab;position:relative;touch-action:none
+}
+.drag-bulb:after{content:"";position:absolute;left:18px;bottom:-24px;width:28px;height:27px;background:#acbac7;border-radius:0 0 6px 6px}
+.drag-bulb.dragging{opacity:.65;cursor:grabbing}
+.boards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.board{
+  background:#091827;border:2px solid #35516b;border-radius:20px;padding:15px;min-height:360px;
+  position:relative
+}
+.board h3{text-align:center}
+.circuit-board{
+  position:relative;height:270px;max-width:440px;margin:0 auto
+}
+.circuit-art{
+  position:absolute;inset:0;width:100%;height:100%;z-index:0;overflow:visible
+}
+.circuit-art .wire-path{
+  fill:none;stroke:#b5c7d8;stroke-width:7;stroke-linecap:round;stroke-linejoin:round
+}
+.circuit-art .battery-plate{
+  stroke:#e7eef6;stroke-width:7;stroke-linecap:round
+}
+.circuit-art .battery-short{
+  stroke:#e7eef6;stroke-width:4;stroke-linecap:round
+}
+.circuit-art .junction{fill:#b5c7d8}
+.circuit-art text{
+  fill:#dce8f2;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+  font-weight:800
+}
+.slot{
+  position:absolute;width:82px;height:82px;border:3px dashed #597792;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;color:#7891a8;font-weight:900;
+  background:#091827;z-index:2
+}
+.slot.filled{border-style:solid;border-color:#f4d55a}
+.slot .placed{
+  width:67px;height:67px;border-radius:50%;background:#ffe45c;border:4px solid #f4d55a;
+  box-shadow:0 0 20px rgba(255,228,92,.6)
+}
+/* Slots cover deliberate gaps in the wire, so the lamp becomes part of the circuit. */
+#s1{left:27%;top:14px} #s2{left:58%;top:14px}
+#p1{left:41%;top:29px} #p2{left:41%;top:119px}
+.closed-loop-label{
+  position:absolute;right:8px;bottom:2px;z-index:3;
+  background:#173754;color:#cfe8fb;border-radius:999px;padding:3px 9px;font-size:12px;font-weight:800
+}
+.board-note{text-align:center;font-size:14px;color:#c3d2df}
+.board-actions{text-align:center;margin-top:10px}
+.level-card{
+  background:#fff;color:#17324d;border-radius:18px;padding:16px;margin-top:16px
+}
+.compare{
+  margin-top:22px;background:#fff;border:2px solid var(--border);border-radius:22px;
+  padding:20px;box-shadow:var(--shadow)
+}
+table{width:100%;border-collapse:collapse}
+th,td{padding:12px;border-bottom:1px solid #dce7ef;text-align:left}
+th{background:#f5f9fc}
+.tip{background:#fff6da;border:2px solid #f2d58e;border-radius:18px;padding:16px;margin:22px 0}
+.small{font-size:13px;color:#b7c6d2}
+@media(max-width:800px){
+  .two,.boards,.meters{grid-template-columns:1fr}
+  .stage1-circuit{transform:scale(.82);transform-origin:left top;width:122%}
+  .board{min-height:340px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section class="hero">
+  <span class="badge">小学4年生向け</span>
+  <h1>⚡ でんきクエスト！</h1>
+  <p>電圧と電流を覚えたら、次は<strong>直列と並列</strong>。電球を自分で回路に入れて、明るさのちがいを発見しよう！</p>
+</section>
+
+<section class="grid two" style="margin-top:20px">
+  <div class="card concept voltage">
+    <div class="emoji">🔋</div><div class="big">電圧 = 押す力</div>
+    <p>電気を「流そう！」と押す力。</p>
+  </div>
+  <div class="card concept">
+    <div class="emoji">⚡⚡⚡</div><div class="big">電流 = 流れる量</div>
+    <p>実際に流れている電気の量。</p>
+  </div>
+</section>
+
+<div class="memory">🔋 電圧は「押す力」 ／ ⚡ 電流は「流れる量」</div>
+
+<section class="game">
+  <div class="game-title">
+    <div><h2>ステージ1：電圧を上げて光らせよう</h2><div class="small">スライダーを動かすと電流も変わるよ。</div></div>
+    <div class="stars" id="stars">☆ ☆ ☆ ☆ ☆</div>
+  </div>
+  <div class="xp"><div id="xpbar"></div></div>
+
+  <div class="scene">
+    <div class="stage1-circuit">
+      <div class="battery" id="battery">1.5V</div>
+      <div class="wire t"></div><div class="wire b"></div>
+      <div class="bulb" id="stage1Bulb"></div>
+      <div id="dots"></div>
+    </div>
+    <div class="controls">
+      <b>電圧を変えてみよう</b>
+      <input id="voltageRange" type="range" min="0" max="6" step=".5" value="1.5">
+      <div class="meters">
+        <div class="meter">🔋 電圧<strong class="orange" id="vRead">1.5 V</strong></div>
+        <div class="meter">⚡ 電流<strong class="blue" id="iRead">0.5 A</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mission">
+    <b>🎯 ミッション：</b> 電球をしっかり光らせよう。電圧を3V以上にしてね。
+    <button onclick="checkStage1()">チェック！</button>
+    <div class="result" id="stage1Result"></div>
+  </div>
+</section>
+
+<section class="stage2">
+  <h2>ステージ2：電球をドラッグして回路を作ろう</h2>
+  <p>黄色い電球を、点線の丸にドラッグして置こう。<strong>直列</strong>と<strong>並列</strong>の両方を完成させてね。</p>
+
+  <div class="inventory">
+    <b>🎒 電球ボックス：</b>
+    <div class="drag-bulb" id="bulbA" data-id="A" title="ドラッグしてね"></div>
+    <div class="drag-bulb" id="bulbB" data-id="B" title="ドラッグしてね"></div>
+    <div class="drag-bulb" id="bulbC" data-id="C" title="ドラッグしてね"></div>
+    <div class="drag-bulb" id="bulbD" data-id="D" title="ドラッグしてね"></div>
+  </div>
+
+  <div class="boards">
+    <div class="board">
+      <h3>一本道！ 直列回路</h3>
+      <div class="circuit-board">
+        <svg class="circuit-art" viewBox="0 0 440 270" aria-label="閉じた直列回路">
+          <!-- 上の一本道：2個の電球を入れる場所だけ線を空けてある -->
+          <path class="wire-path" d="M40 55 H119 M202 55 H255 M338 55 H400 V215 H275"/>
+          <path class="wire-path" d="M165 215 H40 V55"/>
+          <!-- 電池（下側の回路の一部） -->
+          <line class="battery-plate" x1="230" y1="194" x2="230" y2="236"/>
+          <line class="battery-short" x1="210" y1="202" x2="210" y2="228"/>
+          <path class="wire-path" d="M165 215 H210 M230 215 H275"/>
+          <text x="193" y="255" font-size="15">−</text>
+          <text x="237" y="255" font-size="15">＋ 3V</text>
+        </svg>
+        <div class="slot" id="s1" data-group="series"></div>
+        <div class="slot" id="s2" data-group="series"></div>
+        <div class="closed-loop-label">↻ 電池にもどる</div>
+      </div>
+      <div class="board-note">電池 → 電球 → 電球 → 電池、と一本道で一周する「閉じた回路」。</div>
+      <div class="board-actions"><button onclick="resetGroup('series')">やり直す</button></div>
+    </div>
+
+    <div class="board">
+      <h3>枝分かれ！ 並列回路</h3>
+      <div class="circuit-board">
+        <svg class="circuit-art" viewBox="0 0 440 270" aria-label="閉じた並列回路">
+          <!-- 左右の共通部分 -->
+          <path class="wire-path" d="M40 70 V215 H165"/>
+          <path class="wire-path" d="M275 215 H400 V70"/>
+          <!-- 上の枝 -->
+          <path class="wire-path" d="M40 70 H180 M263 70 H400"/>
+          <!-- 下の枝 -->
+          <path class="wire-path" d="M40 160 H180 M263 160 H400"/>
+          <!-- 電池（下側の帰り道の一部） -->
+          <line class="battery-plate" x1="230" y1="194" x2="230" y2="236"/>
+          <line class="battery-short" x1="210" y1="202" x2="210" y2="228"/>
+          <path class="wire-path" d="M165 215 H210 M230 215 H275"/>
+          <!-- 枝分かれ点 -->
+          <circle class="junction" cx="40" cy="70" r="6"/>
+          <circle class="junction" cx="40" cy="160" r="6"/>
+          <circle class="junction" cx="400" cy="70" r="6"/>
+          <circle class="junction" cx="400" cy="160" r="6"/>
+          <text x="193" y="255" font-size="15">−</text>
+          <text x="237" y="255" font-size="15">＋ 3V</text>
+        </svg>
+        <div class="slot" id="p1" data-group="parallel"></div>
+        <div class="slot" id="p2" data-group="parallel"></div>
+        <div class="closed-loop-label">↻ どちらの道も電池にもどる</div>
+      </div>
+      <div class="board-note">枝分かれした2本の道が、どちらも電池までつながる「閉じた回路」。</div>
+      <div class="board-actions"><button onclick="resetGroup('parallel')">やり直す</button></div>
+    </div>
+  </div>
+
+  <div class="level-card">
+    <h3>🔁 回路の大事なルール</h3>
+    <p><strong>電気は一周できる道がないと流れません。</strong> 線をたどって「電池から出て、電球を通り、電池にもどれるか」を確認してみよう。</p>
+  </div>
+
+  <div class="level-card">
+    <h3>🎯 ステージ2 ミッション</h3>
+    <p>両方の回路に電球を2個ずつ入れたら、チェック！</p>
+    <button onclick="checkBuild()">回路をチェック！</button>
+    <div class="result" id="buildResult"></div>
+  </div>
+
+  <div class="level-card">
+    <h3>🧠 明るさクイズ</h3>
+    <p>3Vの電池と同じ電球2個を使ったとき、<strong>1個ずつが明るく光るのはどっち？</strong></p>
+    <button class="choice" onclick="brightnessQuiz(false)">直列</button>
+    <button class="choice" onclick="brightnessQuiz(true)">並列</button>
+    <div class="result" id="brightResult"></div>
+  </div>
+
+  <div class="level-card">
+    <h3>🏆 ボス問題</h3>
+    <p>なぜ並列では、電球1個あたりの明るさがほとんど変わらないの？</p>
+    <button class="choice" onclick="bossQuiz(false)">電球が電圧を半分ずつ使うから</button>
+    <button class="choice" onclick="bossQuiz(true)">それぞれの電球に電池と同じ電圧がかかるから</button>
+    <button class="choice" onclick="bossQuiz(false)">電流が流れなくなるから</button>
+    <div class="result" id="bossResult"></div>
+  </div>
+</section>
+
+<section class="compare">
+  <h2>直列と並列を比べると</h2>
+  <table>
+    <tr><th></th><th>直列</th><th>並列</th></tr>
+    <tr><td>電気の道</td><td>1本</td><td>枝分かれ</td></tr>
+    <tr><td>電球1個あたりの電圧</td><td>小さくなる</td><td>電池とほぼ同じ</td></tr>
+    <tr><td>電球1個あたりの明るさ</td><td>暗くなる</td><td><b>ほぼ変わらない</b></td></tr>
+    <tr><td>電池の減り</td><td>比較的ゆっくり</td><td>速くなりやすい</td></tr>
+  </table>
+</section>
+
+<div class="tip">
+  <b>これだけ覚えればOK！</b><br>
+  🔋 電圧 = 電気を押す力<br>
+  ⚡ 電流 = 実際に流れる量<br>
+  💡 直列 = 電圧を分け合う → 暗くなりやすい<br>
+  💡 並列 = それぞれに同じ電圧 → 明るさはほぼ同じ
+</div>
+
+</div>
+
+<script>
+let score=0;
+const earned={stage1:false,build:false,bright:false,boss:false,drag:false};
+const range=document.getElementById("voltageRange");
+
+function updateScore(){
+  const max=5;
+  document.getElementById("stars").textContent =
+    Array.from({length:max},(_,i)=>i<score?"★":"☆").join(" ");
+  document.getElementById("xpbar").style.width=(score/max*100)+"%";
+}
+function award(key){
+  if(!earned[key]){ earned[key]=true; score++; updateScore(); }
+}
+function updateStage1(){
+  const v=parseFloat(range.value), i=v/3;
+  vRead.textContent=v.toFixed(1)+" V";
+  iRead.textContent=i.toFixed(1)+" A";
+  battery.textContent=v.toFixed(1)+"V";
+  stage1Bulb.classList.toggle("on",v>=3);
+
+  dots.innerHTML="";
+  const count=Math.round(i*5);
+  for(let n=0;n<count;n++){
+    const d=document.createElement("div");
+    d.className="dot";
+    d.style.left=(145+(n/Math.max(1,count-1))*510)+"px";
+    d.style.top=(n%2===0?112:194)+"px";
+    dots.appendChild(d);
+  }
+}
+function checkStage1(){
+  if(parseFloat(range.value)>=3){
+    stage1Result.innerHTML='<span class="ok">✅ クリア！ 電圧を上げると、同じ電球では電流も大きくなるね。</span>';
+    award("stage1");
+  }else{
+    stage1Result.innerHTML='<span class="ng">❌ まだ弱いよ。3V以上にしてみよう。</span>';
+  }
+}
+range.addEventListener("input",updateStage1);
+updateStage1();
+
+/* ---------- Drag & Drop with Pointer Events ---------- */
+let drag=null;
+let origin=null;
+
+document.querySelectorAll(".drag-bulb").forEach(el=>{
+  el.addEventListener("pointerdown",startDrag);
+});
+
+function startDrag(e){
+  const el=e.currentTarget;
+  if(el.dataset.used==="1") return;
+  drag=el;
+  origin=el.parentElement;
+  const r=el.getBoundingClientRect();
+  el.setPointerCapture(e.pointerId);
+  el.classList.add("dragging");
+  el.style.position="fixed";
+  el.style.zIndex="9999";
+  el.style.left=(r.left)+"px";
+  el.style.top=(r.top)+"px";
+  el.style.margin="0";
+  moveTo(e.clientX,e.clientY);
+  el.addEventListener("pointermove",dragMove);
+  el.addEventListener("pointerup",dragEnd,{once:true});
+}
+function moveTo(x,y){
+  if(!drag)return;
+  drag.style.left=(x-37)+"px";
+  drag.style.top=(y-37)+"px";
+}
+function dragMove(e){ moveTo(e.clientX,e.clientY); }
+function dragEnd(e){
+  if(!drag)return;
+  drag.removeEventListener("pointermove",dragMove);
+  const x=e.clientX,y=e.clientY;
+  let target=null;
+  document.querySelectorAll(".slot:not(.filled)").forEach(slot=>{
+    const r=slot.getBoundingClientRect();
+    if(x>=r.left && x<=r.right && y>=r.top && y<=r.bottom) target=slot;
+  });
+
+  const el=drag;
+  el.classList.remove("dragging");
+  el.style.position="";
+  el.style.left="";el.style.top="";el.style.zIndex="";el.style.margin="";
+  if(target){
+    target.classList.add("filled");
+    target.dataset.bulb=el.dataset.id;
+    const placed=document.createElement("div");
+    placed.className="placed";
+    target.appendChild(placed);
+    el.style.visibility="hidden";
+    el.dataset.used="1";
+    award("drag");
+  }else{
+    origin.appendChild(el);
+  }
+  drag=null;origin=null;
+}
+
+function resetGroup(group){
+  document.querySelectorAll('.slot[data-group="'+group+'"]').forEach(slot=>{
+    const id=slot.dataset.bulb;
+    if(id){
+      const bulb=document.querySelector('.drag-bulb[data-id="'+id+'"]');
+      bulb.style.visibility="visible";
+      bulb.dataset.used="0";
+    }
+    slot.dataset.bulb="";
+    slot.classList.remove("filled");
+    slot.innerHTML="";
+  });
+  buildResult.textContent="";
+}
+function checkBuild(){
+  const s=[...document.querySelectorAll('.slot[data-group="series"]')].every(x=>x.classList.contains("filled"));
+  const p=[...document.querySelectorAll('.slot[data-group="parallel"]')].every(x=>x.classList.contains("filled"));
+  if(s&&p){
+    buildResult.innerHTML='<span class="ok">✅ 完成！ 一本道が直列、枝分かれが並列だね。</span>';
+    award("build");
+  }else{
+    buildResult.innerHTML='<span class="ng">❌ まだ空いている場所があるよ。4つ全部に電球を置こう。</span>';
+  }
+}
+function brightnessQuiz(ok){
+  if(ok){
+    brightResult.innerHTML='<span class="ok">✅ 正解！ 並列では、それぞれの電球に電池と同じ3Vがかかるよ。</span>';
+    award("bright");
+  }else{
+    brightResult.innerHTML='<span class="ng">❌ おしい！ 直列では2個の電球が電圧を分け合うので暗くなりやすいよ。</span>';
+  }
+}
+function bossQuiz(ok){
+  if(ok){
+    bossResult.innerHTML='<span class="ok">🏆 大正解！ 並列では、電球Aにも電球Bにもほぼ同じ電圧がかかるんだ。</span>';
+    award("boss");
+  }else{
+    bossResult.innerHTML='<span class="ng">❌ もう一度！ 「並列では、それぞれに電池と同じ電圧」がヒント。</span>';
+  }
+}
+updateScore();
+</script>
+</body>
+</html>

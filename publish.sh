@@ -9,7 +9,9 @@ category="${2:-misc}"
 name="${3:-$(basename "$src")}"
 # Spaces and odd characters make ugly URLs; keep names URL-safe.
 name="$(echo "$name" | tr ' ' '-' | tr -cd 'A-Za-z0-9._-')"
-[[ "$name" == *.html ]] || name="$name.html"
+name="${name%.html}"; name="${name%.htm}"
+[[ -n "${name//[._-]/}" ]] || name="page-$(date +%Y%m%d-%H%M%S)"
+name="$name.html"
 
 mkdir -p "pages/$category"
 dest="pages/$category/$name"

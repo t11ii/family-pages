@@ -1,0 +1,1272 @@
+<title>Ribbon Reading Log</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --ground: #eef0f4;
+    --surface: #ffffff;
+    --surface-2: #f6f7fa;
+    --ink: #1a1f2e;
+    --muted: #5d6477;
+    --line: #d9dde6;
+    --accent: #2f4da0;
+    --accent-ink: #ffffff;
+    --accent-soft: #e3e8f6;
+    --ribbon: #c8911a;
+    --good: #2e7d4f;
+    --warn: #a86310;
+    --danger: #b3261e;
+    --spine-text: #f7f5ef;
+    --shadow: 0 1px 2px rgba(26, 31, 46, .06), 0 4px 16px rgba(26, 31, 46, .06);
+    --serif: "Newsreader", "Iowan Old Style", Georgia, serif;
+    --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --ground: #11141b;
+      --surface: #1a1e28;
+      --surface-2: #151922;
+      --ink: #e6e8ef;
+      --muted: #9aa1b3;
+      --line: #2b3140;
+      --accent: #8fa8f2;
+      --accent-ink: #11141b;
+      --accent-soft: #222b44;
+      --ribbon: #e5b54a;
+      --good: #6cc592;
+      --warn: #e2a257;
+      --danger: #f08a82;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 16px rgba(0, 0, 0, .25);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ground: #11141b;
+    --surface: #1a1e28;
+    --surface-2: #151922;
+    --ink: #e6e8ef;
+    --muted: #9aa1b3;
+    --line: #2b3140;
+    --accent: #8fa8f2;
+    --accent-ink: #11141b;
+    --accent-soft: #222b44;
+    --ribbon: #e5b54a;
+    --good: #6cc592;
+    --warn: #e2a257;
+    --danger: #f08a82;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 16px rgba(0, 0, 0, .25);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font: 15px/1.5 var(--sans);
+    padding: 0 16px;
+    padding-block: 24px 64px;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; display: grid; gap: 28px; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  h1, h2, h3 { margin: 0; text-wrap: balance; }
+
+  /* Header */
+  header { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .brand h1 { font: italic 500 2.4rem/1 var(--serif); letter-spacing: -.01em; }
+  .brand p { margin: 6px 0 0; color: var(--muted); }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .btn {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    border-radius: 8px;
+    padding: 7px 14px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: .92rem;
+  }
+  .btn:hover { border-color: var(--muted); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .btn.primary:hover { filter: brightness(1.08); }
+  .btn.ghost { background: transparent; }
+  .btn.danger { color: var(--danger); }
+  .btn.danger.armed { background: var(--danger); border-color: var(--danger); color: var(--surface); }
+  .btn.small { padding: 4px 10px; font-size: .85rem; }
+
+  /* Summary */
+  .summary {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+  }
+  .stat { padding: 16px 18px; display: grid; gap: 4px; align-content: start; }
+  .stat + .stat { border-left: 1px solid var(--line); }
+  .label { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
+  .figure { font: 500 1.6rem/1.1 var(--mono); font-variant-numeric: tabular-nums; }
+  .figure small { font: 400 .85rem var(--sans); color: var(--muted); margin-left: 4px; }
+  .goal-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .goal-edit { background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; font-size: .85rem; text-decoration: underline; text-underline-offset: 2px; }
+  .meter { height: 6px; background: var(--accent-soft); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+  .meter > span { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
+  .chip { display: inline-block; font-size: .75rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; border: 1px solid currentColor; }
+  .chip.good { color: var(--good); }
+  .chip.warn { color: var(--warn); }
+  .goal-form { display: flex; gap: 6px; align-items: center; }
+  .goal-form input { width: 70px; }
+
+  /* Today panel */
+  .today {
+    display: grid; grid-template-columns: auto 1fr auto; gap: 18px 24px; align-items: center;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 18px 20px; box-shadow: var(--shadow);
+  }
+  .ring { position: relative; width: 96px; height: 96px; }
+  .ring svg { display: block; transform: rotate(-90deg); }
+  .ring .track { stroke: var(--accent-soft); }
+  .ring .arc { stroke: var(--accent); transition: stroke-dashoffset .5s ease; }
+  .ring.met .arc { stroke: var(--good); }
+  .ring-label { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; line-height: 1.05; }
+  .ring-label b { font: 500 1.35rem var(--mono); font-variant-numeric: tabular-nums; }
+  .ring-label span { font-size: .7rem; color: var(--muted); }
+  .today-main { display: grid; gap: 6px; min-width: 0; }
+  .today-msg { font: 600 1.35rem/1.2 var(--serif); }
+  .today-msg.risk { color: var(--warn); }
+  .today-sub { margin: 0; color: var(--muted); font-size: .92rem; }
+  .today-actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: 6px; }
+  .today-actions .for { font-size: .85rem; color: var(--muted); margin-right: 2px; }
+  .today-actions .for i { font-family: var(--serif); color: var(--ink); }
+  .btn.timer.running { border-color: var(--ribbon); color: var(--ink); font-family: var(--mono); }
+  .week { display: grid; gap: 6px; justify-items: end; }
+  .week-dots { display: grid; grid-template-columns: repeat(7, 22px); gap: 4px; text-align: center; }
+  .week-dots i { width: 18px; height: 18px; margin: 0 auto; border-radius: 50%; border: 1.5px solid var(--line); display: block; }
+  .week-dots i.read { background: var(--accent); border-color: var(--accent); }
+  .week-dots i.now { border-color: var(--ribbon); }
+  .week-dots i.future { opacity: .45; }
+  .week-dots span { font-size: .68rem; color: var(--muted); }
+  .week-count { font-size: .85rem; color: var(--muted); }
+  .week-count b { font-family: var(--mono); font-weight: 500; color: var(--ink); }
+  .habit-settings {
+    grid-column: 1 / -1; display: flex; gap: 8px 18px; flex-wrap: wrap; align-items: center;
+    border-top: 1px solid var(--line); padding-top: 12px; font-size: .85rem; color: var(--muted);
+  }
+  .habit-settings > span { display: inline-flex; gap: 6px; align-items: center; }
+  .habit-settings input { width: 64px; padding: 3px 7px; }
+  .habit-settings select { padding: 3px 7px; }
+
+  /* Milestones */
+  .miles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .mile { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; }
+  .mile-next { font-size: .9rem; }
+  .mile-next b { font-family: var(--mono); font-weight: 500; }
+  .badges { display: flex; gap: 5px; flex-wrap: wrap; }
+  .badge { font: 500 .72rem var(--mono); padding: 2px 7px; border-radius: 4px; border: 1px dashed var(--line); color: var(--muted); }
+  .badge.earned { border: 1px solid var(--ribbon); background: color-mix(in oklab, var(--ribbon) 16%, var(--surface)); color: var(--ink); }
+  #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 20; }
+
+  /* Year heatmap */
+  .heat {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 16px 18px; display: grid; gap: 12px;
+  }
+  .heat-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .heat-head h2 { font: 600 1.25rem/1.2 var(--serif); }
+  .heat-facts { display: flex; gap: 18px; flex-wrap: wrap; color: var(--muted); font-size: .88rem; }
+  .heat-facts b { font-family: var(--mono); font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .heat-scroll { overflow-x: auto; }
+  .heat-body { display: grid; grid-template-columns: auto auto; gap: 4px 6px; width: max-content; }
+  .heat-months, .heat-grid { display: grid; grid-auto-flow: column; grid-auto-columns: 11px; gap: 3px; }
+  .heat-months { grid-template-rows: 14px; font-size: .7rem; color: var(--muted); }
+  .heat-months span { white-space: nowrap; }
+  .heat-days { display: grid; grid-template-rows: repeat(7, 11px); gap: 3px; font-size: .68rem; color: var(--muted); line-height: 11px; }
+  .heat-grid { grid-template-rows: repeat(7, 11px); }
+  .cell { width: 11px; height: 11px; border-radius: 2px; background: var(--h0); }
+  .cell.pad { visibility: hidden; }
+  .cell.l1 { background: var(--h1); } .cell.l2 { background: var(--h2); }
+  .cell.l3 { background: var(--h3); } .cell.l4 { background: var(--h4); }
+  .cell.is-today { outline: 1.5px solid var(--ribbon); outline-offset: 1px; }
+  .heat-legend { display: flex; align-items: center; gap: 4px; font-size: .75rem; color: var(--muted); justify-content: flex-end; }
+  .heat-legend .cell { display: inline-block; }
+  .heat-legend .lbl { margin: 0 4px; }
+  .tip {
+    position: fixed; z-index: 10; pointer-events: none;
+    background: var(--ink); color: var(--ground);
+    font-size: .8rem; padding: 5px 9px; border-radius: 6px; white-space: nowrap;
+    transform: translate(-50%, calc(-100% - 8px));
+  }
+  :root {
+    --h0: color-mix(in oklab, var(--line) 70%, var(--surface));
+    --h1: color-mix(in oklab, var(--accent) 34%, var(--surface));
+    --h2: color-mix(in oklab, var(--accent) 58%, var(--surface));
+    --h3: color-mix(in oklab, var(--accent) 80%, var(--surface));
+    --h4: var(--accent);
+  }
+
+  /* Shelf */
+  .shelf-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 10px; }
+  .shelf-head h2, .section-title { font: 600 1.25rem/1.2 var(--serif); }
+  .shelf-head span { color: var(--muted); font-size: .88rem; }
+  .shelf-scroll { overflow-x: auto; padding-bottom: 2px; }
+  .shelf {
+    display: flex; align-items: flex-end; gap: 3px;
+    min-height: 190px;
+    padding: 12px 14px 0;
+    border-bottom: 10px solid var(--line);
+    width: max-content; min-width: 100%;
+  }
+  .spine {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    border: 0; cursor: pointer;
+    color: var(--spine-text);
+    font: 500 .78rem/1 var(--serif);
+    padding: 10px 0;
+    border-radius: 2px 2px 0 0;
+    display: flex; align-items: center; justify-content: space-between;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+    box-shadow: inset -3px 0 0 rgba(0,0,0,.15), inset 3px 0 0 rgba(255,255,255,.08);
+    transition: transform .15s ease;
+  }
+  .spine:hover { transform: rotate(180deg) translateY(6px); }
+  .spine .t { overflow: hidden; text-overflow: ellipsis; }
+  .spine .r { font-family: var(--mono); font-size: .65rem; opacity: .8; }
+  .shelf-empty { color: var(--muted); align-self: center; padding-bottom: 16px; }
+
+  /* Tabs + list */
+  .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; border-bottom: 1px solid var(--line); }
+  .tabs { display: flex; gap: 4px; }
+  .tab {
+    background: none; border: 0; padding: 10px 12px; cursor: pointer;
+    color: var(--muted); font-weight: 500;
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+  }
+  .tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--ribbon); }
+  .tab .n { font-family: var(--mono); font-size: .8rem; margin-left: 4px; color: var(--muted); }
+  .search { padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); width: 220px; max-width: 100%; margin-bottom: 8px; }
+
+  .list { display: grid; gap: 12px; }
+  .book {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 18px;
+    display: grid; gap: 12px;
+  }
+  .book-top { display: flex; gap: 14px; align-items: flex-start; }
+  .swatch { width: 10px; align-self: stretch; border-radius: 2px; flex: none; min-height: 44px; }
+  .book-meta { flex: 1; min-width: 0; }
+  .book-title { font: 600 1.18rem/1.25 var(--serif); overflow-wrap: anywhere; }
+  .book-sub { color: var(--muted); font-size: .9rem; margin-top: 2px; }
+  .book-sub .dot { margin: 0 6px; }
+  .book-notes { font: italic 400 .98rem/1.45 var(--serif); color: var(--muted); margin: 0; overflow-wrap: anywhere; }
+
+  .progress { position: relative; height: 8px; background: var(--accent-soft); border-radius: 4px; margin-top: 8px; }
+  .progress > .fill { position: absolute; inset: 0 auto 0 0; background: var(--accent); border-radius: 4px; }
+  .progress > .ribbon {
+    position: absolute; top: -6px; width: 12px; height: 26px; margin-left: -6px;
+    background: var(--ribbon);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
+  }
+  .progress-row { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: .88rem; color: var(--muted); margin-top: 14px; }
+  .progress-row b { font-family: var(--mono); font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  .row-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .page-form { display: flex; gap: 6px; align-items: center; }
+  .page-form label { font-size: .85rem; color: var(--muted); }
+  .page-form input { width: 84px; }
+  .spacer { flex: 1; }
+
+  input[type="text"], input[type="number"], input[type="date"], select, textarea {
+    padding: 6px 9px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface-2);
+  }
+  input[type="number"] { font-family: var(--mono); }
+
+  .stars { display: inline-flex; gap: 1px; }
+  .star { background: none; border: 0; padding: 0 1px; cursor: pointer; font-size: 1.05rem; color: var(--line); line-height: 1; }
+  .star.on { color: var(--ribbon); }
+
+  .empty { text-align: center; color: var(--muted); padding: 36px 16px; border: 1px dashed var(--line); border-radius: 10px; }
+
+  .banner {
+    display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap;
+    background: var(--accent-soft); border-radius: 10px; padding: 10px 14px; font-size: .9rem;
+  }
+
+  /* Dialogs */
+  dialog {
+    border: 1px solid var(--line); border-radius: 14px; padding: 0;
+    background: var(--surface); color: var(--ink);
+    width: min(520px, calc(100vw - 32px));
+    box-shadow: 0 20px 60px rgba(0,0,0,.25);
+  }
+  dialog::backdrop { background: rgba(10, 14, 24, .45); }
+  .dlg { padding: 22px; display: grid; gap: 14px; }
+  .dlg h2 { font: 600 1.35rem/1.2 var(--serif); }
+  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field { display: grid; gap: 4px; }
+  .field.full { grid-column: 1 / -1; }
+  .field label { font-size: .8rem; font-weight: 600; color: var(--muted); }
+  .field input, .field select, .field textarea { width: 100%; }
+  .dlg-foot { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .hint { font-size: .85rem; color: var(--muted); margin: 0; }
+  .lookup-status { font-size: .8rem; color: var(--muted); min-height: 1.2em; }
+  .lookup-status:empty { display: none; }
+  .lookup-list { display: grid; gap: 2px; max-height: 260px; overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; padding: 4px; background: var(--surface-2); }
+  .hit {
+    display: grid; grid-template-columns: 34px 1fr; gap: 10px; align-items: center; text-align: left;
+    background: none; border: 0; border-radius: 6px; padding: 5px 6px; cursor: pointer;
+  }
+  .hit:hover, .hit:focus-visible { background: var(--accent-soft); }
+  .hit-cover { width: 34px; height: 50px; border-radius: 2px; object-fit: cover; background: var(--line); }
+  .hit-title { font: 600 .95rem/1.25 var(--serif); overflow-wrap: anywhere; }
+  .hit-sub { font-size: .78rem; color: var(--muted); }
+  .cover { width: 44px; height: 66px; border-radius: 3px; object-fit: cover; flex: none; background: var(--line); box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+  #backupText { width: 100%; min-height: 180px; font: .8rem/1.4 var(--mono); }
+
+  .toast {
+    position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    transform: translateX(-50%);
+    background: var(--ink); color: var(--ground);
+    padding: 9px 16px; border-radius: 8px; font-size: .9rem; font-weight: 500;
+    box-shadow: var(--shadow);
+  }
+
+  @media (max-width: 720px) {
+    .today { grid-template-columns: auto 1fr; }
+    .week { grid-column: 1 / -1; justify-items: start; }
+    .miles { grid-template-columns: 1fr; }
+    .summary { grid-template-columns: 1fr 1fr; }
+    .stat:first-child { grid-column: 1 / -1; }
+    .stat + .stat { border-left: 0; }
+    .stat:nth-child(n+2) { border-top: 1px solid var(--line); }
+    .stat:nth-child(3) { border-left: 1px solid var(--line); }
+  }
+  @media (max-width: 480px) {
+    .fields { grid-template-columns: 1fr; }
+    .brand h1 { font-size: 2rem; }
+    .search { width: 100%; }
+    .tab { padding: 10px 8px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .spine, .ring .arc { transition: none; }
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <h1>Ribbon</h1>
+      <p>Your reading log — what's on the nightstand, what's next, and what you've finished.</p>
+    </div>
+    <div class="actions">
+      <button class="btn ghost" id="backupBtn" type="button">Backup &amp; restore</button>
+      <button class="btn primary" id="addBtn" type="button">Add book</button>
+    </div>
+  </header>
+
+  <div id="banner"></div>
+
+  <section class="today" aria-label="Today">
+    <div class="ring" id="ring"></div>
+    <div class="today-main" id="todayMain"></div>
+    <div class="week" id="week"></div>
+    <div class="habit-settings">
+      <span><label for="dailyGoal">Daily goal</label><input type="number" id="dailyGoal" min="1" step="1" inputmode="numeric"> pages</span>
+      <span><label for="rhythm">My streak continues if I read</label>
+        <select id="rhythm">
+          <option value="1">every day</option>
+          <option value="2">at least every 2 days</option>
+          <option value="3">at least every 3 days</option>
+        </select>
+      </span>
+    </div>
+  </section>
+
+  <section class="summary" id="summary" aria-label="Reading summary"></section>
+
+  <section class="heat" aria-labelledby="heatTitle">
+    <div class="heat-head">
+      <h2 id="heatTitle">Your reading year</h2>
+      <div class="heat-facts" id="heatFacts"></div>
+    </div>
+    <div class="heat-scroll" id="heatScroll"><div class="heat-body" id="heat"></div></div>
+    <div class="heat-legend" aria-hidden="true">
+      <span class="lbl">Fewer pages</span>
+      <span class="cell"></span><span class="cell l1"></span><span class="cell l2"></span><span class="cell l3"></span><span class="cell l4"></span>
+      <span class="lbl">More</span>
+    </div>
+  </section>
+
+  <section aria-labelledby="milesTitle">
+    <div class="shelf-head"><h2 id="milesTitle">Milestones</h2><span>Badges you've earned, and how close the next one is</span></div>
+    <div class="miles" id="miles"></div>
+  </section>
+
+  <section aria-labelledby="shelfTitle">
+    <div class="shelf-head">
+      <h2 id="shelfTitle">Finished this year</h2>
+      <span id="shelfMeta"></span>
+    </div>
+    <div class="shelf-scroll"><div class="shelf" id="shelf"></div></div>
+  </section>
+
+  <section>
+    <div class="toolbar">
+      <div class="tabs" role="tablist" id="tabs"></div>
+      <input class="search" id="search" type="search" placeholder="Search title or author" aria-label="Search books">
+    </div>
+    <div class="list" id="list" style="margin-top:16px"></div>
+  </section>
+</div>
+
+<dialog id="bookDlg">
+  <form class="dlg" id="bookForm" method="dialog">
+    <h2 id="bookDlgTitle">Add book</h2>
+    <div class="fields">
+      <div class="field full">
+        <label for="fTitle">Title</label>
+        <input type="text" id="fTitle" required autocomplete="off" aria-describedby="lookupStatus" aria-controls="lookupList">
+        <div class="lookup-status" id="lookupStatus" aria-live="polite"></div>
+        <div class="lookup-list" id="lookupList" role="listbox" aria-label="Matches from Open Library" hidden></div>
+      </div>
+      <div class="field full"><label for="fAuthor">Author</label><input type="text" id="fAuthor"></div>
+      <div class="field"><label for="fPages">Total pages</label><input type="number" id="fPages" min="1" step="1"></div>
+      <div class="field"><label for="fStatus">Shelf</label>
+        <select id="fStatus">
+          <option value="reading">Reading</option>
+          <option value="want">Want to read</option>
+          <option value="finished">Finished</option>
+        </select>
+      </div>
+      <div class="field"><label for="fCurrent">Current page</label><input type="number" id="fCurrent" min="0" step="1"></div>
+      <div class="field"><label for="fRating">Rating</label>
+        <select id="fRating">
+          <option value="0">Not rated</option>
+          <option value="1">★</option><option value="2">★★</option><option value="3">★★★</option>
+          <option value="4">★★★★</option><option value="5">★★★★★</option>
+        </select>
+      </div>
+      <div class="field"><label for="fStarted">Started</label><input type="date" id="fStarted"></div>
+      <div class="field"><label for="fFinished">Finished</label><input type="date" id="fFinished"></div>
+      <div class="field full"><label for="fNotes">Notes</label><textarea id="fNotes" rows="3" placeholder="A line you want to remember, who recommended it…"></textarea></div>
+    </div>
+    <div class="dlg-foot">
+      <button class="btn danger" type="button" id="deleteBtn">Delete book</button>
+      <span class="spacer"></span>
+      <button class="btn" type="button" id="cancelBtn">Cancel</button>
+      <button class="btn primary" type="submit" id="saveBtn">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="backupDlg">
+  <div class="dlg">
+    <h2>Backup &amp; restore</h2>
+    <p class="hint">Your books are saved in this browser only. Copy this text somewhere safe to keep a backup, or paste a backup here and restore it.</p>
+    <textarea id="backupText" spellcheck="false" aria-label="Backup data"></textarea>
+    <div class="dlg-foot">
+      <button class="btn" type="button" id="copyBtn">Copy</button>
+      <label class="btn" for="importFile">Load file…</label>
+      <input type="file" id="importFile" accept="application/json,.json,.txt" hidden>
+      <span class="spacer"></span>
+      <button class="btn" type="button" id="closeBackupBtn">Close</button>
+      <button class="btn primary" type="button" id="restoreBtn">Restore</button>
+    </div>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" hidden></div>
+<div class="tip" id="tip" hidden></div>
+<canvas id="confetti" hidden></canvas>
+
+<script>
+(() => {
+  const KEY = 'ribbon.reading.v1';
+  const CLOTH = ['#2f4da0', '#7a2e3a', '#2e6b57', '#8a5a1c', '#4b3f7a', '#305f78', '#6b3d5e', '#5a6b2e', '#3a3f4b', '#94452c'];
+  const $ = (id) => document.getElementById(id);
+
+  // ---------- dates ----------
+  const iso = (d) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  const today = () => iso(new Date());
+  const daysAgo = (n) => { const d = new Date(); d.setDate(d.getDate() - n); return iso(d); };
+  const parse = (s) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+  const fmt = (s) => s ? parse(s).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: parse(s).getFullYear() === new Date().getFullYear() ? undefined : 'numeric' }) : '';
+  const dayDiff = (a, b) => Math.round((parse(b) - parse(a)) / 86400000);
+
+  const uid = () => Math.random().toString(36).slice(2, 10);
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const cloth = (title) => { let h = 0; for (const ch of title) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return CLOTH[h % CLOTH.length]; };
+
+  // ---------- state ----------
+  function seed() {
+    // Deterministic, uneven daily pages between two dates (days ago), with some days off.
+    const spreadRange = (total, from, to) => {
+      const w = [];
+      for (let i = from; i >= to; i--) {
+        const r = Math.abs(Math.sin(i * 12.9898) * 43758.5453) % 1;
+        w.push(i === to ? 1 : r < 0.28 ? 0 : 0.3 + r * r * 2.2);
+      }
+      const sum = w.reduce((a, b) => a + b, 0);
+      const log = []; let left = total;
+      w.forEach((x, k) => {
+        const i = from - k;
+        const p = i === to ? left : Math.min(left, Math.round(total * x / sum));
+        if (p > 0) { log.push({ d: daysAgo(i), p }); left -= p; }
+      });
+      return log;
+    };
+    const spread = (total, days) => spreadRange(total, days, 0);
+    const b = (title, author, pages, status, extra = {}) => ({ id: uid(), title, author, pages, status, current: 0, started: '', finished: '', rating: 0, notes: '', log: [], sample: true, ...extra });
+    const books = [
+        b('The Left Hand of Darkness', 'Ursula K. Le Guin', 304, 'reading', { current: 182, started: daysAgo(13), log: spread(182, 13), notes: 'Winter is a planet, not a season.' }),
+        b('Braiding Sweetgrass', 'Robin Wall Kimmerer', 408, 'reading', { current: 96, started: daysAgo(20), log: spread(96, 20).map((e) => ({ d: e.d, p: Math.ceil(e.p / 2) })) }),
+        b('Piranesi', 'Susanna Clarke', 272, 'want', { notes: 'Recommended by Mika.' }),
+        b('The Dispossessed', 'Ursula K. Le Guin', 387, 'want'),
+        b('Stoner', 'John Williams', 288, 'want'),
+        b('Klara and the Sun', 'Kazuo Ishiguro', 303, 'finished', { current: 303, started: daysAgo(262), finished: daysAgo(248), rating: 4 }),
+        b('Project Hail Mary', 'Andy Weir', 476, 'finished', { current: 476, started: daysAgo(230), finished: daysAgo(214), rating: 5 }),
+        b('The Remains of the Day', 'Kazuo Ishiguro', 245, 'finished', { current: 245, started: daysAgo(190), finished: daysAgo(176), rating: 5, notes: 'Dignity, and what it costs.' }),
+        b('Tomorrow, and Tomorrow, and Tomorrow', 'Gabrielle Zevin', 401, 'finished', { current: 401, started: daysAgo(150), finished: daysAgo(128), rating: 4 }),
+        b('A Psalm for the Wild-Built', 'Becky Chambers', 147, 'finished', { current: 147, started: daysAgo(100), finished: daysAgo(95), rating: 4 }),
+        b('Educated', 'Tara Westover', 334, 'finished', { current: 334, started: daysAgo(80), finished: daysAgo(62), rating: 4 }),
+        b('The Overstory', 'Richard Powers', 502, 'finished', { current: 502, started: daysAgo(58), finished: daysAgo(24), rating: 3 }),
+        // finished last year, so the heatmap's earliest months aren't blank
+        b('Middlemarch', 'George Eliot', 880, 'finished', { current: 880, started: daysAgo(350), finished: daysAgo(275), rating: 5 }),
+    ];
+    for (const bk of books) {
+      if (bk.status === 'finished') bk.log = spreadRange(bk.pages, dayDiff(bk.started, today()), dayDiff(bk.finished, today()));
+    }
+    return { goal: 12, view: 'reading', books };
+  }
+
+  function load() {
+    try { const raw = localStorage.getItem(KEY); return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
+  }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* storage unavailable */ }
+  }
+  function valid(s) { return s && Array.isArray(s.books) && typeof s.goal === 'number'; }
+
+  let state = load();
+  if (!valid(state)) state = seed();
+  state.daily = state.daily || 20;
+  state.rhythm = state.rhythm || 1;
+  let query = '';
+  let editingId = null;
+
+  const byId = (id) => state.books.find((x) => x.id === id);
+  function commit(msg, quiet) {
+    save();
+    const before = lastSnap;
+    render();
+    const party = quiet ? null : celebration(before, lastSnap);
+    if (party) { confetti(); toast(party); } else if (msg) toast(msg);
+  }
+
+  // ---------- stats ----------
+  function stats() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const finishedThisYear = state.books
+      .filter((x) => x.status === 'finished' && x.finished && parse(x.finished).getFullYear() === year)
+      .sort((a, b) => a.finished.localeCompare(b.finished));
+    const start = new Date(year, 0, 1);
+    const daysInYear = (new Date(year + 1, 0, 1) - start) / 86400000;
+    const dayOfYear = Math.floor((now - start) / 86400000) + 1;
+    const expected = state.goal * dayOfYear / daysInYear;
+
+    const perDay = {};
+    for (const bk of state.books) for (const e of bk.log || []) perDay[e.d] = (perDay[e.d] || 0) + e.p;
+    let week = 0;
+    for (let i = 0; i < 7; i++) week += perDay[daysAgo(i)] || 0;
+
+    const days = Object.keys(perDay).filter((d) => perDay[d] > 0).sort();
+    const cur = currentStreak(days, state.rhythm);
+    const streak = cur.n;
+
+    return { days, cur, todayPages: perDay[today()] || 0, finishedThisYear, expected, week, streak, year, perDay, reading: state.books.filter((x) => x.status === 'reading').length };
+  }
+
+  // ---------- streaks ----------
+  // A streak survives gaps shorter than the chosen rhythm: with rhythm r you must read
+  // again within r days of your last reading day. Length counts calendar days spanned.
+  const addDays = (s, n) => { const d = parse(s); d.setDate(d.getDate() + n); return iso(d); };
+
+  function currentStreak(days, r) {
+    if (!days.length) return { n: 0 };
+    const last = days[days.length - 1];
+    if (dayDiff(last, today()) > r) return { n: 0, last };
+    let start = last;
+    for (let i = days.length - 2; i >= 0 && dayDiff(days[i], start) <= r; i--) start = days[i];
+    return { n: dayDiff(start, last) + 1, last, deadline: addDays(last, r) };
+  }
+
+  function longestStreak(days, r) {
+    let best = 0, start = null, prev = null;
+    for (const d of days) {
+      if (!prev || dayDiff(prev, d) > r) start = d;
+      best = Math.max(best, dayDiff(start, d) + 1);
+      prev = d;
+    }
+    return best;
+  }
+
+  // ---------- today panel ----------
+  const activeBook = () => state.books.filter((x) => x.status === 'reading').sort((a, b) => lastRead(b).localeCompare(lastRead(a)))[0];
+  const TIMER_MIN = 10;
+  let timerEnd = 0, timerTick = null;
+
+  function renderToday(s) {
+    const goal = state.daily, p = s.todayPages;
+    const frac = Math.min(1, p / goal), R = 42, C = 2 * Math.PI * R;
+    const met = p >= goal;
+    $('ring').className = 'ring' + (met ? ' met' : '');
+    $('ring').innerHTML = `
+      <svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true">
+        <circle class="track" cx="48" cy="48" r="${R}" fill="none" stroke-width="8"/>
+        <circle class="arc" cx="48" cy="48" r="${R}" fill="none" stroke-width="8" stroke-linecap="round"
+          stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - frac)}" ${p ? '' : 'opacity="0"'}/>
+      </svg>
+      <div class="ring-label" role="img" aria-label="${p} of ${goal} pages today"><b>${p}</b><span>of ${goal} pages</span></div>`;
+
+    const { cur } = s, bk = activeBook();
+    const r = state.rhythm;
+    let msg, sub, risk = false;
+    if (met) {
+      msg = `Daily goal met — ${p} pages today.`;
+      sub = cur.n > 1 ? `That's a ${cur.n}-day streak. Same time tomorrow?` : 'A strong start. Come back tomorrow to build a streak.';
+    } else if (p > 0) {
+      msg = `${goal - p} more ${goal - p === 1 ? 'page' : 'pages'} to hit today's goal.`;
+      sub = cur.n > 1 ? `Your ${cur.n}-day streak is safe for today.` : 'Your streak has started — keep it going.';
+    } else if (cur.n > 0 && cur.deadline === today()) {
+      risk = true;
+      msg = `Your ${cur.n}-day streak ends tonight.`;
+      sub = 'Read even a couple of pages to keep it alive — small counts.';
+    } else if (cur.n > 0) {
+      const when = parse(cur.deadline).toLocaleDateString(undefined, { weekday: 'long' });
+      msg = `Streak safe until ${when}.`;
+      sub = `You're on ${r === 1 ? 'a daily' : `an every-${r}-days`} rhythm. Reading today gives you a head start.`;
+    } else {
+      msg = 'Start a new streak today.';
+      sub = bk ? `Open ${bk.title} for ten minutes — that's all it takes.` : 'Pick a book and read for ten minutes — that\'s all it takes.';
+    }
+
+    const running = timerEnd > Date.now();
+    const timerBtn = `<button class="btn small timer${running ? ' running' : ''}" type="button" data-act="timer" id="timerBtn">${running ? timerLabel() : `Start ${TIMER_MIN}-minute session`}</button>`;
+    const actions = bk
+      ? `<span class="for">Log for <i>${esc(bk.title)}</i></span>
+         ${[5, 10, 25].map((n) => `<button class="btn small" type="button" data-act="add" data-id="${bk.id}" data-n="${n}">+${n}</button>`).join('')}
+         ${timerBtn}`
+      : `<button class="btn small primary" type="button" data-act="tab" data-view="want">Choose your next book</button>`;
+
+    $('todayMain').innerHTML = `
+      <span class="label">Today · ${new Date().toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}</span>
+      <h2 class="today-msg${risk ? ' risk' : ''}">${esc(msg)}</h2>
+      <p class="today-sub">${esc(sub)}</p>
+      <div class="today-actions">${actions}</div>`;
+
+    // this week, Monday first
+    const now = parse(today());
+    const monday = addDays(today(), -((now.getDay() + 6) % 7));
+    let readCount = 0;
+    const dots = [];
+    for (let i = 0; i < 7; i++) {
+      const d = addDays(monday, i);
+      const read = (s.perDay[d] || 0) > 0;
+      if (read) readCount++;
+      const cls = read ? 'read' : d === today() ? 'now' : d > today() ? 'future' : '';
+      const name = parse(d).toLocaleDateString(undefined, { weekday: 'short' });
+      dots.push(`<div><i class="${cls}" title="${name}: ${s.perDay[d] || 0} pages"></i><span>${name.slice(0, 1)}</span></div>`);
+    }
+    $('week').innerHTML = `<span class="label">This week</span><div class="week-dots">${dots.join('')}</div>
+      <span class="week-count"><b>${readCount}</b> of 7 days read</span>`;
+
+    $('dailyGoal').value = state.daily;
+    $('rhythm').value = String(state.rhythm);
+  }
+
+  function timerLabel() {
+    const left = Math.max(0, Math.ceil((timerEnd - Date.now()) / 1000));
+    return `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')} left · Stop`;
+  }
+
+  function toggleTimer() {
+    if (timerEnd > Date.now()) { timerEnd = 0; clearInterval(timerTick); render(); toast('Session stopped'); return; }
+    timerEnd = Date.now() + TIMER_MIN * 60000;
+    clearInterval(timerTick);
+    timerTick = setInterval(() => {
+      const btn = $('timerBtn');
+      if (Date.now() >= timerEnd) {
+        clearInterval(timerTick); timerEnd = 0;
+        const bk = activeBook();
+        state.view = 'reading'; render();
+        toast(`${TIMER_MIN} minutes done — what page are you on?`);
+        const input = bk && $(`pg-${bk.id}`);
+        if (input) { input.scrollIntoView({ block: 'center', behavior: 'smooth' }); input.focus(); input.select(); }
+      } else if (btn) btn.textContent = timerLabel();
+    }, 1000);
+    render();
+    toast(`Timer started — just read for ${TIMER_MIN} minutes`);
+  }
+
+  // ---------- milestones ----------
+  const MILES = {
+    streak: { label: 'Longest streak', unit: 'days', steps: [3, 7, 14, 30, 60, 100, 365] },
+    pages: { label: 'Pages read', unit: 'pages', steps: [500, 1000, 2500, 5000, 10000, 25000] },
+    books: { label: 'Books finished', unit: 'books', steps: [1, 5, 10, 25, 50, 100] },
+  };
+
+  function milestoneValues(s) {
+    return {
+      streak: longestStreak(s.days, state.rhythm),
+      pages: s.days.reduce((t, d) => t + s.perDay[d], 0),
+      books: state.books.filter((x) => x.status === 'finished').length,
+    };
+  }
+
+  function renderMiles(vals) {
+    $('miles').innerHTML = Object.entries(MILES).map(([k, m]) => {
+      const v = vals[k];
+      const next = m.steps.find((x) => x > v);
+      const prev = [...m.steps].reverse().find((x) => x <= v) || 0;
+      const pct = next ? Math.round((v - prev) / (next - prev) * 100) : 100;
+      const nextLine = next
+        ? `<b>${(next - v).toLocaleString()}</b> ${m.unit} to the ${next.toLocaleString()}-${m.unit.replace(/s$/, '')} badge`
+        : 'Every badge earned. Remarkable.';
+      return `<div class="mile">
+        <span class="label">${m.label} · ${v.toLocaleString()}</span>
+        <div class="mile-next">${nextLine}</div>
+        <div class="meter"><span style="width:${pct}%"></span></div>
+        <div class="badges">${m.steps.map((x) => `<span class="badge${v >= x ? ' earned' : ''}">${x >= 1000 ? x / 1000 + 'k' : x}</span>`).join('')}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // ---------- celebrations ----------
+  let lastSnap = null;
+  function snapshot(s, vals) { return { today: s.todayPages, ...vals }; }
+
+  function celebration(before, after) {
+    if (!before) return null;
+    for (const [k, m] of Object.entries(MILES)) {
+      const hit = m.steps.filter((x) => before[k] < x && after[k] >= x).pop();
+      if (hit) return `New badge: ${hit.toLocaleString()} ${m.unit}${k === 'streak' ? ' streak' : k === 'pages' ? ' read' : ' finished'}!`;
+    }
+    if (before.today < state.daily && after.today >= state.daily) return `Daily goal met — ${after.today} pages today!`;
+    return null;
+  }
+
+  function confetti() {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const cv = $('confetti'), ctx = cv.getContext('2d');
+    cv.width = innerWidth; cv.height = innerHeight; cv.hidden = false;
+    const colors = [...CLOTH, getComputedStyle(document.documentElement).getPropertyValue('--ribbon').trim() || '#c8911a'];
+    const parts = Array.from({ length: 110 }, () => ({
+      x: innerWidth / 2 + (Math.random() - .5) * 160, y: innerHeight * .35,
+      vx: (Math.random() - .5) * 11, vy: -Math.random() * 11 - 4,
+      w: 5 + Math.random() * 5, h: 8 + Math.random() * 6, a: Math.random() * 6, va: (Math.random() - .5) * .3,
+      c: colors[Math.floor(Math.random() * colors.length)],
+    }));
+    const t0 = performance.now();
+    (function frame(t) {
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      for (const p of parts) {
+        p.vy += .32; p.x += p.vx; p.y += p.vy; p.a += p.va;
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a); ctx.fillStyle = p.c;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.restore();
+      }
+      if (t - t0 < 1800) requestAnimationFrame(frame); else { ctx.clearRect(0, 0, cv.width, cv.height); cv.hidden = true; }
+    })(t0);
+  }
+
+  // ---------- 365-day heatmap ----------
+  const level = (p) => (!p ? 0 : p < 10 ? 1 : p < 20 ? 2 : p < 35 ? 3 : 4);
+  let heatScrolled = false;
+
+  function renderHeat(perDay) {
+    const end = parse(today());
+    const first = new Date(end); first.setDate(first.getDate() - 364);
+    const start = new Date(first); start.setDate(start.getDate() - start.getDay()); // back to Sunday
+
+    const cells = [], months = [];
+    const activeDays = [];
+    let total = 0, active = 0, best = { p: 0, d: '' }, col = 0, lastMonth = -1, lastLabelCol = -9;
+    for (const d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      const key = iso(d);
+      if (d.getDay() === 0) {
+        col++;
+        if (d.getMonth() !== lastMonth && d >= first) {
+          lastMonth = d.getMonth();
+          if (col - lastLabelCol >= 3) months.push(`<span style="grid-column:${col}">${d.toLocaleDateString(undefined, { month: 'short' })}</span>`), lastLabelCol = col;
+        }
+      }
+      if (d < first) { cells.push('<span class="cell pad"></span>'); continue; }
+      const p = perDay[key] || 0;
+      total += p;
+      if (p) { active++; activeDays.push(key); }
+      if (p > best.p) best = { p, d: key };
+      cells.push(`<span class="cell l${level(p)}${key === today() ? ' is-today' : ''}" data-d="${key}" data-p="${p}"></span>`);
+    }
+
+    const longest = longestStreak(activeDays, state.rhythm);
+    $('heatFacts').innerHTML = `
+      <span><b>${total.toLocaleString()}</b> pages</span>
+      <span><b>${active}</b> reading days</span>
+      <span>Longest streak <b>${longest}</b> ${longest === 1 ? 'day' : 'days'}</span>
+      ${best.p ? `<span>Best day <b>${best.p}</b> pages · ${fmt(best.d)}</span>` : ''}`;
+
+    $('heat').innerHTML = `
+      <span></span>
+      <div class="heat-months" style="grid-template-columns:repeat(${col},11px)">${months.join('')}</div>
+      <div class="heat-days"><span></span><span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span></div>
+      <div class="heat-grid" role="img" aria-label="Pages read per day over the last year: ${total} pages across ${active} days">${cells.join('')}</div>`;
+
+    // on narrow screens, start scrolled to the most recent weeks
+    if (!heatScrolled) { const sc = $('heatScroll'); sc.scrollLeft = sc.scrollWidth; heatScrolled = true; }
+  }
+
+  const tip = $('tip');
+  $('heat').addEventListener('mouseover', (e) => {
+    const c = e.target.closest('.cell[data-d]');
+    if (!c) { tip.hidden = true; return; }
+    const p = +c.dataset.p;
+    const when = parse(c.dataset.d).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+    tip.textContent = `${p ? `${p} ${p === 1 ? 'page' : 'pages'}` : 'No reading'} · ${when}`;
+    const r = c.getBoundingClientRect();
+    tip.style.left = `${Math.min(window.innerWidth - 110, Math.max(110, r.left + r.width / 2))}px`;
+    tip.style.top = `${r.top}px`;
+    tip.hidden = false;
+  });
+  $('heat').addEventListener('mouseleave', () => { tip.hidden = true; });
+
+  function pace(bk) {
+    // average pages/day over the last 14 days of this book's log
+    const since = daysAgo(13);
+    const pages = (bk.log || []).filter((e) => e.d >= since).reduce((s, e) => s + e.p, 0);
+    const rate = pages / 14;
+    if (!rate || !bk.pages) return null;
+    return Math.ceil((bk.pages - bk.current) / rate);
+  }
+
+  // ---------- render ----------
+  function render() {
+    const s = stats();
+    const vals = milestoneValues(s);
+    renderToday(s);
+    renderMiles(vals);
+    lastSnap = snapshot(s, vals);
+    const done = s.finishedThisYear.length;
+    const diff = Math.round(done - s.expected);
+    const paceChip = done >= state.goal
+      ? '<span class="chip good">Goal reached</span>'
+      : diff >= 0 ? `<span class="chip good">On pace${diff > 0 ? ` · ${diff} ahead` : ''}</span>`
+      : `<span class="chip warn">${-diff} behind pace</span>`;
+
+    $('banner').innerHTML = state.books.some((x) => x.sample)
+      ? `<div class="banner"><span>These are example books so you can see how Ribbon works. Clear them when you're ready to add your own.</span><button class="btn small" type="button" data-act="clear-samples">Clear examples</button></div>`
+      : '';
+
+    $('summary').innerHTML = `
+      <div class="stat">
+        <span class="label">${s.year} reading goal</span>
+        <div class="goal-row" id="goalRow">
+          <span class="figure">${done}<small>of ${state.goal} books</small></span>
+          ${paceChip}
+          <button class="goal-edit" type="button" data-act="edit-goal">Change goal</button>
+        </div>
+        <div class="meter" role="progressbar" aria-valuemin="0" aria-valuemax="${state.goal}" aria-valuenow="${done}"><span style="width:${Math.min(100, done / Math.max(1, state.goal) * 100)}%"></span></div>
+      </div>
+      <div class="stat"><span class="label">Last 7 days</span><span class="figure">${s.week}<small>pages</small></span></div>
+      <div class="stat"><span class="label">Streak</span><span class="figure">${s.streak}<small>${s.streak === 1 ? 'day' : 'days'}</small></span></div>
+      <div class="stat"><span class="label">On the go</span><span class="figure">${s.reading}<small>${s.reading === 1 ? 'book' : 'books'}</small></span></div>`;
+
+    renderHeat(s.perDay);
+
+    // shelf
+    const shelf = $('shelf');
+    const totalPages = s.finishedThisYear.reduce((t, x) => t + (x.pages || 0), 0);
+    $('shelfMeta').textContent = done ? `${done} ${done === 1 ? 'book' : 'books'} · ${totalPages.toLocaleString()} pages` : '';
+    shelf.innerHTML = done
+      ? s.finishedThisYear.map((x) => {
+          const h = Math.max(120, Math.min(180, 100 + (x.pages || 250) / 6));
+          const w = Math.max(26, Math.min(44, 18 + (x.pages || 250) / 18));
+          return `<button class="spine" type="button" data-act="edit" data-id="${x.id}" style="height:${h}px;width:${w}px;background:${cloth(x.title)}" title="${esc(x.title)} — finished ${fmt(x.finished)}"><span class="t">${esc(x.title)}</span><span class="r">${x.rating ? '★'.repeat(x.rating) : ''}</span></button>`;
+        }).join('')
+      : '<span class="shelf-empty">Books you finish this year will line up here.</span>';
+
+    // tabs
+    const counts = { reading: 0, want: 0, finished: 0 };
+    for (const x of state.books) counts[x.status]++;
+    const names = { reading: 'Reading', want: 'Want to read', finished: 'Finished' };
+    $('tabs').innerHTML = Object.keys(names).map((k) =>
+      `<button class="tab" role="tab" type="button" aria-selected="${state.view === k}" data-act="tab" data-view="${k}">${names[k]}<span class="n">${counts[k]}</span></button>`).join('');
+
+    // list
+    const q = query.trim().toLowerCase();
+    let items = state.books.filter((x) => x.status === state.view && (!q || (x.title + ' ' + x.author).toLowerCase().includes(q)));
+    if (state.view === 'finished') items.sort((a, b) => (b.finished || '').localeCompare(a.finished || ''));
+    if (state.view === 'reading') items.sort((a, b) => lastRead(b).localeCompare(lastRead(a)));
+
+    const empties = {
+      reading: 'Nothing on the nightstand. Start something from “Want to read”, or add a book.',
+      want: 'Your to-read pile is empty. Add the next book you have your eye on.',
+      finished: 'No finished books yet. They’ll appear here — and on the shelf above.',
+    };
+    $('list').innerHTML = items.length ? items.map(card).join('') : `<div class="empty">${q ? 'No books match that search.' : empties[state.view]}</div>`;
+  }
+
+  const lastRead = (bk) => (bk.log && bk.log.length ? bk.log[bk.log.length - 1].d : bk.started || '');
+
+  function stars(bk) {
+    return `<span class="stars" aria-label="Rating">${[1, 2, 3, 4, 5].map((n) =>
+      `<button class="star${n <= bk.rating ? ' on' : ''}" type="button" data-act="rate" data-id="${bk.id}" data-n="${n}" aria-label="Rate ${n} of 5">★</button>`).join('')}</span>`;
+  }
+
+  function card(bk) {
+    const sub = [esc(bk.author) || 'Unknown author', bk.pages ? `${bk.pages} pages` : ''].filter(Boolean).join('<span class="dot">·</span>');
+    const notes = bk.notes ? `<p class="book-notes">${esc(bk.notes)}</p>` : '';
+    const top = `
+      <div class="book-top">
+        ${bk.cover
+          ? `<img class="cover" src="${coverUrl(bk.cover, 'M')}" alt="" loading="lazy" data-fallback="${cloth(bk.title)}">`
+          : `<span class="swatch" style="background:${cloth(bk.title)}"></span>`}
+        <div class="book-meta">
+          <h3 class="book-title">${esc(bk.title)}</h3>
+          <div class="book-sub">${sub}</div>
+        </div>
+        <button class="btn small ghost" type="button" data-act="edit" data-id="${bk.id}">Edit</button>
+      </div>`;
+
+    if (bk.status === 'reading') {
+      const pct = bk.pages ? Math.min(100, Math.round(bk.current / bk.pages * 100)) : 0;
+      const left = pace(bk);
+      const eta = left == null ? `Started ${fmt(bk.started) || '—'}` : `About ${left} ${left === 1 ? 'day' : 'days'} left at your pace`;
+      return `<article class="book">${top}
+        <div>
+          <div class="progress" aria-label="${pct}% read"><span class="fill" style="width:${pct}%"></span><span class="ribbon" style="left:${pct}%"></span></div>
+          <div class="progress-row"><span>Page <b>${bk.current}</b> of <b>${bk.pages || '?'}</b> · <b>${pct}%</b></span><span>${eta}</span></div>
+        </div>
+        ${notes}
+        <div class="row-actions">
+          <form class="page-form" data-act="progress" data-id="${bk.id}">
+            <label for="pg-${bk.id}">Now on page</label>
+            <input type="number" id="pg-${bk.id}" min="0" ${bk.pages ? `max="${bk.pages}"` : ''} value="${bk.current}" inputmode="numeric">
+            <button class="btn small primary" type="submit">Update</button>
+            <button class="btn small" type="button" data-act="add" data-id="${bk.id}" data-n="10">+10</button>
+          </form>
+          <span class="spacer"></span>
+          <button class="btn small" type="button" data-act="finish" data-id="${bk.id}">Mark finished</button>
+        </div>
+      </article>`;
+    }
+    if (bk.status === 'want') {
+      return `<article class="book">${top}${notes}
+        <div class="row-actions"><button class="btn small primary" type="button" data-act="start" data-id="${bk.id}">Start reading</button></div>
+      </article>`;
+    }
+    const took = bk.started && bk.finished ? dayDiff(bk.started, bk.finished) + 1 : null;
+    return `<article class="book">${top}${notes}
+      <div class="row-actions">
+        ${stars(bk)}
+        <span class="spacer"></span>
+        <span class="book-sub">Finished ${fmt(bk.finished) || '—'}${took ? ` · read in ${took} ${took === 1 ? 'day' : 'days'}` : ''}</span>
+      </div>
+    </article>`;
+  }
+
+  // ---------- actions ----------
+  function logPages(bk, newPage) {
+    const delta = newPage - bk.current;
+    if (delta > 0) {
+      bk.log = bk.log || [];
+      const last = bk.log[bk.log.length - 1];
+      if (last && last.d === today()) last.p += delta; else bk.log.push({ d: today(), p: delta });
+    }
+    bk.current = newPage;
+  }
+
+  function finish(bk) {
+    if (bk.pages) logPages(bk, bk.pages);
+    bk.status = 'finished';
+    bk.finished = today();
+    if (!bk.started) bk.started = today();
+  }
+
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-act]');
+    if (!el || el.tagName === 'FORM') return;
+    const bk = el.dataset.id ? byId(el.dataset.id) : null;
+    switch (el.dataset.act) {
+      case 'tab': state.view = el.dataset.view; commit(); break;
+      case 'edit': openBook(bk); break;
+      case 'start':
+        bk.status = 'reading'; bk.started = today(); bk.current = bk.current || 0;
+        state.view = 'reading'; commit(`Started “${bk.title}”`); break;
+      case 'finish': finish(bk); commit(`Finished “${bk.title}” — it's on the shelf`); break;
+      case 'rate': bk.rating = bk.rating === +el.dataset.n ? 0 : +el.dataset.n; commit(); break;
+      case 'clear-samples':
+        state.books = state.books.filter((x) => !x.sample); commit('Examples cleared', true); break;
+      case 'edit-goal': editGoal(); break;
+      case 'timer': toggleTimer(); break;
+      case 'add': {
+        const n = bk.pages ? Math.min(bk.pages, bk.current + +el.dataset.n) : bk.current + +el.dataset.n;
+        const added = n - bk.current;
+        logPages(bk, n);
+        if (bk.pages && n >= bk.pages) { finish(bk); commit(`Finished “${bk.title}” — it's on the shelf`); }
+        else commit(added ? `Logged ${added} pages of “${bk.title}”` : 'Already on the last page');
+        break;
+      }
+    }
+  });
+
+  document.addEventListener('submit', (e) => {
+    const form = e.target;
+    if (form.dataset.act === 'progress') {
+      e.preventDefault();
+      const bk = byId(form.dataset.id);
+      let n = Math.max(0, Math.round(+form.querySelector('input').value || 0));
+      if (bk.pages) n = Math.min(n, bk.pages);
+      const before = bk.current;
+      logPages(bk, n);
+      if (bk.pages && n >= bk.pages) { finish(bk); commit(`Finished “${bk.title}” — it's on the shelf`); }
+      else commit(n > before ? `Logged ${n - before} pages` : 'Page updated');
+    } else if (form.dataset.act === 'goal') {
+      e.preventDefault();
+      const g = Math.round(+form.querySelector('input').value);
+      if (g > 0) state.goal = g;
+      commit('Goal updated');
+    }
+  });
+
+  function editGoal() {
+    $('goalRow').innerHTML = `<form class="goal-form" data-act="goal">
+      <label class="label" for="goalInput">Books</label>
+      <input type="number" id="goalInput" min="1" step="1" value="${state.goal}">
+      <button class="btn small primary" type="submit">Save</button>
+      <button class="btn small ghost" type="button" data-act="tab" data-view="${state.view}">Cancel</button>
+    </form>`;
+    $('goalInput').focus();
+  }
+
+  $('dailyGoal').addEventListener('change', (e) => {
+    const n = Math.round(+e.target.value);
+    if (n > 0) { state.daily = n; commit(`Daily goal set to ${n} pages`, true); } else e.target.value = state.daily;
+  });
+  $('rhythm').addEventListener('change', (e) => {
+    state.rhythm = +e.target.value;
+    commit(state.rhythm === 1 ? 'Streak now counts daily reading' : `Streak now survives up to ${state.rhythm - 1} day${state.rhythm > 2 ? 's' : ''} off`, true);
+  });
+
+  $('search').addEventListener('input', (e) => { query = e.target.value; render(); });
+
+  // ---------- book dialog ----------
+  const dlg = $('bookDlg');
+  function openBook(bk) {
+    editingId = bk ? bk.id : null;
+    $('bookDlgTitle').textContent = bk ? 'Edit book' : 'Add book';
+    $('saveBtn').textContent = bk ? 'Save changes' : 'Add book';
+    $('deleteBtn').hidden = !bk;
+    disarm();
+    $('fTitle').value = bk?.title || '';
+    $('fAuthor').value = bk?.author || '';
+    $('fPages').value = bk?.pages || '';
+    $('fStatus').value = bk?.status || (state.view === 'finished' ? 'reading' : state.view);
+    $('fCurrent').value = bk?.current ?? 0;
+    $('fRating').value = bk?.rating || 0;
+    $('fStarted').value = bk?.started || '';
+    $('fFinished').value = bk?.finished || '';
+    $('fNotes').value = bk?.notes || '';
+    picked = { title: bk?.title || '', cover: bk?.cover || null, olKey: bk?.olKey || null };
+    clearLookup();
+    dlg.showModal();
+    $('fTitle').focus();
+  }
+
+  $('addBtn').addEventListener('click', () => openBook(null));
+  $('cancelBtn').addEventListener('click', () => dlg.close());
+
+  $('bookForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const title = $('fTitle').value.trim();
+    if (!title) { $('fTitle').focus(); return; }
+    const pages = Math.max(0, Math.round(+$('fPages').value || 0));
+    const status = $('fStatus').value;
+    let current = Math.max(0, Math.round(+$('fCurrent').value || 0));
+    if (pages) current = Math.min(current, pages);
+
+    let bk = editingId ? byId(editingId) : null;
+    if (!bk) {
+      bk = { id: uid(), log: [], rating: 0, current: 0, started: '', finished: '' };
+      state.books.push(bk);
+    }
+    const wasCurrent = bk.current;
+    Object.assign(bk, {
+      title, author: $('fAuthor').value.trim(), pages, status,
+      rating: +$('fRating').value, notes: $('fNotes').value.trim(),
+      started: $('fStarted').value, finished: $('fFinished').value,
+    });
+    delete bk.sample;
+    if (picked.cover && title === picked.title) { bk.cover = picked.cover; bk.olKey = picked.olKey; }
+    else if (title !== picked.title) { delete bk.cover; delete bk.olKey; }
+    if (current > wasCurrent && status === 'reading') logPages(bk, current); else bk.current = current;
+    if (status === 'reading' && !bk.started) bk.started = today();
+    if (status === 'finished') {
+      if (!bk.finished) bk.finished = today();
+      if (pages) bk.current = pages;
+    }
+    state.view = status;
+    dlg.close();
+    commit(editingId ? 'Changes saved' : `Added “${title}”`);
+  });
+
+  // ---------- Open Library lookup ----------
+  const coverUrl = (id, size) => `https://covers.openlibrary.org/b/id/${id}-${size}.jpg`;
+  let picked = { title: '', cover: null, olKey: null };
+  let lookupTimer, lookupCtl, hits = [];
+  const lookupCache = new Map();
+
+  function clearLookup(status = '') {
+    clearTimeout(lookupTimer);
+    lookupCtl?.abort();
+    hits = [];
+    $('lookupList').hidden = true;
+    $('lookupList').innerHTML = '';
+    $('lookupStatus').textContent = status;
+  }
+
+  async function lookup(q) {
+    lookupCtl?.abort();
+    lookupCtl = new AbortController();
+    $('lookupStatus').textContent = 'Searching Open Library…';
+    try {
+      let docs = lookupCache.get(q.toLowerCase());
+      if (!docs) {
+        const params = new URLSearchParams({ q, limit: '6', fields: 'key,title,author_name,number_of_pages_median,cover_i,first_publish_year' });
+        const res = await fetch(`https://openlibrary.org/search.json?${params}`, { signal: lookupCtl.signal });
+        if (!res.ok) throw new Error(res.status);
+        docs = (await res.json()).docs || [];
+        lookupCache.set(q.toLowerCase(), docs);
+      }
+      if ($('fTitle').value.trim() !== q) return; // user kept typing
+      hits = docs;
+      if (!docs.length) { clearLookup('No matches on Open Library — fill in the details yourself.'); return; }
+      $('lookupStatus').textContent = 'Pick a match to fill in the details, or keep typing.';
+      $('lookupList').innerHTML = docs.map((d, i) => `
+        <button class="hit" type="button" role="option" data-i="${i}">
+          ${d.cover_i ? `<img class="hit-cover" src="${coverUrl(d.cover_i, 'S')}" alt="" loading="lazy">` : '<span class="hit-cover"></span>'}
+          <span>
+            <span class="hit-title">${esc(d.title)}</span>
+            <span class="hit-sub" style="display:block">${esc((d.author_name || ['Unknown author']).slice(0, 2).join(', '))}${d.first_publish_year ? ` · ${d.first_publish_year}` : ''}${d.number_of_pages_median ? ` · ${d.number_of_pages_median} pages` : ''}</span>
+          </span>
+        </button>`).join('');
+      $('lookupList').hidden = false;
+    } catch (err) {
+      if (err.name === 'AbortError') return;
+      clearLookup('Couldn’t reach Open Library — fill in the details yourself.');
+    }
+  }
+
+  function pick(d) {
+    $('fTitle').value = d.title;
+    if (d.author_name?.length) $('fAuthor').value = d.author_name.slice(0, 2).join(', ');
+    if (d.number_of_pages_median) $('fPages').value = d.number_of_pages_median;
+    picked = { title: d.title, cover: d.cover_i || null, olKey: d.key || null };
+    clearLookup(`Filled in from Open Library${d.number_of_pages_median ? '' : ' — page count not listed, add it yourself'}.`);
+    (d.number_of_pages_median ? $('fStatus') : $('fPages')).focus();
+  }
+
+  $('fTitle').addEventListener('input', () => {
+    const q = $('fTitle').value.trim();
+    clearTimeout(lookupTimer);
+    if (q.length < 3 || q === picked.title) { clearLookup(); return; }
+    lookupTimer = setTimeout(() => lookup(q), 400);
+  });
+  $('fTitle').addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' && hits.length) { e.preventDefault(); $('lookupList').querySelector('.hit').focus(); }
+  });
+  $('lookupList').addEventListener('click', (e) => {
+    const b = e.target.closest('.hit');
+    if (b) pick(hits[+b.dataset.i]);
+  });
+  $('lookupList').addEventListener('keydown', (e) => {
+    const b = e.target.closest('.hit');
+    if (!b) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); (b.nextElementSibling || b).focus(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); (b.previousElementSibling || $('fTitle')).focus(); }
+    else if (e.key === 'Escape') { e.preventDefault(); clearLookup(); $('fTitle').focus(); }
+  });
+
+  // Broken or blocked cover images fall back to the cloth swatch.
+  document.addEventListener('error', (e) => {
+    const img = e.target;
+    if (!(img instanceof HTMLImageElement)) return;
+    if (img.classList.contains('cover')) {
+      const sw = document.createElement('span');
+      sw.className = 'swatch'; sw.style.background = img.dataset.fallback;
+      img.replaceWith(sw);
+    } else if (img.classList.contains('hit-cover')) img.removeAttribute('src');
+  }, true);
+
+  let armTimer;
+  function disarm() { const b = $('deleteBtn'); b.classList.remove('armed'); b.textContent = 'Delete book'; clearTimeout(armTimer); }
+  $('deleteBtn').addEventListener('click', () => {
+    const b = $('deleteBtn');
+    if (!b.classList.contains('armed')) {
+      b.classList.add('armed'); b.textContent = 'Click again to delete';
+      armTimer = setTimeout(disarm, 4000);
+      return;
+    }
+    const bk = byId(editingId);
+    state.books = state.books.filter((x) => x.id !== editingId);
+    dlg.close();
+    commit(`Deleted “${bk.title}”`);
+  });
+
+  // ---------- backup ----------
+  const bdlg = $('backupDlg');
+  $('backupBtn').addEventListener('click', () => {
+    $('backupText').value = JSON.stringify({ app: 'ribbon', version: 1, exported: today(), goal: state.goal, daily: state.daily, rhythm: state.rhythm, books: state.books }, null, 2);
+    bdlg.showModal();
+  });
+  $('closeBackupBtn').addEventListener('click', () => bdlg.close());
+  $('copyBtn').addEventListener('click', () => {
+    const ta = $('backupText');
+    navigator.clipboard?.writeText(ta.value).then(() => toast('Backup copied'), () => { ta.select(); toast('Press ⌘C / Ctrl+C to copy'); })
+      ?? (ta.select(), toast('Press ⌘C / Ctrl+C to copy'));
+  });
+  $('importFile').addEventListener('change', (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = () => { $('backupText').value = r.result; toast('File loaded — press Restore to use it'); };
+    r.readAsText(f);
+    e.target.value = '';
+  });
+  $('restoreBtn').addEventListener('click', () => {
+    let data;
+    try { data = JSON.parse($('backupText').value); } catch (err) { toast('That text isn’t a valid backup — paste the whole thing, including the braces'); return; }
+    if (!Array.isArray(data.books)) { toast('That backup has no books list in it'); return; }
+    state = { goal: +data.goal || state.goal, daily: +data.daily || state.daily, rhythm: +data.rhythm || state.rhythm, view: 'reading', books: data.books.map((x) => ({ log: [], rating: 0, current: 0, notes: '', ...x, id: x.id || uid() })) };
+    bdlg.close();
+    commit(`Restored ${state.books.length} books`, true);
+  });
+
+  // ---------- toast ----------
+  let toastTimer;
+  function toast(msg) {
+    const t = $('toast');
+    t.textContent = msg; t.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { t.hidden = true; }, 2600);
+  }
+
+  render();
+})();
+</script>

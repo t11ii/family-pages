@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Test page: if the button counts up, JavaScript works on this device.">
+<title>Tap Counter (JS test)</title>
+<style>
+  body { font-family: -apple-system, sans-serif; display: grid; place-items: center; min-height: 100vh; margin: 0; background: #f6f4ef; }
+  button { font-size: 28px; padding: 24px 40px; border-radius: 20px; border: 0; background: #2f6fdf; color: #fff; }
+  p { font-size: 20px; text-align: center; }
+</style>
+</head>
+<body>
+<div>
+  <p id="msg">JavaScript is NOT running 😢</p>
+  <button id="btn">Tap me: 0</button>
+</div>
+<script>
+  let n = 0;
+  document.getElementById("msg").textContent = "JavaScript works ✅";
+  document.getElementById("btn").onclick = (e) => { e.target.textContent = "Tap me: " + (++n); };
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+# Family Pages
+
+LLM-made HTML pages hosted on GitHub Pages so the family can open them on phones and tablets.
+
+## Layout
+
+```
+pages/<category>/<name>.html   → https://<user>.github.io/<repo>/<category>/<name>.html
+scripts/build_index.py         builds _site/ and the index page (run by GitHub Actions)
+scripts/index_template.html    the index page design
+publish.sh                     add a file, commit, push, print the URL
+preview.sh                     test locally before publishing
+```
+
+Any new folder under `pages/` automatically becomes a category on the index.
+
+## Publish a file
+
+```sh
+./publish.sh ~/Downloads/quiz.html study               # → /study/quiz.html
+./publish.sh ~/Downloads/game.html games dino-run.html # rename while publishing
+```
+
+To update a page, publish again with the same name. To remove one, `git rm` it and push.
+
+## Preview locally
+
+```sh
+./preview.sh   # http://localhost:8000, or http://<mac-ip>:8000 from a phone on the same Wi-Fi
+```
+
+## Tips for LLM-made HTML (so it works on iPhone)
+
+- Ask for a **single self-contained HTML file** (inline CSS/JS).
+- External libraries: only `https://` CDN links (cdnjs, jsDelivr).
+- Include `<meta name="viewport" content="width=device-width, initial-scale=1">`.
+- Include a `<title>` (and optionally `<meta name="description">`); the index uses them.
+- Share the **link**, never the file itself — file previews in chat apps block scripts.

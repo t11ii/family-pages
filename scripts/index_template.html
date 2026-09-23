@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Family Pages">
+<meta name="theme-color" content="#f6f4ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16181c" media="(prefers-color-scheme: dark)">
+<title>Family Pages</title>
+<style>
+  :root {
+    --bg: #f6f4ef; --card: #ffffff; --text: #1d1d1f; --muted: #6e6e73;
+    --line: #e4e1d9; --accent: #2f6fdf; --accent-soft: #e5edfc; --new: #d9480f;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181c; --card: #212329; --text: #f2f2f4; --muted: #9a9ca3;
+      --line: #2e3037; --accent: #6ea0ff; --accent-soft: #24324d; --new: #ff8a50;
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.45 -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Segoe UI", sans-serif;
+    padding: env(safe-area-inset-top) max(16px, env(safe-area-inset-right))
+             calc(32px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  }
+  main { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 28px; margin: 24px 0 4px; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); margin: 0 0 16px; font-size: 14px; }
+  .search {
+    width: 100%; font-size: 17px; padding: 12px 14px; border-radius: 12px;
+    border: 1px solid var(--line); background: var(--card); color: var(--text);
+  }
+  .chips { display: flex; gap: 8px; overflow-x: auto; padding: 12px 0; scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip {
+    flex: none; border: 1px solid var(--line); background: var(--card); color: var(--text);
+    padding: 8px 14px; border-radius: 999px; font-size: 15px; cursor: pointer;
+  }
+  .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  a.card {
+    display: block; text-decoration: none; color: inherit; background: var(--card);
+    border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px;
+  }
+  a.card:active { transform: scale(0.99); }
+  .title { font-weight: 600; font-size: 17px; }
+  .desc { color: var(--muted); font-size: 14px; margin-top: 2px; }
+  .meta { display: flex; gap: 8px; align-items: center; margin-top: 8px; font-size: 13px; color: var(--muted); }
+  .tag { background: var(--accent-soft); color: var(--accent); padding: 2px 8px; border-radius: 6px; }
+  .new { color: var(--new); font-weight: 600; }
+  .empty { color: var(--muted); text-align: center; padding: 40px 0; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Family Pages</h1>
+  <p class="sub" id="count"></p>
+  <input class="search" id="q" type="search" placeholder="Search…" autocomplete="off">
+  <div class="chips" id="chips" role="toolbar" aria-label="Categories"></div>
+  <ul id="list"></ul>
+  <p class="empty" id="empty" hidden>Nothing here yet.</p>
+</main>
+<script>
+  const ITEMS = /*__ITEMS__*/[];
+  const WEEK = 7 * 24 * 60 * 60 * 1000;
+  let current = "all";
+
+  const $ = (id) => document.getElementById(id);
+  const label = (c) => c.charAt(0).toUpperCase() + c.slice(1).replace(/[-_]/g, " ");
+  const fmtDate = (iso) => new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+
+  function renderChips() {
+    const cats = ["all", ...new Set(ITEMS.map((i) => i.category))];
+    $("chips").replaceChildren(...cats.map((c) => {
+      const b = document.createElement("button");
+      b.className = "chip";
+      b.textContent = c === "all" ? "All" : label(c);
+      b.setAttribute("aria-pressed", c === current);
+      b.onclick = () => { current = c; renderChips(); renderList(); };
+      return b;
+    }));
+  }
+
+  function renderList() {
+    const q = $("q").value.trim().toLowerCase();
+    const shown = ITEMS.filter((i) =>
+      (current === "all" || i.category === current) &&
+      (!q || (i.title + " " + i.description + " " + i.path).toLowerCase().includes(q)));
+
+    $("list").replaceChildren(...shown.map((i) => {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.className = "card";
+      a.href = i.path;
+      const isNew = Date.now() - new Date(i.date).getTime() < WEEK;
+      a.innerHTML = `<div class="title"></div>${i.description ? '<div class="desc"></div>' : ""}
+        <div class="meta"><span class="tag"></span><span class="date"></span>${isNew ? '<span class="new">NEW</span>' : ""}</div>`;
+      a.querySelector(".title").textContent = i.title;
+      if (i.description) a.querySelector(".desc").textContent = i.description;
+      a.querySelector(".tag").textContent = label(i.category);
+      a.querySelector(".date").textContent = fmtDate(i.date);
+      li.append(a);
+      return li;
+    }));
+    $("empty").hidden = shown.length > 0;
+    $("count").textContent = `${ITEMS.length} page${ITEMS.length === 1 ? "" : "s"}`;
+  }
+
+  $("q").addEventListener("input", renderList);
+  renderChips();
+  renderList();
+</script>
+</body>
+</html>

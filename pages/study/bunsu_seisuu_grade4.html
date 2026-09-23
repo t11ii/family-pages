@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>分数の積を整数にする｜小学4年生向け</title>
+<style>
+  :root{
+    --bg:#fffaf2;
+    --card:#ffffff;
+    --ink:#263238;
+    --muted:#607d8b;
+    --accent:#ff9f1c;
+    --accent2:#2ec4b6;
+    --blue:#4d96ff;
+    --pink:#ff6b9a;
+    --good:#2f9e44;
+    --line:#eadfce;
+    --shadow:0 10px 26px rgba(70,55,35,.10);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 10% 0%, #fff1d6 0, transparent 28%),
+      radial-gradient(circle at 100% 20%, #e7fbf7 0, transparent 25%),
+      var(--bg);
+    line-height:1.8;
+  }
+  main{max-width:900px;margin:0 auto;padding:22px 16px 60px}
+  .hero{
+    background:linear-gradient(135deg,#fff 0%,#fff7e8 100%);
+    border:2px solid #ffe2aa;
+    border-radius:26px;
+    padding:26px;
+    box-shadow:var(--shadow);
+  }
+  .eyebrow{font-weight:800;color:#b25b00;letter-spacing:.05em}
+  h1{font-size:clamp(28px,5vw,46px);line-height:1.25;margin:.2em 0}
+  h2{font-size:clamp(22px,3.5vw,30px);margin:.2em 0 .7em}
+  h3{font-size:20px;margin:.2em 0 .4em}
+  p{margin:.55em 0}
+  .problem{
+    margin-top:18px;padding:18px 20px;border-radius:18px;
+    background:#fff;border-left:8px solid var(--accent);
+    font-size:1.08rem;
+  }
+  .big{font-size:1.2rem;font-weight:800}
+  .fraction{
+    display:inline-grid;grid-template-rows:auto auto;vertical-align:middle;
+    text-align:center;line-height:1.05;margin:0 .12em;
+    min-width:2.1em;font-weight:800;
+  }
+  .fraction .top{border-bottom:2px solid currentColor;padding:0 .16em .1em}
+  .fraction .bottom{padding:.1em .16em 0}
+  .times{font-weight:900;margin:0 .2em}
+  .section{
+    margin-top:22px;background:var(--card);border:1px solid var(--line);
+    border-radius:24px;padding:24px;box-shadow:var(--shadow);
+  }
+  .step{
+    display:inline-flex;align-items:center;gap:8px;
+    font-weight:900;color:#fff;background:var(--blue);
+    border-radius:999px;padding:6px 13px;margin-bottom:8px;
+  }
+  .idea{
+    display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;
+  }
+  .mini{
+    border-radius:18px;padding:17px;border:2px solid #e8edf2;background:#fbfdff;
+  }
+  .mini.orange{border-color:#ffd48a;background:#fff9ef}
+  .mini.green{border-color:#a8e6d9;background:#f2fffb}
+  .mini.pink{border-color:#ffc1d4;background:#fff7fa}
+  .mini.blue{border-color:#bfd8ff;background:#f6f9ff}
+  .listline{
+    display:flex;gap:8px;align-items:flex-start;margin:7px 0;
+    padding:8px 10px;border-radius:12px;background:#f6f7f8;
+  }
+  .check{font-size:1.25rem}
+  .mathbox{
+    font-size:clamp(21px,4vw,30px);text-align:center;
+    padding:20px;border-radius:18px;background:#f7f9fc;border:2px dashed #b8c3d1;
+    margin:14px 0;
+  }
+  .arrow{font-size:1.35rem;font-weight:900;color:var(--accent)}
+  .answer{
+    margin-top:14px;padding:20px;border-radius:20px;
+    background:linear-gradient(135deg,#edfff6,#f7fffb);
+    border:3px solid #78d9a0;text-align:center;
+  }
+  .answer .ans{font-size:clamp(30px,6vw,52px);font-weight:900;color:#19723a}
+  .why{
+    background:#fff6cc;border:2px solid #ffda57;border-radius:16px;padding:14px 16px;
+  }
+  button{
+    appearance:none;border:none;border-radius:999px;padding:11px 18px;
+    font-size:1rem;font-weight:800;cursor:pointer;color:#fff;background:#444;
+  }
+  button.primary{background:var(--blue)}
+  button.good{background:var(--good)}
+  button:focus{outline:3px solid #0002;outline-offset:3px}
+  .reveal{
+    display:none;margin-top:14px;padding:16px;border-radius:16px;
+    background:#f4fff7;border:2px solid #b6e9c3;
+  }
+  .quiz{
+    margin-top:22px;background:linear-gradient(135deg,#f8f3ff,#fff);
+    border:2px solid #dbc9ff;border-radius:24px;padding:24px;box-shadow:var(--shadow);
+  }
+  .badge{
+    display:inline-block;background:#ece4ff;color:#5d3ca6;
+    font-weight:900;padding:5px 10px;border-radius:999px;
+  }
+  .memory{
+    display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;
+  }
+  .memory > div{border-radius:18px;padding:16px;color:white;font-weight:800}
+  .memory .up{background:#ff8f5a}
+  .memory .down{background:#4d96ff}
+  .small{font-size:.92rem;color:var(--muted)}
+  footer{text-align:center;color:var(--muted);margin-top:22px;font-size:.9rem}
+  @media(max-width:650px){
+    .idea,.memory{grid-template-columns:1fr}
+    .hero,.section,.quiz{padding:19px}
+  }
+</style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <div class="eyebrow">小学4年生向け やさしい解説</div>
+    <h1>「分数をかけると整数になる」ってどういうこと？</h1>
+    <p>この問題は、<b>分子はなるべく小さく、分母はなるべく大きく</b>すると考えると分かりやすくなります。</p>
+
+    <div class="problem">
+      <b>問題</b><br>
+      <span class="fraction"><span class="top">8</span><span class="bottom">15</span></span>
+      をかけても、
+      <span class="fraction"><span class="top">12</span><span class="bottom">25</span></span>
+      をかけても、<b>1以上の整数</b>になる分数のうち、いちばん小さい分数を求めます。
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="step">STEP 1</div>
+    <h2>まず「整数になる」をイメージしよう</h2>
+    <p>分数のかけ算で答えを整数にするには、最後に<b>分母が 1</b>になればOKです。</p>
+
+    <div class="mathbox">
+      <span class="fraction"><span class="top">?</span><span class="bottom">?</span></span>
+      <span class="times">×</span>
+      <span class="fraction"><span class="top">8</span><span class="bottom">15</span></span>
+      → 分母が 1 になるように消したい！
+    </div>
+
+    <div class="why">
+      <b>ポイント：</b>
+      下にある数（分母）は、上にある数（分子）と「割り切れる組」にして消していきます。
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="step">STEP 2</div>
+    <h2>分子には何が必要？</h2>
+    <p>もとの分数を <b>分子 ÷ 分母</b> の形で考えます。</p>
+
+    <div class="idea">
+      <div class="mini orange">
+        <h3>× 8/15 のとき</h3>
+        <p><b>15</b> を消したいので、もとの分数の<b>分子</b>は 15 の倍数だと都合がいい。</p>
+      </div>
+      <div class="mini orange">
+        <h3>× 12/25 のとき</h3>
+        <p><b>25</b> を消したいので、もとの分数の<b>分子</b>は 25 の倍数だと都合がいい。</p>
+      </div>
+    </div>
+
+    <p class="big">つまり、分子は「15 と 25 の両方の倍数」。</p>
+    <div class="mini pink">
+      <div class="listline">15の倍数：15, 30, 45, 60, <b>75</b>, 90, …</div>
+      <div class="listline">25の倍数：25, 50, <b>75</b>, 100, …</div>
+      <p><span class="arrow">→</span> いちばん小さい共通の数は <b>75</b>。</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="step">STEP 3</div>
+    <h2>分母には何が必要？</h2>
+    <div class="idea">
+      <div class="mini green">
+        <h3>× 8/15 のとき</h3>
+        <p>もとの分数の<b>分母</b>は、8 で割り切れる数にしたい。</p>
+      </div>
+      <div class="mini green">
+        <h3>× 12/25 のとき</h3>
+        <p>もとの分数の<b>分母</b>は、12 でも割り切れる数にしたい。</p>
+      </div>
+    </div>
+
+    <p class="big">つまり、分母は「8 と 12 の両方を割り切れる数」。</p>
+    <div class="mini blue">
+      <div class="listline">8 の約数：1, 2, <b>4</b>, 8</div>
+      <div class="listline">12 の約数：1, 2, 3, <b>4</b>, 6, 12</div>
+      <p><span class="arrow">→</span> 共通する数の中で、いちばん大きいのは <b>4</b>。</p>
+    </div>
+
+    <div class="why" style="margin-top:14px">
+      <b>なぜ「いちばん大きい 4」なの？</b><br>
+      同じ分子なら、分母が大きいほど分数は小さくなるからです。
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="step">STEP 4</div>
+    <h2>だから答えは…</h2>
+
+    <div class="memory">
+      <div class="up">分子：できるだけ小さく → 75</div>
+      <div class="down">分母：できるだけ大きく → 4</div>
+    </div>
+
+    <div class="answer">
+      <div>いちばん小さい分数</div>
+      <div class="ans">
+        <span class="fraction"><span class="top">75</span><span class="bottom">4</span></span>
+        ＝ 18<span class="fraction"><span class="top">3</span><span class="bottom">4</span></span>
+      </div>
+    </div>
+
+    <h3 style="margin-top:22px">本当に整数になるか、たしかめよう</h3>
+    <div class="mathbox">
+      <span class="fraction"><span class="top">75</span><span class="bottom">4</span></span>
+      ×
+      <span class="fraction"><span class="top">8</span><span class="bottom">15</span></span>
+      ＝ (75÷15) × (8÷4) ＝ 5×2 ＝ <b>10</b>
+    </div>
+    <div class="mathbox">
+      <span class="fraction"><span class="top">75</span><span class="bottom">4</span></span>
+      ×
+      <span class="fraction"><span class="top">12</span><span class="bottom">25</span></span>
+      ＝ (75÷25) × (12÷4) ＝ 3×3 ＝ <b>9</b>
+    </div>
+    <p style="text-align:center;font-weight:900;color:var(--good)">どちらも整数！ これでOKです ✓</p>
+  </section>
+
+  <section class="section">
+    <div class="step">覚え方</div>
+    <h2>このタイプは「上は最小公倍数、下は最大公約数」</h2>
+    <div class="memory">
+      <div class="up">分子 ↑<br>15 と 25 の <b>最小公倍数 = 75</b></div>
+      <div class="down">分母 ↓<br>8 と 12 の <b>最大公約数 = 4</b></div>
+    </div>
+    <p class="small">※ 今回のように、かける分数がすでに約分できない形になっている問題で使う考え方です。</p>
+  </section>
+
+  <section class="quiz">
+    <span class="badge">ミニ問題</span>
+    <h2>
+      <span class="fraction"><span class="top">15</span><span class="bottom">16</span></span>
+      をかけても、
+      <span class="fraction"><span class="top">9</span><span class="bottom">20</span></span>
+      をかけても整数になる、いちばん小さい分数は？
+    </h2>
+    <p>ヒント：分子は 16 と 20 の最小公倍数、分母は 15 と 9 の最大公約数。</p>
+    <button class="good" onclick="document.getElementById('quizAnswer').style.display='block'">答えを見る</button>
+    <div class="reveal" id="quizAnswer">
+      <b>答え：</b>
+      分子 = 16と20の最小公倍数 = 80<br>
+      分母 = 15と9の最大公約数 = 3<br>
+      だから
+      <span class="fraction"><span class="top">80</span><span class="bottom">3</span></span>
+      ＝ 26<span class="fraction"><span class="top">2</span><span class="bottom">3</span></span>
+      <br><br>
+      たしかめ：
+      80/3 × 15/16 = 25、80/3 × 9/20 = 12。
+    </div>
+  </section>
+
+  <footer>
+    「整数にしたい → 分母を全部消したい」と考えるのがコツです。
+  </footer>
+</main>
+</body>
+</html>

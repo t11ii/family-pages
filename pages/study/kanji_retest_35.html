@@ -1,0 +1,816 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>漢字 総合復習 再テスト 35問</title>
+<style>
+  :root {
+    --bg: #f6f3ee;
+    --paper: #ffffff;
+    --ink: #222;
+    --muted: #6f6a63;
+    --accent: #b75d3b;
+    --accent-soft: #fff0e8;
+    --line: #ded7cf;
+    --ok: #177245;
+    --ng: #b02a37;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.65;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 28px 18px 56px; }
+  header {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 22px 24px;
+    margin-bottom: 18px;
+  }
+  h1 { margin: 0 0 6px; font-size: clamp(24px, 4vw, 36px); }
+  .sub { color: var(--muted); margin: 0; }
+  .toolbar {
+    position: sticky; top: 0; z-index: 20;
+    display: flex; flex-wrap: wrap; gap: 8px;
+    align-items: center;
+    padding: 12px 0;
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: blur(8px);
+  }
+  button {
+    border: 1px solid var(--line);
+    background: white;
+    color: var(--ink);
+    border-radius: 10px;
+    padding: 8px 12px;
+    font: inherit;
+    cursor: pointer;
+  }
+  button:hover { border-color: var(--accent); }
+  .primary { background: var(--accent); color: white; border-color: var(--accent); }
+  .progress {
+    margin-left: auto;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .qcard {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px;
+    break-inside: avoid;
+  }
+  .qtop {
+    display: flex; justify-content: space-between; gap: 10px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .qnum {
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: .02em;
+  }
+  .sentence { font-size: 18px; min-height: 62px; }
+  .target {
+    font-weight: 800;
+    background: var(--accent-soft);
+    border-bottom: 2px solid var(--accent);
+    padding: 0 .18em;
+    border-radius: 4px;
+  }
+  .answer-row {
+    display: grid;
+    grid-template-columns: auto minmax(110px, 1fr) auto auto;
+    gap: 8px;
+    align-items: center;
+    margin-top: 12px;
+  }
+  .answer-row label {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .answer-input {
+    min-width: 0;
+    width: 100%;
+    border: 2px solid #cfc7bf;
+    border-radius: 9px;
+    padding: 8px 10px;
+    font-size: 20px;
+    font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  }
+  .answer-input:focus { outline: 3px solid #f1d3c4; border-color: var(--accent); }
+  .feedback {
+    margin-top: 9px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    font-weight: 700;
+  }
+  .feedback.ok { background: #eaf6ef; color: var(--ok); }
+  .feedback.ng { background: #fff0f1; color: var(--ng); }
+  .state.ok { color: var(--ok); }
+  .state.ng { color: var(--ng); }
+  details {
+    margin-top: 24px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 18px;
+  }
+  summary { cursor: pointer; font-weight: 800; }
+  table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+  td, th { border-bottom: 1px solid var(--line); padding: 6px 10px; text-align: left; }
+  .note { color: var(--muted); font-size: 13px; margin-top: 16px; }
+
+  @media (max-width: 720px) {
+    .grid { grid-template-columns: 1fr; }
+    .answer-row { grid-template-columns: 1fr 1fr 1fr; }
+    .answer-row label { grid-column: 1 / -1; }
+    .progress { width: 100%; margin-left: 0; }
+  }
+
+  @page { size: A4; margin: 12mm; }
+  @media print {
+    body { background: white; font-size: 11pt; }
+    .wrap { max-width: none; padding: 0; }
+    header { border: 0; padding: 0 0 8mm; }
+    .toolbar, details, .note, .check-one, .show-one, .state, .feedback { display: none !important; }
+    .grid { grid-template-columns: 1fr 1fr; gap: 7mm; }
+    .qcard { border: 1px solid #bbb; border-radius: 0; padding: 5mm; }
+    .sentence { font-size: 11pt; min-height: 16mm; }
+    .answer-row { display: block; margin-top: 4mm; }
+    .answer-row label { display: none; }
+    .answer-input {
+      border: 0; border-bottom: 1.5px solid #333; border-radius: 0;
+      height: 9mm; padding: 0; font-size: 14pt; background: transparent;
+    }
+    .target { background: none; border-bottom: 1px solid #333; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>漢字 総合復習 再テスト</h1>
+    <p class="sub">間違い＋空欄だけの35問。色のついた読みを、正しい漢字に直して入力しよう。</p>
+  </header>
+
+  <div class="toolbar">
+    <button id="gradeAll" class="primary" type="button">全部採点</button>
+    <button id="hideAll" type="button">答えを隠す</button>
+    <button id="resetAll" type="button">リセット</button>
+    <button id="printBtn" type="button">印刷</button>
+    <div class="progress" id="progress">0 / 35 正解</div>
+  </div>
+
+  <main class="grid">
+    
+    <article class="qcard" data-q="1" data-answer="開票">
+      <div class="qtop">
+        <span class="qnum">問題 1</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">市議選の<span class="target">カイヒョウ</span>が終わり、結果が発表された。</div>
+      <div class="answer-row">
+        <label for="a1">漢字で書こう</label>
+        <input id="a1" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="4" data-answer="指令">
+      <div class="qtop">
+        <span class="qnum">問題 4</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">上官の<span class="target">シレイ</span>に従って行動する。</div>
+      <div class="answer-row">
+        <label for="a4">漢字で書こう</label>
+        <input id="a4" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="6" data-answer="満ち|満ちあふれている">
+      <div class="qtop">
+        <span class="qnum">問題 6</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">校庭は子どもたちの活気で<span class="target">みち</span>あふれている。</div>
+      <div class="answer-row">
+        <label for="a6">漢字で書こう</label>
+        <input id="a6" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="7" data-answer="勇み足">
+      <div class="qtop">
+        <span class="qnum">問題 7</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence"><span class="target">いさみあし</span>をふんで、失敗した。</div>
+      <div class="answer-row">
+        <label for="a7">漢字で書こう</label>
+        <input id="a7" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="8" data-answer="連日">
+      <div class="qtop">
+        <span class="qnum">問題 8</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence"><span class="target">レンジツ</span>の猛暑でみんなぐったりしている。</div>
+      <div class="answer-row">
+        <label for="a8">漢字で書こう</label>
+        <input id="a8" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="10" data-answer="放牧">
+      <div class="qtop">
+        <span class="qnum">問題 10</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">山羊を<span class="target">ホウボク</span>し、雑草を食べさせて除草する。</div>
+      <div class="answer-row">
+        <label for="a10">漢字で書こう</label>
+        <input id="a10" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="14" data-answer="文法">
+      <div class="qtop">
+        <span class="qnum">問題 14</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">文章中の<span class="target">ブンポウ</span>的に間違えた言葉づかいを指摘する。</div>
+      <div class="answer-row">
+        <label for="a14">漢字で書こう</label>
+        <input id="a14" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="17" data-answer="兵火">
+      <div class="qtop">
+        <span class="qnum">問題 17</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">源平の争いによる<span class="target">ヘイカ</span>で焼失した東大寺大仏殿を再建する。</div>
+      <div class="answer-row">
+        <label for="a17">漢字で書こう</label>
+        <input id="a17" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="18" data-answer="特別">
+      <div class="qtop">
+        <span class="qnum">問題 18</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">なにか<span class="target">トクベツ</span>ないいことが起きるのではないかと期待した。</div>
+      <div class="answer-row">
+        <label for="a18">漢字で書こう</label>
+        <input id="a18" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="20" data-answer="分量">
+      <div class="qtop">
+        <span class="qnum">問題 20</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">ケーキを作るのに必要な<span class="target">ブンリョウ</span>の小麦粉をはかる。</div>
+      <div class="answer-row">
+        <label for="a20">漢字で書こう</label>
+        <input id="a20" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="23" data-answer="無事">
+      <div class="qtop">
+        <span class="qnum">問題 23</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">紛争地から<span class="target">ブジ</span>帰国する。</div>
+      <div class="answer-row">
+        <label for="a23">漢字で書こう</label>
+        <input id="a23" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="24" data-answer="例年">
+      <div class="qtop">
+        <span class="qnum">問題 24</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence"><span class="target">レイネン</span>どおり、祭りには多くの人が集まった。</div>
+      <div class="answer-row">
+        <label for="a24">漢字で書こう</label>
+        <input id="a24" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="27" data-answer="望む">
+      <div class="qtop">
+        <span class="qnum">問題 27</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">人気漫画の続編の掲載を<span class="target">のぞむ</span>声が多い。</div>
+      <div class="answer-row">
+        <label for="a27">漢字で書こう</label>
+        <input id="a27" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="28" data-answer="冷気">
+      <div class="qtop">
+        <span class="qnum">問題 28</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">雪の積もった外に出て、<span class="target">レイキ</span>にあたる。</div>
+      <div class="answer-row">
+        <label for="a28">漢字で書こう</label>
+        <input id="a28" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="32" data-answer="連ねる">
+      <div class="qtop">
+        <span class="qnum">問題 32</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">レギュラー選手として初めて登録名簿に名を<span class="target">つらねる</span>ことができた。</div>
+      <div class="answer-row">
+        <label for="a32">漢字で書こう</label>
+        <input id="a32" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="33" data-answer="投票">
+      <div class="qtop">
+        <span class="qnum">問題 33</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">誰に<span class="target">トウヒョウ</span>するかは自分自身で決めるべきだ。</div>
+      <div class="answer-row">
+        <label for="a33">漢字で書こう</label>
+        <input id="a33" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="34" data-answer="希望">
+      <div class="qtop">
+        <span class="qnum">問題 34</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">閉ざされた世界に、一筋の<span class="target">キボウ</span>の光が差し込んだ。</div>
+      <div class="answer-row">
+        <label for="a34">漢字で書こう</label>
+        <input id="a34" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="35" data-answer="未明">
+      <div class="qtop">
+        <span class="qnum">問題 35</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">初日の出を拝むため、<span class="target">ミメイ</span>のうちに出発した。</div>
+      <div class="answer-row">
+        <label for="a35">漢字で書こう</label>
+        <input id="a35" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="39" data-answer="民族">
+      <div class="qtop">
+        <span class="qnum">問題 39</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">和服は日本の<span class="target">ミンゾク</span>衣装だ。</div>
+      <div class="answer-row">
+        <label for="a39">漢字で書こう</label>
+        <input id="a39" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="41" data-answer="水夫">
+      <div class="qtop">
+        <span class="qnum">問題 41</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence"><span class="target">スイフ</span>として船に乗り、世界を回る。</div>
+      <div class="answer-row">
+        <label for="a41">漢字で書こう</label>
+        <input id="a41" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="42" data-answer="包帯">
+      <div class="qtop">
+        <span class="qnum">問題 42</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">交通事故にあった野中くんはあちこち<span class="target">ホウタイ</span>だらけだった。</div>
+      <div class="answer-row">
+        <label for="a42">漢字で書こう</label>
+        <input id="a42" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="43" data-answer="利子">
+      <div class="qtop">
+        <span class="qnum">問題 43</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">進学のために、無<span class="target">リシ</span>の奨学金を借りる。</div>
+      <div class="answer-row">
+        <label for="a43">漢字で書こう</label>
+        <input id="a43" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="47" data-answer="要約">
+      <div class="qtop">
+        <span class="qnum">問題 47</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence"><span class="target">ヨウヤク</span>とは、ただ文章を短くすることではない。</div>
+      <div class="answer-row">
+        <label for="a47">漢字で書こう</label>
+        <input id="a47" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="51" data-answer="住民">
+      <div class="qtop">
+        <span class="qnum">問題 51</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence"><span class="target">ジュウミン</span>同士が交流する場を設ける。</div>
+      <div class="answer-row">
+        <label for="a51">漢字で書こう</label>
+        <input id="a51" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="52" data-answer="老化">
+      <div class="qtop">
+        <span class="qnum">問題 52</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">年齢とともに<span class="target">ロウカ</span>するとわかっている。</div>
+      <div class="answer-row">
+        <label for="a52">漢字で書こう</label>
+        <input id="a52" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="55" data-answer="養う">
+      <div class="qtop">
+        <span class="qnum">問題 55</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">家族を<span class="target">やしなう</span>ために一生懸命働く。</div>
+      <div class="answer-row">
+        <label for="a55">漢字で書こう</label>
+        <input id="a55" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="56" data-answer="老いて">
+      <div class="qtop">
+        <span class="qnum">問題 56</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">年<span class="target">おいて</span>もなお祖母の体力は衰えない。</div>
+      <div class="answer-row">
+        <label for="a56">漢字で書こう</label>
+        <input id="a56" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="57" data-answer="標本">
+      <div class="qtop">
+        <span class="qnum">問題 57</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">採集した植物の<span class="target">ヒョウホン</span>を作る。</div>
+      <div class="answer-row">
+        <label for="a57">漢字で書こう</label>
+        <input id="a57" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="59" data-answer="利発">
+      <div class="qtop">
+        <span class="qnum">問題 59</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">お茶の水くんは、一を聞いて十を知るような<span class="target">リハツ</span>な子だ。</div>
+      <div class="answer-row">
+        <label for="a59">漢字で書こう</label>
+        <input id="a59" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="63" data-answer="浴びたり|浴びる">
+      <div class="qtop">
+        <span class="qnum">問題 63</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">目立ったり注目を<span class="target">あびたり</span>するのが苦手だ。</div>
+      <div class="answer-row">
+        <label for="a63">漢字で書こう</label>
+        <input id="a63" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="65" data-answer="焼き付ける">
+      <div class="qtop">
+        <span class="qnum">問題 65</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">先生の素晴らしい演奏技術を目に<span class="target">焼きつける</span>。</div>
+      <div class="answer-row">
+        <label for="a65">漢字で書こう</label>
+        <input id="a65" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="67" data-answer="必要">
+      <div class="qtop">
+        <span class="qnum">問題 67</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">自分の立場を明確にする<span class="target">ヒツヨウ</span>がある。</div>
+      <div class="answer-row">
+        <label for="a67">漢字で書こう</label>
+        <input id="a67" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="70" data-answer="便り">
+      <div class="qtop">
+        <span class="qnum">問題 70</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">田舎に住むいとこから<span class="target">たより</span>が来る。</div>
+      <div class="answer-row">
+        <label for="a70">漢字で書こう</label>
+        <input id="a70" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="73" data-answer="富国強兵">
+      <div class="qtop">
+        <span class="qnum">問題 73</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">明治時代になると、欧米に追いつくよう<span class="target">フコクキョウヘイ</span>政策が進められた。</div>
+      <div class="answer-row">
+        <label for="a73">漢字で書こう</label>
+        <input id="a73" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+    <article class="qcard" data-q="79" data-answer="別れ">
+      <div class="qtop">
+        <span class="qnum">問題 79</span>
+        <span class="state" aria-live="polite"></span>
+      </div>
+      <div class="sentence">出会いがあれば、いつか<span class="target">わかれ</span>もあるものだ。</div>
+      <div class="answer-row">
+        <label for="a79">漢字で書こう</label>
+        <input id="a79" class="answer-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+        <button class="check-one" type="button">採点</button>
+        <button class="show-one" type="button">答え</button>
+      </div>
+      <div class="feedback" hidden></div>
+    </article>
+    
+  </main>
+
+  <details id="answerKey">
+    <summary>答え一覧を開く</summary>
+    <table>
+      <thead><tr><th>問題</th><th>答え</th></tr></thead>
+      <tbody><tr><td>1</td><td>開票</td></tr><tr><td>4</td><td>指令</td></tr><tr><td>6</td><td>満ち</td></tr><tr><td>7</td><td>勇み足</td></tr><tr><td>8</td><td>連日</td></tr><tr><td>10</td><td>放牧</td></tr><tr><td>14</td><td>文法</td></tr><tr><td>17</td><td>兵火</td></tr><tr><td>18</td><td>特別</td></tr><tr><td>20</td><td>分量</td></tr><tr><td>23</td><td>無事</td></tr><tr><td>24</td><td>例年</td></tr><tr><td>27</td><td>望む</td></tr><tr><td>28</td><td>冷気</td></tr><tr><td>32</td><td>連ねる</td></tr><tr><td>33</td><td>投票</td></tr><tr><td>34</td><td>希望</td></tr><tr><td>35</td><td>未明</td></tr><tr><td>39</td><td>民族</td></tr><tr><td>41</td><td>水夫</td></tr><tr><td>42</td><td>包帯</td></tr><tr><td>43</td><td>利子</td></tr><tr><td>47</td><td>要約</td></tr><tr><td>51</td><td>住民</td></tr><tr><td>52</td><td>老化</td></tr><tr><td>55</td><td>養う</td></tr><tr><td>56</td><td>老いて</td></tr><tr><td>57</td><td>標本</td></tr><tr><td>59</td><td>利発</td></tr><tr><td>63</td><td>浴びたり</td></tr><tr><td>65</td><td>焼き付ける</td></tr><tr><td>67</td><td>必要</td></tr><tr><td>70</td><td>便り</td></tr><tr><td>73</td><td>富国強兵</td></tr><tr><td>79</td><td>別れ</td></tr></tbody>
+    </table>
+  </details>
+
+  <p class="note">※ 写真から読み取った問題文を再テスト用に整えています。印刷時は答え・採点ボタンが非表示になります。</p>
+</div>
+
+<script>
+(() => {
+  const cards = [...document.querySelectorAll('.qcard')];
+  const progress = document.getElementById('progress');
+
+  const normalize = s => s
+    .normalize('NFKC')
+    .replace(/[\s　]/g, '')
+    .replace(/[。．.、,]/g, '');
+
+  function answers(card) {
+    return card.dataset.answer.split('|').map(normalize);
+  }
+
+  function grade(card, revealWrong=true) {
+    const input = card.querySelector('.answer-input');
+    const fb = card.querySelector('.feedback');
+    const st = card.querySelector('.state');
+    const raw = input.value.trim();
+    const ok = raw && answers(card).includes(normalize(raw));
+
+    fb.hidden = false;
+    fb.classList.remove('ok','ng');
+    st.classList.remove('ok','ng');
+
+    if (ok) {
+      fb.classList.add('ok'); st.classList.add('ok');
+      fb.textContent = '○ 正解！';
+      st.textContent = '○';
+      card.dataset.correct = '1';
+    } else {
+      fb.classList.add('ng'); st.classList.add('ng');
+      const correct = card.dataset.answer.split('|')[0];
+      fb.textContent = revealWrong ? `× 正解は「${correct}」` : '× もう一度';
+      st.textContent = '×';
+      card.dataset.correct = '0';
+    }
+    updateProgress();
+    return ok;
+  }
+
+  function reveal(card) {
+    const fb = card.querySelector('.feedback');
+    const st = card.querySelector('.state');
+    fb.hidden = false;
+    fb.classList.remove('ok','ng');
+    fb.classList.add('ng');
+    fb.textContent = `答え：${card.dataset.answer.split('|')[0]}`;
+    st.textContent = '';
+  }
+
+  function hide(card) {
+    const fb = card.querySelector('.feedback');
+    const st = card.querySelector('.state');
+    fb.hidden = true;
+    fb.textContent = '';
+    st.textContent = '';
+    st.classList.remove('ok','ng');
+  }
+
+  function updateProgress() {
+    const n = cards.filter(c => c.dataset.correct === '1').length;
+    progress.textContent = `${n} / 35 正解`;
+  }
+
+  cards.forEach(card => {
+    card.querySelector('.check-one').addEventListener('click', () => grade(card));
+    card.querySelector('.show-one').addEventListener('click', () => reveal(card));
+    card.querySelector('.answer-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        grade(card, false);
+      }
+    });
+  });
+
+  document.getElementById('gradeAll').addEventListener('click', () => {
+    cards.forEach(c => grade(c));
+    const firstWrong = cards.find(c => c.dataset.correct !== '1');
+    if (firstWrong) firstWrong.scrollIntoView({behavior:'smooth', block:'center'});
+  });
+
+  document.getElementById('hideAll').addEventListener('click', () => {
+    cards.forEach(hide);
+    document.getElementById('answerKey').open = false;
+  });
+
+  document.getElementById('resetAll').addEventListener('click', () => {
+    cards.forEach(c => {
+      c.querySelector('.answer-input').value = '';
+      delete c.dataset.correct;
+      hide(c);
+    });
+    updateProgress();
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  document.getElementById('printBtn').addEventListener('click', () => window.print());
+})();
+</script>
+</body>
+</html>

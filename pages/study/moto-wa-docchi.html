@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>もとはどっち？</title>
+<meta name="description" content="算数4年。もとにする量を見つけて、倍の問題をとく例題と練習。">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Zen+Maru+Gothic:wght@500;700;900&display=swap">
+<style>
+/* Layout: 方眼ノートの上に、ステップごとの紙を1まいずつ。1列。ダークは黒板とチョーク。 */
+:root{
+  --paper:#f5f8fc; --grid:#dde7f1; --sheet:#ffffff; --fig-grid:#e7eef6; --line:#c4d0dd;
+  --ink:#27313c; --ink-soft:#586574; --on-ink:#ffffff; --note:#eef3f8;
+  --blue:#2a6bcb; --blue-tint:#dbe8fa; --red:#d23c34; --red-tint:#fbe2df; --marker:#ffe45c;
+  --font-display:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
+  --font-body:"Klee One","YuKyokasho Yoko","YuKyokasho","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --u:clamp(24px,8vw,40px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#1b2925; --grid:#24352f; --sheet:#22332d; --fig-grid:#2c4038; --line:#3f544b;
+    --ink:#eef2ea; --ink-soft:#b3c1b8; --on-ink:#1b2925; --note:#2a3d36;
+    --blue:#8dbdff; --blue-tint:#1d3d5e; --red:#ff9085; --red-tint:#5b2c29; --marker:#6a5d12;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#1b2925; --grid:#24352f; --sheet:#22332d; --fig-grid:#2c4038; --line:#3f544b;
+  --ink:#eef2ea; --ink-soft:#b3c1b8; --on-ink:#1b2925; --note:#2a3d36;
+  --blue:#8dbdff; --blue-tint:#1d3d5e; --red:#ff9085; --red-tint:#5b2c29; --marker:#6a5d12;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{
+  margin:0; color:var(--ink);
+  background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+  font-family:var(--font-body); font-weight:600; font-size:18px; line-height:1.8;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:760px; margin-inline:auto; padding-inline:16px; padding-block:28px 56px; display:flex; flex-direction:column; gap:20px}
+b{font-family:var(--font-display); font-weight:900}
+rt{font-size:.5em; font-weight:500}
+:focus-visible{outline:3px solid var(--blue); outline-offset:2px}
+
+/* ---- 見出し ---- */
+.eyebrow{margin:0; font-family:var(--font-display); font-weight:700; font-size:14px; letter-spacing:.08em; color:var(--blue)}
+h1{margin:4px 0 6px; font-family:var(--font-display); font-weight:900; font-size:clamp(32px,8vw,46px); line-height:1.2; text-wrap:balance}
+.lead{margin:0; font-size:17px; color:var(--ink-soft)}
+
+/* ---- ステップのタブ ---- */
+.steps{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px}
+.tab{
+  width:100%; display:flex; flex-direction:column; align-items:center; gap:2px; padding:8px 4px 6px;
+  border:2px solid var(--line); border-radius:12px 12px 4px 4px; background:var(--sheet); color:var(--ink);
+  font-family:var(--font-display); font-weight:700; font-size:14px; line-height:1.3; cursor:pointer;
+}
+.tab .n{font-size:22px; font-weight:900; line-height:1}
+.tab .score{min-height:1.3em; font-size:12px; font-weight:900; color:var(--red)}
+.tab[aria-current="step"]{background:var(--ink); border-color:var(--ink); color:var(--on-ink)}
+.tab[aria-current="step"] .score{color:inherit}
+
+/* ---- 1ステップ = 1まいの紙 ---- */
+.step{background:var(--sheet); border:2px solid var(--line); border-radius:14px; padding:clamp(16px,4vw,28px); display:flex; flex-direction:column; gap:22px}
+.step h2{margin:0; display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:900; font-size:clamp(22px,5.5vw,28px); line-height:1.3; text-wrap:balance}
+.step h2 .n{flex:none; width:1.6em; height:1.6em; border-radius:50%; background:var(--ink); color:var(--on-ink); display:grid; place-items:center; font-size:.8em}
+.block{display:flex; flex-direction:column; gap:12px; min-width:0}
+.block p{margin:0}
+.tag{align-self:flex-start; margin:0; padding:1px 12px; border-radius:6px; font-family:var(--font-display); font-weight:900; font-size:14px; letter-spacing:.1em}
+.tag.point{background:var(--marker); color:var(--ink)}
+.tag.ex{background:var(--blue); color:var(--on-ink)}
+.tag.pr{background:var(--red); color:var(--on-ink)}
+.pointbox{background:var(--note); border-radius:10px; padding:14px 16px; font-size:19px}
+.sentence{font-size:21px; line-height:1.7}
+.tag.care{background:var(--sheet); color:var(--ink); border:2px solid var(--ink)}
+.careful{display:flex; flex-direction:column; gap:8px; border:2px dashed var(--ink-soft); border-radius:10px; padding:12px 16px}
+.careful-q{font-family:var(--font-display); font-weight:900; font-size:19px}
+.flow{display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-family:var(--font-display); font-weight:900; font-size:20px; line-height:1.3}
+.flow span{display:inline-flex; align-items:baseline; gap:6px; padding:4px 14px; border:2px solid var(--blue); border-radius:8px; background:var(--blue-tint)}
+.flow .flow-b{border-color:var(--red); background:var(--red-tint)}
+.flow .flow-arrow{padding:0; border:0; background:none; font-size:15px; font-weight:700}
+.flow small{font-size:12px; font-weight:700}
+.key.on,.answered .key{background:linear-gradient(transparent 58%,var(--marker) 58%)}
+
+/* ---- テープ図 ---- */
+.fig{
+  background-color:var(--sheet);
+  background-image:linear-gradient(var(--fig-grid) 1px,transparent 1px),linear-gradient(90deg,var(--fig-grid) 1px,transparent 1px);
+  background-size:16px 16px;
+  border:1.5px solid var(--line); border-radius:8px; padding:14px; overflow-x:auto;
+}
+.tape{display:grid; gap:12px; text-align:left; font-family:var(--font-display); font-weight:700; font-size:15px; line-height:1.3; color:var(--ink)}
+.tape-row{display:grid; grid-template-columns:6.4em minmax(0,1fr); align-items:center; gap:8px}
+.tape-label{overflow-wrap:anywhere}
+.tape-body{display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; min-width:0}
+.tape-bar{display:flex; flex:0 1 auto; width:calc(var(--n) * var(--u) - (var(--n) - 1) * 2px); max-width:100%; min-width:0}
+.tape-bar i{display:block; flex:1 1 0; min-width:0; height:30px; border:2px solid var(--blue); background:var(--blue-tint)}
+.tape-bar i+i{margin-left:-2px}
+.kurabe .tape-bar i{border-color:var(--red); background:var(--red-tint)}
+.tape-note{display:inline-flex; align-items:center; gap:6px; white-space:nowrap}
+.tape-note b{font-size:17px}
+.chip{padding:1px 8px; border:1.5px solid currentColor; border-radius:999px; font-size:12px}
+.moto .chip{color:var(--blue)}
+.kurabe .chip{color:var(--red)}
+
+/* ---- 例題の部品 ---- */
+.demo-fig{min-height:112px}
+.demo-cap{min-height:3.6em}
+.demo-ctl{display:flex; align-items:center; gap:12px; font-family:var(--font-display); font-weight:700; font-variant-numeric:tabular-nums}
+.pair{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:14px}
+.pair-item{display:flex; flex-direction:column; gap:10px; min-width:0}
+.kana{display:inline-grid; place-items:center; width:1.7em; height:1.7em; border-radius:6px; background:var(--ink); color:var(--on-ink); font-family:var(--font-display); font-weight:900; font-size:16px; line-height:1}
+.shiki{font-family:var(--font-display); font-weight:700; font-variant-numeric:tabular-nums}
+.shiki b{font-size:1.1em; margin-inline:.2em .8em}
+.checks{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px}
+.checks li{display:grid; grid-template-columns:4em minmax(0,1fr) 1.6em; align-items:center; gap:10px; background:var(--note); border-radius:10px; padding:10px 14px}
+.checks .cand{font-family:var(--font-display); font-weight:900; font-size:20px}
+.checks .mark{font-family:var(--font-display); font-weight:900; font-size:28px; line-height:1; text-align:center}
+.mark.ok{color:var(--red)}
+.mark.ng{color:var(--blue)}
+
+/* ---- 練習問題 ---- */
+.qs{list-style:none; margin:0; padding:0; counter-reset:q; display:flex; flex-direction:column}
+.q{counter-increment:q; display:flex; flex-direction:column; gap:12px; padding-block:20px}
+.q:first-child{padding-top:4px}
+.q+.q{border-top:2px dashed var(--line)}
+.q-text{margin:0; display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; font-size:20px; line-height:1.7}
+.q-text::before{
+  content:counter(q); width:1.8em; height:1.8em; margin-top:.25em; border:2px solid var(--ink); border-radius:50%;
+  display:grid; place-items:center; font-family:var(--font-display); font-weight:900; font-size:15px; line-height:1;
+}
+.given{align-self:flex-start; margin:0; padding:2px 14px; border:2px dashed var(--ink-soft); border-radius:8px; font-family:var(--font-display); font-weight:700}
+.given b{font-size:1.15em; margin-left:.4em}
+.choices{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px}
+.choices.figs{grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))}
+.choice{
+  min-height:56px; padding:10px 14px; border:2px solid var(--line); border-radius:12px; background:var(--sheet); color:var(--ink);
+  font-family:var(--font-display); font-weight:700; font-size:19px; line-height:1.4; cursor:pointer;
+  transition:border-color .15s, transform .1s;
+}
+.choice:hover:not(:disabled){border-color:var(--ink)}
+.choice:active:not(:disabled){transform:translateY(1px)}
+.choice:disabled{cursor:default; opacity:1; color:var(--ink-soft)}
+.choice.is-right{border:3px solid var(--red); background:var(--red-tint); color:var(--ink)}
+.choice.is-miss{border-style:dashed; text-decoration:line-through}
+.choices.figs .choice{padding:12px 14px}
+.choices.figs .choice.is-right{background:var(--sheet)}
+.choices.figs .choice.is-miss{opacity:.55; text-decoration:none}
+.figchoice{display:flex; flex-direction:column; align-items:stretch; gap:10px}
+.figchoice .kana{align-self:flex-start}
+.fb{display:flex; flex-direction:column; gap:8px; background:var(--note); border-radius:10px; padding:12px 16px}
+.fb p{margin:0}
+.fb-head{font-family:var(--font-display); font-weight:900; font-size:20px}
+.fb.ok .fb-head{color:var(--red)}
+.fb.ng .fb-head{color:var(--blue)}
+.back{font-family:var(--font-display); font-weight:700}
+
+/* ---- 結果 ---- */
+.result{display:flex; flex-wrap:wrap; align-items:center; gap:12px 16px; padding-top:18px; border-top:2px solid var(--line)}
+.result-text{flex:1 1 12em; min-width:0; margin:0; font-family:var(--font-display); font-weight:900; font-size:20px}
+.btn{
+  min-height:48px; padding:8px 20px; border:2px solid var(--ink); border-radius:999px; background:var(--sheet); color:var(--ink);
+  font-family:var(--font-display); font-weight:700; font-size:16px; cursor:pointer;
+}
+.btn.primary{background:var(--ink); color:var(--on-ink)}
+.btn:disabled{opacity:.35; cursor:default}
+.hana:empty{display:none}
+.hanamaru{display:block; width:84px; height:84px}
+.hanamaru path{fill:none; stroke:var(--red); stroke-width:4; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:1; stroke-dashoffset:1; animation:draw 1.4s ease-out forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){
+  .hanamaru path{animation:none; stroke-dashoffset:0}
+  .choice{transition:none}
+}
+
+/* ---- おうちの方へ ---- */
+.parent{background:var(--sheet); border:2px solid var(--line); border-radius:14px; padding:12px 18px; font-weight:400; font-size:15px; line-height:1.8; color:var(--ink-soft)}
+.parent summary{font-family:var(--font-display); font-weight:700; color:var(--ink); cursor:pointer}
+.parent ul{margin:8px 0 4px; padding-left:1.3em}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">算数 4年・倍の見方</p>
+    <h1>もとはどっち？</h1>
+    <p class="lead">「1とみる方」を見つければ、倍の問題はとける。ステップ1からじゅんにやってみよう。</p>
+  </header>
+
+  <nav aria-label="ステップ">
+    <ol class="steps">
+      <li><button type="button" class="tab" id="tab1"><span class="n">1</span><span>もとさがし</span><span class="score"></span></button></li>
+      <li><button type="button" class="tab" id="tab2"><span class="n">2</span><span>図にかく</span><span class="score"></span></button></li>
+      <li><button type="button" class="tab" id="tab3"><span class="n">3</span><span>□はどこ</span><span class="score"></span></button></li>
+      <li><button type="button" class="tab" id="tab4"><span class="n">4</span><span>たしかめ</span><span class="score"></span></button></li>
+    </ol>
+  </nav>
+
+  <main>
+    <!-- ステップ1 -->
+    <section class="step" id="step1">
+      <h2><span class="n">1</span>もとを見つけよう</h2>
+
+      <div class="block">
+        <p class="tag point">ポイント</p>
+        <p class="pointbox">「○倍」のすぐ前にある「<b>〜の</b>」が、もとにする<ruby>量<rt>りょう</rt></ruby>。1とみる方のことだよ。</p>
+      </div>
+
+      <div class="block">
+        <p class="tag ex"><ruby>例題<rt>れいだい</rt></ruby></p>
+        <p class="sentence">兄の体重は、<span class="key on">弟の2倍</span>です。</p>
+        <div class="fig" data-tape="弟||兄||2"></div>
+        <p>「弟の2倍」と書いてあるから、もとにする量は<b>弟</b>。弟を2つ分ならべると、兄の体重と同じになる。</p>
+        <p class="tag care">まちがえやすい</p>
+        <div class="careful">
+          <p class="careful-q">「2倍になっているのは兄だから、兄がもと？」</p>
+          <p>ちがうよ。<b>2倍する前</b>の方が、もとにする量。弟を2倍すると、兄になる。兄は<b>2倍したあと</b>の方。</p>
+          <p class="flow"><span>弟<small>もと</small></span><span class="flow-arrow">2倍する →</span><span class="flow-b">兄</span></p>
+          <p>数を入れて、たしかめよう。弟が20kgなら、兄は 20 × 2 = 40kg。兄の方が重くて、文と合う。</p>
+          <p>もし兄がもとなら、弟が兄の2倍になって、弟の方が重くなる。文と合わない。</p>
+        </div>
+        <p>文のじゅん番がかわっても同じ。「<span class="key on">弟の2倍</span>が、兄の体重です。」でも、もとにする量は弟。</p>
+      </div>
+
+      <div class="block practice">
+        <p class="tag pr">練習</p>
+        <p>もとにする量(1とみる方)は、どっち？</p>
+        <ol class="qs"></ol>
+      </div>
+
+      <div class="result">
+        <div class="hana"></div>
+        <p class="result-text" aria-live="polite"></p>
+        <button type="button" class="btn retry" id="retry1">もう一度やる</button>
+        <button type="button" class="btn primary next" id="next1" data-to="1">ステップ2へ</button>
+      </div>
+    </section>
+
+    <!-- ステップ2 -->
+    <section class="step" id="step2" hidden>
+      <h2><span class="n">2</span>図にかこう</h2>
+
+      <div class="block">
+        <p class="tag point">ポイント</p>
+        <p class="pointbox">図は、<b>もとにする量から</b>かく。もとを1つ分かいてから、もう1つを「いくつ分」でかこう。</p>
+      </div>
+
+      <div class="block">
+        <p class="tag ex"><ruby>例題<rt>れいだい</rt></ruby></p>
+        <p class="sentence">赤いリボンは15cmで、<span class="key on">青いリボンの3倍</span>です。青いリボンは何cmですか。</p>
+        <div class="fig demo-fig" id="demoFig"></div>
+        <p class="demo-cap" id="demoCap" aria-live="polite"></p>
+        <div class="demo-ctl">
+          <button type="button" class="btn" id="demoPrev">もどる</button>
+          <span id="demoPos">1 / 4</span>
+          <button type="button" class="btn primary" id="demoNext">つぎへ</button>
+        </div>
+      </div>
+
+      <div class="block practice">
+        <p class="tag pr">練習</p>
+        <p>正しい図は、どっち？ 「1とみる」がついている方が、もとにする量。</p>
+        <ol class="qs"></ol>
+      </div>
+
+      <div class="result">
+        <div class="hana"></div>
+        <p class="result-text" aria-live="polite"></p>
+        <button type="button" class="btn retry" id="retry2">もう一度やる</button>
+        <button type="button" class="btn primary next" id="next2" data-to="2">ステップ3へ</button>
+      </div>
+    </section>
+
+    <!-- ステップ3 -->
+    <section class="step" id="step3" hidden>
+      <h2><span class="n">3</span>□はどこ？</h2>
+
+      <div class="block">
+        <p class="tag point">ポイント</p>
+        <p class="pointbox">「倍」と書いてあっても、かけ算とはかぎらない。<b>□がどこにあるか</b>で、かけ算かわり算かが決まる。</p>
+      </div>
+
+      <div class="block">
+        <p class="tag ex"><ruby>例題<rt>れいだい</rt></ruby></p>
+        <p>同じ数字の問題を、2つならべてみよう。</p>
+        <div class="pair">
+          <div class="pair-item">
+            <p><span class="kana">ア</span> 青いリボンは5cmです。赤いリボンは、青いリボンの3倍です。赤いリボンは何cmですか。</p>
+            <div class="fig" data-tape="青いリボン|5cm|赤いリボン|□cm|3"></div>
+            <p class="shiki">式<b>5 × 3 = 15</b>答え<b>15cm</b></p>
+          </div>
+          <div class="pair-item">
+            <p><span class="kana">イ</span> 赤いリボンは15cmで、青いリボンの3倍です。青いリボンは何cmですか。</p>
+            <div class="fig" data-tape="青いリボン|□cm|赤いリボン|15cm|3"></div>
+            <p class="shiki">式<b>15 ÷ 3 = 5</b>答え<b>5cm</b></p>
+          </div>
+        </div>
+        <p>図の形は同じで、□のばしょだけがちがう。□が<b>もとにする量</b>にあるときは、わり算になる。</p>
+      </div>
+
+      <div class="block practice">
+        <p class="tag pr">練習</p>
+        <p>式は、どっち？ こまったら、紙に図をかいてみよう。</p>
+        <ol class="qs"></ol>
+      </div>
+
+      <div class="result">
+        <div class="hana"></div>
+        <p class="result-text" aria-live="polite"></p>
+        <button type="button" class="btn retry" id="retry3">もう一度やる</button>
+        <button type="button" class="btn primary next" id="next3" data-to="3">ステップ4へ</button>
+      </div>
+    </section>
+
+    <!-- ステップ4 -->
+    <section class="step" id="step4" hidden>
+      <h2><span class="n">4</span>文にもどして、たしかめよう</h2>
+
+      <div class="block">
+        <p class="tag point">ポイント</p>
+        <p class="pointbox">答えが出たら、<b>もとの文に入れて読んでみる</b>。おかしな文になったら、どこかがちがう。</p>
+      </div>
+
+      <div class="block">
+        <p class="tag ex"><ruby>例題<rt>れいだい</rt></ruby></p>
+        <p class="sentence">赤いリボンは15cmで、青いリボンの3倍です。青いリボンは何cmですか。</p>
+        <ul class="checks">
+          <li>
+            <span class="cand">45cm</span>
+            <span><span class="back">「赤は15cmで、青45cmの3倍」</span><br>45 × 3 = 135。15にならない。青の方が長くなってしまう。</span>
+            <span class="mark ng" aria-label="ちがう">×</span>
+          </li>
+          <li>
+            <span class="cand">5cm</span>
+            <span><span class="back">「赤は15cmで、青5cmの3倍」</span><br>5 × 3 = 15。合っている。</span>
+            <span class="mark ok" aria-label="合っている">◯</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="block practice">
+        <p class="tag pr">練習</p>
+        <p>出てきた答えは、合っている？ 文にもどして、たしかめよう。</p>
+        <ol class="qs"></ol>
+      </div>
+
+      <div class="result">
+        <div class="hana"></div>
+        <p class="result-text" aria-live="polite"></p>
+        <button type="button" class="btn retry" id="retry4">もう一度やる</button>
+      </div>
+    </section>
+  </main>
+
+  <details class="parent">
+    <summary>おうちの方へ</summary>
+    <ul>
+      <li>1日に進めるのは1〜2ステップが目安です。数日あけてステップ1と3をもう一度やると、定着したか確かめられます。</li>
+      <li>答えを選ぶ前に「どっちを1とみる?」と聞いてください。</li>
+      <li>正解でも「どうしてそう思った?」と理由を聞くと、当てずっぽうかどうかがわかります。</li>
+      <li>ステップ2と3は、画面を見るだけでなく、紙にも自分で図をかかせると身につきやすくなります。</li>
+    </ul>
+  </details>
+</div>
+
+<script>
+(function(){
+'use strict';
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+function el(tag,cls,html){
+  const e=document.createElement(tag);
+  if(cls) e.className=cls;
+  if(html!=null) e.innerHTML=html;
+  return e;
+}
+
+/* ---------- テープ図 ---------- */
+function tapeRow(role,label,units,value,chip){
+  const r=el('span','tape-row '+role);
+  r.appendChild(el('span','tape-label',label));
+  const body=el('span','tape-body');
+  const bar=el('span','tape-bar');
+  bar.style.setProperty('--n',units);
+  for(let i=0;i<units;i++) bar.appendChild(el('i'));
+  body.appendChild(bar);
+  if(value||chip){
+    const n=el('span','tape-note');
+    if(value) n.appendChild(el('b','',value));
+    if(chip) n.appendChild(el('span','chip',chip));
+    body.appendChild(n);
+  }
+  r.appendChild(body);
+  return r;
+}
+// d = {base:{label,value}, comp:{label,value}, times}
+function tape(d,opt){
+  opt=opt||{};
+  const t=el('span','tape');
+  t.setAttribute('role','img');
+  t.setAttribute('aria-label',d.base.label+' 1つ分 '+(d.base.value||'')+'、'+d.comp.label+' '+d.times+'つ分 '+(d.comp.value||''));
+  t.appendChild(tapeRow('moto',d.base.label,1,d.base.value,'1とみる'));
+  if(opt.comp!==false){
+    const note=opt.compNote!==false;
+    t.appendChild(tapeRow('kurabe',d.comp.label,d.times,note?d.comp.value:'',note?d.times+'倍':''));
+  }
+  return t;
+}
+$$('[data-tape]').forEach(function(box){
+  const p=box.dataset.tape.split('|');
+  box.appendChild(tape({base:{label:p[0],value:p[1]},comp:{label:p[2],value:p[3]},times:+p[4]}));
+});
+
+/* ---------- はなまる ---------- */
+function hanamaru(){
+  const NS='http://www.w3.org/2000/svg', c=50, R=26, turns=2.25, pts=[];
+  for(let i=4;i<=100;i++){
+    const t=i/100, a=-Math.PI/2+t*turns*2*Math.PI, r=R*t;
+    pts.push([c+r*Math.cos(a),c+r*Math.sin(a)]);
+  }
+  const a0=-Math.PI/2+turns*2*Math.PI;
+  for(let i=1;i<=140;i++){
+    const t=i/140, a=a0+t*2*Math.PI, r=R+4+13*Math.abs(Math.sin(t*7*Math.PI));
+    pts.push([c+r*Math.cos(a),c+r*Math.sin(a)]);
+  }
+  const svg=document.createElementNS(NS,'svg');
+  svg.setAttribute('viewBox','0 0 100 100');
+  svg.setAttribute('class','hanamaru');
+  svg.setAttribute('role','img');
+  svg.setAttribute('aria-label','はなまる');
+  const path=document.createElementNS(NS,'path');
+  path.setAttribute('d','M'+pts.map(function(p){return p[0].toFixed(1)+' '+p[1].toFixed(1);}).join('L'));
+  path.setAttribute('pathLength','1');
+  path.setAttribute('fill','none');
+  svg.appendChild(path);
+  return svg;
+}
+
+/* ---------- 問題 ---------- */
+const k=function(s){return '<span class="key">'+s+'</span>';};
+
+const S1=[
+  {text:'りんごのねだんは、'+k('みかんの3倍')+'です。', choices:['りんご','みかん'], answer:1,
+   why:'「みかんの3倍」だから、もとにする量は<b>みかん</b>。'},
+  {text:k('わたしの4倍')+'が、父の年れいです。', choices:['わたし','父'], answer:0,
+   why:'「わたしの4倍」だから、もとにする量は<b>わたし</b>。文のはじめにあっても同じ。'},
+  {text:'赤いリボンは15cmで、'+k('青いリボンの3倍')+'です。', choices:['赤いリボン','青いリボン'], answer:1,
+   why:'「青いリボンの3倍」だから、もとにする量は<b>青いリボン</b>。'},
+  {text:'大きい水そうには、'+k('小さい水そうの5倍')+'の水が入ります。', choices:['大きい水そう','小さい水そう'], answer:1,
+   why:'「小さい水そうの5倍」だから、もとにする量は<b>小さい水そう</b>。'},
+  {text:k('妹の6倍')+'のシールを、姉が持っています。', choices:['妹','姉'], answer:0,
+   why:'「妹の6倍」だから、もとにする量は<b>妹</b>。'},
+  {text:'白組の点数は、'+k('赤組の2倍')+'でした。', choices:['白組','赤組'], answer:1,
+   why:'「赤組の2倍」だから、もとにする量は<b>赤組</b>。'}
+];
+
+const S2=[
+  {text:'父の体重は60kgで、'+k('わたしの2倍')+'です。', pos:0,
+   base:{label:'わたし',value:'□kg'}, comp:{label:'父',value:'60kg'}, times:2,
+   why:'「わたしの2倍」だから、わたしがもと。わたし2つ分で60kg。60 ÷ 2 = 30 で、わたしは30kg。'},
+  {text:'やかんには、'+k('水とうの4倍')+'の水が入ります。水とうには2dL入ります。', pos:1,
+   base:{label:'水とう',value:'2dL'}, comp:{label:'やかん',value:'□dL'}, times:4,
+   why:'「水とうの4倍」だから、水とうがもと。2 × 4 = 8 で、やかんには8dL入る。'},
+  {text:k('わたしの3倍')+'が、兄のおこづかいです。兄のおこづかいは900円です。', pos:1,
+   base:{label:'わたし',value:'□円'}, comp:{label:'兄',value:'900円'}, times:3,
+   why:'「わたしの3倍」だから、わたしがもと。わたし3つ分で900円。900 ÷ 3 = 300 で、わたしは300円。'},
+  {text:'なわとびを、妹は20回とびました。姉は、'+k('妹の3倍')+'とびました。', pos:0,
+   base:{label:'妹',value:'20回'}, comp:{label:'姉',value:'□回'}, times:3,
+   why:'「妹の3倍」だから、妹がもと。20 × 3 = 60 で、姉は60回。'}
+];
+
+const S3=[
+  {text:'えんぴつは1本60円です。ノートのねだんは、'+k('えんぴつの2倍')+'です。ノートは何円ですか。', a:60, b:2, op:'×',
+   base:{label:'えんぴつ',value:'60円'}, comp:{label:'ノート',value:'□円'}, times:2, shiki:'60 × 2 = 120', ans:'120円',
+   why:'□はノート。60 × 2 = □ だから、かけ算。'},
+  {text:'ノートは120円で、'+k('えんぴつの2倍')+'のねだんです。えんぴつは何円ですか。', a:120, b:2, op:'÷',
+   base:{label:'えんぴつ',value:'□円'}, comp:{label:'ノート',value:'120円'}, times:2, shiki:'120 ÷ 2 = 60', ans:'60円',
+   why:'□はえんぴつ(もとにする量)。□ × 2 = 120 だから、わり算。'},
+  {text:'姉の年れいは12才で、'+k('妹の3倍')+'です。妹は何才ですか。', a:12, b:3, op:'÷',
+   base:{label:'妹',value:'□才'}, comp:{label:'姉',value:'12才'}, times:3, shiki:'12 ÷ 3 = 4', ans:'4才',
+   why:'□は妹(もとにする量)。□ × 3 = 12 だから、わり算。'},
+  {text:'子犬の体重は6kgです。親犬の体重は、'+k('子犬の3倍')+'です。親犬は何kgですか。', a:6, b:3, op:'×',
+   base:{label:'子犬',value:'6kg'}, comp:{label:'親犬',value:'□kg'}, times:3, shiki:'6 × 3 = 18', ans:'18kg',
+   why:'□は親犬。6 × 3 = □ だから、かけ算。'},
+  {text:'大きいバケツには水が8L入ります。これは、'+k('小さいバケツの4倍')+'です。小さいバケツには何L入りますか。', a:8, b:4, op:'÷',
+   base:{label:'小さいバケツ',value:'□L'}, comp:{label:'大きいバケツ',value:'8L'}, times:4, shiki:'8 ÷ 4 = 2', ans:'2L',
+   why:'□は小さいバケツ(もとにする量)。□ × 4 = 8 だから、わり算。'},
+  {text:k('わたしの5倍')+'が、おじいさんの年れいです。わたしは10才です。おじいさんは何才ですか。', a:10, b:5, op:'×',
+   base:{label:'わたし',value:'10才'}, comp:{label:'おじいさん',value:'□才'}, times:5, shiki:'10 × 5 = 50', ans:'50才',
+   why:'□はおじいさん。10 × 5 = □ だから、かけ算。'}
+];
+
+const S4=[
+  {text:'父の年れいは40才で、わたしの4倍です。わたしは何才ですか。', given:'160才', ok:false,
+   back:'「父は40才で、わたし160才の4倍」', calc:'160 × 4 = 640。40にならない。', fix:'正しくは 40 ÷ 4 = 10 で、<b>10才</b>。'},
+  {text:'大きい箱にはクッキーが24まい入っています。これは、小さい箱の3倍です。小さい箱には何まい入っていますか。', given:'8まい', ok:true,
+   back:'「大きい箱は24まいで、小さい箱8まいの3倍」', calc:'8 × 3 = 24。合っている。'},
+  {text:'ジュースは120円で、あめの4倍のねだんです。あめは何円ですか。', given:'30円', ok:true,
+   back:'「ジュースは120円で、あめ30円の4倍」', calc:'30 × 4 = 120。合っている。'},
+  {text:'テープAは8mです。テープBの長さは、テープAの2倍です。テープBは何mですか。', given:'4m', ok:false,
+   back:'「テープBは4mで、テープA 8mの2倍」', calc:'8 × 2 = 16。4にならない。', fix:'正しくは 8 × 2 = 16 で、<b>16m</b>。'},
+  {text:'弟の体重は20kgです。兄の体重は、弟の2倍です。兄は何kgですか。', given:'40kg', ok:true,
+   back:'「兄は40kgで、弟20kgの2倍」', calc:'20 × 2 = 40。合っている。'}
+];
+
+/* ---------- 問題の組み立て ---------- */
+const BUILD=[
+  function(it){
+    return {text:it.text,
+      choices:it.choices.map(function(c,j){return {html:c,correct:j===it.answer};}),
+      explain:function(fb){fb.appendChild(el('p','',it.why));}};
+  },
+  function(it){
+    const right={base:it.base,comp:it.comp,times:it.times};
+    const wrong={base:it.comp,comp:it.base,times:it.times};
+    const order=it.pos===0?[right,wrong]:[wrong,right];
+    return {text:it.text, figs:true,
+      choices:order.map(function(d,j){
+        const n=el('span','figchoice');
+        n.appendChild(el('span','kana',j===0?'ア':'イ'));
+        n.appendChild(tape(d));
+        return {node:n,correct:d===right};
+      }),
+      explain:function(fb){fb.appendChild(el('p','',it.why));}};
+  },
+  function(it){
+    return {text:it.text,
+      choices:[{html:it.a+' × '+it.b,correct:it.op==='×'},{html:it.a+' ÷ '+it.b,correct:it.op==='÷'}],
+      explain:function(fb){
+        const f=el('div','fig');
+        f.appendChild(tape({base:it.base,comp:it.comp,times:it.times}));
+        fb.appendChild(f);
+        fb.appendChild(el('p','shiki','式<b>'+it.shiki+'</b>答え<b>'+it.ans+'</b>'));
+        fb.appendChild(el('p','',it.why));
+      }};
+  },
+  function(it){
+    return {text:it.text, extra:el('p','given','出てきた答え<b>'+it.given+'</b>'),
+      choices:[{html:'◯ 合っている',correct:it.ok},{html:'× ちがう',correct:!it.ok}],
+      explain:function(fb){
+        fb.appendChild(el('p','','文にもどすと<br><span class="back">'+it.back+'</span><br>'+it.calc));
+        if(it.fix) fb.appendChild(el('p','',it.fix));
+      }};
+  }
+];
+
+function question(cfg,report){
+  const li=el('li','q');
+  const p=el('p','q-text');
+  p.appendChild(el('span','',cfg.text));
+  li.appendChild(p);
+  if(cfg.extra) li.appendChild(cfg.extra);
+  const box=el('div','choices'+(cfg.figs?' figs':''));
+  const fb=el('div','fb');
+  fb.hidden=true;
+  fb.setAttribute('aria-live','polite');
+  cfg.choices.forEach(function(c){
+    const b=el('button','choice');
+    b.type='button';
+    if(c.node) b.appendChild(c.node); else b.innerHTML=c.html;
+    c.btn=b;
+    b.addEventListener('click',function(){
+      cfg.choices.forEach(function(x){
+        x.btn.disabled=true;
+        if(x.correct) x.btn.classList.add('is-right');
+      });
+      if(!c.correct) b.classList.add('is-miss');
+      li.classList.add('answered');
+      fb.className='fb '+(c.correct?'ok':'ng');
+      fb.innerHTML='';
+      fb.appendChild(el('p','fb-head',c.correct?'◯ 正かい！':'おしい！'));
+      cfg.explain(fb);
+      fb.hidden=false;
+      report(c.correct);
+    });
+    box.appendChild(b);
+  });
+  li.appendChild(box);
+  li.appendChild(fb);
+  return li;
+}
+
+/* ---------- ステップ ---------- */
+const tabs=$$('.tab'), secs=$$('.step');
+
+function setupStep(n,items){
+  const sec=secs[n], list=$('.qs',sec), txt=$('.result-text',sec), slot=$('.hana',sec), score=$('.score',tabs[n]);
+  const total=items.length;
+  let done=0, right=0;
+  function update(){
+    slot.innerHTML='';
+    if(done<total){
+      txt.textContent=done===0?'全部で'+total+'問':'あと'+(total-done)+'問';
+      score.textContent='';
+    }else if(right===total){
+      txt.textContent=total+'問 全部 正かい！';
+      slot.appendChild(hanamaru());
+      score.textContent='◎';
+    }else{
+      txt.textContent=total+'問中 '+right+'問 正かい。「おしい！」のせつ明を読んでみよう。';
+      score.textContent=right+'/'+total;
+    }
+  }
+  function render(){
+    done=0; right=0; list.innerHTML='';
+    items.forEach(function(it){
+      list.appendChild(question(BUILD[n](it),function(ok){done++; if(ok) right++; update();}));
+    });
+    update();
+  }
+  $('.retry',sec).addEventListener('click',function(){
+    render();
+    $('.practice',sec).scrollIntoView({block:'start'});
+  });
+  render();
+}
+[S1,S2,S3,S4].forEach(function(items,n){setupStep(n,items);});
+
+function show(n,scroll){
+  secs.forEach(function(s,i){s.hidden=i!==n;});
+  tabs.forEach(function(t,i){
+    if(i===n) t.setAttribute('aria-current','step'); else t.removeAttribute('aria-current');
+  });
+  try{history.replaceState(null,'','#step'+(n+1));}catch(e){}
+  if(scroll) $('.steps').scrollIntoView({block:'start'});
+}
+tabs.forEach(function(t,i){t.addEventListener('click',function(){show(i,false);});});
+$$('.next').forEach(function(b){b.addEventListener('click',function(){show(+b.dataset.to,true);});});
+const m=/^#step([1-4])$/.exec(location.hash);
+show(m?+m[1]-1:0,false);
+
+/* ---------- ステップ2の例題(図を1手ずつかく) ---------- */
+const DEMO=[
+  {cap:'<b>①</b> もとにする量(青いリボン)を、1つ分かく。長さはまだわからないから □cm。', base:'□cm', comp:false},
+  {cap:'<b>②</b> 赤いリボンを、青いリボンの3つ分でかく。', base:'□cm', comp:true, note:false},
+  {cap:'<b>③</b> わかっている数を書く。赤いリボンは15cm。', base:'□cm', comp:true, note:true},
+  {cap:'<b>④</b> 青3つ分で15cm。1つ分は 15 ÷ 3 = 5。青いリボンは <b>5cm</b>。', base:'5cm', comp:true, note:true}
+];
+const demoFig=$('#demoFig'), demoCap=$('#demoCap'), demoPos=$('#demoPos'), demoPrev=$('#demoPrev'), demoNext=$('#demoNext');
+let stage=0;
+function drawDemo(){
+  const s=DEMO[stage];
+  demoFig.innerHTML='';
+  demoFig.appendChild(tape({base:{label:'青いリボン',value:s.base},comp:{label:'赤いリボン',value:'15cm'},times:3},{comp:s.comp,compNote:s.note}));
+  demoCap.innerHTML=s.cap;
+  demoPos.textContent=(stage+1)+' / '+DEMO.length;
+  demoPrev.disabled=stage===0;
+  demoNext.disabled=stage===DEMO.length-1;
+}
+demoPrev.addEventListener('click',function(){if(stage>0){stage--; drawDemo();}});
+demoNext.addEventListener('click',function(){if(stage<DEMO.length-1){stage++; drawDemo();}});
+drawDemo();
+})();
+</script>
+</body>
+</html>

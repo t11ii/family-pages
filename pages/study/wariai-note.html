@@ -1,0 +1,2142 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>割合ノート</title>
+<meta name="description" content="割合の練習ノート。もとにする量の見つけ方から、小数や分数の倍、百分率と歩合、割引き、「〜をもとにした割合」までを、4つのチャプターで少しずつ進める。">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Zen+Maru+Gothic:wght@500;700;900&display=swap">
+<style>
+/* Layout: もくじ(チャプターのカードを1列) → チャプター(ステップごとの紙を1まいずつ)。方眼ノート。ダークは黒板とチョーク。 */
+:root{
+  --paper:#f5f8fc; --grid:#dde7f1; --sheet:#ffffff; --fig-grid:#e7eef6; --line:#c4d0dd;
+  --ink:#27313c; --ink-soft:#586574; --on-ink:#ffffff; --note:#eef3f8;
+  --blue:#2a6bcb; --blue-tint:#dbe8fa; --red:#d23c34; --red-tint:#fbe2df; --marker:#ffe45c;
+  --font-display:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
+  --font-body:"Klee One","YuKyokasho Yoko","YuKyokasho","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --u:clamp(24px,8vw,40px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#1b2925; --grid:#24352f; --sheet:#22332d; --fig-grid:#2c4038; --line:#3f544b;
+    --ink:#eef2ea; --ink-soft:#b3c1b8; --on-ink:#1b2925; --note:#2a3d36;
+    --blue:#8dbdff; --blue-tint:#1d3d5e; --red:#ff9085; --red-tint:#5b2c29; --marker:#6a5d12;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#1b2925; --grid:#24352f; --sheet:#22332d; --fig-grid:#2c4038; --line:#3f544b;
+  --ink:#eef2ea; --ink-soft:#b3c1b8; --on-ink:#1b2925; --note:#2a3d36;
+  --blue:#8dbdff; --blue-tint:#1d3d5e; --red:#ff9085; --red-tint:#5b2c29; --marker:#6a5d12;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{
+  margin:0; color:var(--ink);
+  background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+  font-family:var(--font-body); font-weight:600; font-size:18px; line-height:1.8;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:760px; margin-inline:auto; padding-inline:16px; padding-block:28px 56px}
+.home,.chapter{display:flex; flex-direction:column; gap:20px}
+b{font-family:var(--font-display); font-weight:900}
+rt{font-size:.5em; font-weight:500}
+:focus-visible{outline:3px solid var(--blue); outline-offset:2px}
+
+/* ---- 分数 ---- */
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; margin-inline:.12em; font-family:var(--font-display); font-weight:700; font-size:.8em; line-height:1.15; font-variant-numeric:tabular-nums}
+.frac span{display:block; min-width:1.1em; padding-inline:.15em; text-align:center}
+.frac span+span{border-top:.1em solid currentColor}
+
+/* ---- 見出し ---- */
+.eyebrow{margin:0; font-family:var(--font-display); font-weight:700; font-size:14px; letter-spacing:.08em; color:var(--blue)}
+h1{margin:12px 0 6px; font-family:var(--font-display); font-weight:900; font-size:clamp(32px,8vw,46px); line-height:1.2; text-wrap:balance}
+.lead{margin:0; font-size:17px; color:var(--ink-soft)}
+
+/* ---- もくじ ---- */
+.toc{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px}
+.toc-item{
+  width:100%; display:grid; grid-template-columns:auto minmax(0,1fr); align-items:start; gap:2px 14px;
+  padding:16px 18px; border:2px solid var(--line); border-radius:14px; background:var(--sheet); color:var(--ink);
+  font:inherit; text-align:left; cursor:pointer; transition:border-color .15s, transform .1s;
+}
+.toc-item:hover{border-color:var(--ink)}
+.toc-item:active{transform:translateY(1px)}
+.toc-n{
+  grid-row:1 / span 3; width:2em; height:2em; margin-top:2px; border-radius:50%; background:var(--ink); color:var(--on-ink);
+  display:grid; place-items:center; font-family:var(--font-display); font-weight:900; font-size:20px; line-height:1;
+}
+.toc-title{font-family:var(--font-display); font-weight:900; font-size:clamp(21px,5.6vw,26px); line-height:1.5}
+.toc-desc{font-size:16px; line-height:1.6; color:var(--ink-soft)}
+.toc-marks{display:flex; align-items:center; gap:6px; margin-top:8px; font-family:var(--font-display); font-weight:700; font-size:13px; line-height:1; color:var(--ink-soft)}
+.toc-marks i{width:18px; height:18px; border:2px solid var(--line); border-radius:50%}
+.toc-marks i.on{border-color:var(--red); background:radial-gradient(circle,var(--red) 0 36%,transparent 42%)}
+.toc-count{margin-left:4px}
+.to-home{align-self:flex-start; min-height:40px; padding:4px 16px; font-size:15px}
+
+/* ---- ステップのタブ ---- */
+.steps{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px}
+.tab{
+  width:100%; display:flex; flex-direction:column; align-items:center; gap:2px; padding:8px 4px 6px;
+  border:2px solid var(--line); border-radius:12px 12px 4px 4px; background:var(--sheet); color:var(--ink);
+  font-family:var(--font-display); font-weight:700; font-size:14px; line-height:1.3; cursor:pointer;
+}
+.tab .n{font-size:22px; font-weight:900; line-height:1}
+.tab .score{min-height:1.3em; font-size:12px; font-weight:900; color:var(--red)}
+.tab[aria-current="step"]{background:var(--ink); border-color:var(--ink); color:var(--on-ink)}
+.tab[aria-current="step"] .score{color:inherit}
+
+/* ---- 1ステップ = 1まいの紙 ---- */
+.step{background:var(--sheet); border:2px solid var(--line); border-radius:14px; padding:clamp(16px,4vw,28px); display:flex; flex-direction:column; gap:22px}
+.step h2{margin:0; display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:900; font-size:clamp(22px,5.5vw,28px); line-height:1.3; text-wrap:balance}
+.step h2 .n{flex:none; width:1.6em; height:1.6em; border-radius:50%; background:var(--ink); color:var(--on-ink); display:grid; place-items:center; font-size:.8em}
+.block{display:flex; flex-direction:column; gap:12px; min-width:0}
+.block p{margin:0}
+.tag{align-self:flex-start; margin:0; padding:1px 12px; border-radius:6px; font-family:var(--font-display); font-weight:900; font-size:14px; letter-spacing:.1em}
+.tag.point{background:var(--marker); color:var(--ink)}
+.tag.ex{background:var(--blue); color:var(--on-ink)}
+.tag.pr{background:var(--red); color:var(--on-ink)}
+.tag.care{background:var(--sheet); color:var(--ink); border:2px solid var(--ink)}
+.pointbox{background:var(--note); border-radius:10px; padding:14px 16px; font-size:19px}
+.pointbox p+p{margin-top:8px}
+.conv{list-style:none; margin:10px 0 0; padding:0; display:flex; flex-wrap:wrap; gap:8px; font-family:var(--font-display); font-weight:700; font-size:16px; line-height:1.6; font-variant-numeric:tabular-nums}
+.conv li{padding:2px 12px; border:2px solid var(--line); border-radius:8px; background:var(--sheet)}
+.sentence{font-size:21px; line-height:1.7}
+.key.on,.answered .key{background:linear-gradient(transparent 58%,var(--marker) 58%)}
+.careful{display:flex; flex-direction:column; gap:8px; border:2px dashed var(--ink-soft); border-radius:10px; padding:12px 16px}
+.careful-q{font-family:var(--font-display); font-weight:900; font-size:19px}
+.careful .conv{margin-top:0; line-height:2}
+.flow{display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-family:var(--font-display); font-weight:900; font-size:20px; line-height:1.3}
+.flow span{display:inline-flex; align-items:baseline; gap:6px; padding:4px 14px; border:2px solid var(--blue); border-radius:8px; background:var(--blue-tint)}
+.flow .flow-b{border-color:var(--red); background:var(--red-tint)}
+.flow .flow-arrow{padding:0; border:0; background:none; font-size:15px; font-weight:700}
+.flow small{font-size:12px; font-weight:700}
+
+/* ---- 言いかえカード(もと=青わく、くらべる方=赤わく) ---- */
+.re{display:grid; gap:4px; text-align:left; font-family:var(--font-display); font-weight:700; font-size:18px; line-height:2.1; color:var(--ink)}
+.re p{margin:0}
+.re .re-arrow{font-size:14px; line-height:1.6; color:var(--ink-soft)}
+.re .re-legend{margin-top:6px; font-size:13px; color:var(--ink-soft)}
+.w{padding:2px 8px; border:2px solid var(--line); border-radius:8px; color:var(--ink); white-space:nowrap}
+.w-moto{border-color:var(--blue); background:var(--blue-tint)}
+.w-kurabe{border-color:var(--red); background:var(--red-tint)}
+
+/* ---- 図のわく ---- */
+.fig{
+  background-color:var(--sheet);
+  background-image:linear-gradient(var(--fig-grid) 1px,transparent 1px),linear-gradient(90deg,var(--fig-grid) 1px,transparent 1px);
+  background-size:16px 16px;
+  border:1.5px solid var(--line); border-radius:8px; padding:14px;
+}
+.chip{padding:1px 8px; border:1.5px solid currentColor; border-radius:999px; font-size:12px}
+.moto{--tick:color-mix(in srgb,var(--blue) 55%,transparent)}
+.kurabe{--tick:color-mix(in srgb,var(--red) 55%,transparent)}
+.moto .chip{color:var(--blue)}
+.kurabe .chip{color:var(--red)}
+
+/* ---- ます目のテープ図(チャプター1。1ます = 1つ分) ---- */
+.c1 .fig{overflow-x:auto}
+.tape{display:grid; gap:12px; text-align:left; font-family:var(--font-display); font-weight:700; font-size:15px; line-height:1.3; color:var(--ink)}
+.tape-row{display:grid; grid-template-columns:6.4em minmax(0,1fr); align-items:center; gap:8px}
+.tape-label{overflow-wrap:anywhere}
+.tape-body{display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; min-width:0}
+.tape-bar{display:flex; flex:0 1 auto; width:calc(var(--n) * var(--u) - (var(--n) - 1) * 2px); max-width:100%; min-width:0}
+.tape-bar i{display:block; flex:1 1 0; min-width:0; height:30px; border:2px solid var(--blue); background:var(--blue-tint)}
+.tape-bar i+i{margin-left:-2px}
+.kurabe .tape-bar i{border-color:var(--red); background:var(--red-tint)}
+.tape-note{display:inline-flex; align-items:center; gap:6px; white-space:nowrap}
+.tape-note b{font-size:17px}
+
+/* ---- 目もりつきのテープ図(チャプター2から。2本が同じものさしにのる) ---- */
+.stape{display:grid; gap:12px; text-align:left; font-family:var(--font-display); font-weight:700; font-size:15px; line-height:1.3; color:var(--ink)}
+.st-row{display:grid; gap:5px}
+.st-head{display:flex; flex-wrap:wrap; align-items:center; gap:4px 8px}
+.st-head b{font-size:17px}
+.st-bar{display:flex; width:calc(var(--k) / var(--max) * 100%); height:30px}
+.st-bar i{
+  display:block; flex:calc(var(--w) * 100) 1 0px; min-width:0; border:2px solid var(--blue); background-color:var(--blue-tint);
+  background-image:linear-gradient(90deg,transparent calc(100% - 1.5px),var(--tick) calc(100% - 1.5px));
+  background-size:calc(100% / var(--div,1)) 100%;
+}
+.st-bar i+i{margin-left:-2px}
+.kurabe .st-bar i{border-color:var(--red); background-color:var(--red-tint)}
+.kurabe .st-bar i.ghost{border-style:dashed; background:none}
+.st-axis{position:relative; display:block; height:3em; border-top:2px solid var(--ink-soft); font-size:13px; font-variant-numeric:tabular-nums}
+.st-axis.has-alt{height:4.2em}
+.st-t{position:absolute; top:0; left:calc(var(--v) / var(--max) * 100%); transform:translateX(-50%); padding-top:8px; white-space:nowrap; color:var(--ink-soft)}
+.st-t::before{content:""; position:absolute; top:-2px; left:50%; width:2px; height:8px; margin-left:-1px; background:var(--ink-soft)}
+.st-t.is-first,.st-t.at-left{transform:none}
+.st-t.is-first::before,.st-t.at-left::before{left:0; margin-left:0}
+.st-t.is-last,.st-t.at-right{transform:translateX(-100%)}
+.st-t.is-last::before,.st-t.at-right::before{left:100%; margin-left:-2px}
+.st-t.is-k{color:var(--red); font-weight:900; font-size:15px}
+.st-t.is-k::before{background:var(--red)}
+.st-t.is-low{padding-top:1.8em}
+.st-t small{margin-left:2px; font-size:11px}
+
+/* ---- 例題の部品 ---- */
+.demo-fig{min-height:218px}
+.c1 .demo-fig{min-height:112px}
+.c2 .demo-fig{min-height:204px}
+.demo-cap{min-height:3.6em}
+.demo-ctl{display:flex; align-items:center; gap:12px; font-family:var(--font-display); font-weight:700; font-variant-numeric:tabular-nums}
+.pair{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:14px}
+.pair-item{display:flex; flex-direction:column; gap:10px; min-width:0}
+.kana{display:inline-grid; place-items:center; width:1.7em; height:1.7em; border-radius:6px; background:var(--ink); color:var(--on-ink); font-family:var(--font-display); font-weight:900; font-size:16px; line-height:1}
+.shiki{font-family:var(--font-display); font-weight:700; font-variant-numeric:tabular-nums}
+.shiki b{font-size:1.1em; margin-inline:.2em .8em}
+.checks{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px}
+.checks li{display:grid; grid-template-columns:4em minmax(0,1fr) 1.6em; align-items:center; gap:10px; background:var(--note); border-radius:10px; padding:10px 14px}
+.checks .cand{font-family:var(--font-display); font-weight:900; font-size:20px}
+.checks .mark{font-family:var(--font-display); font-weight:900; font-size:28px; line-height:1; text-align:center}
+.mark.ok{color:var(--red)}
+.mark.ng{color:var(--blue)}
+
+/* ---- 練習問題 ---- */
+.qs{list-style:none; margin:0; padding:0; counter-reset:q; display:flex; flex-direction:column}
+.q{counter-increment:q; display:flex; flex-direction:column; gap:12px; padding-block:20px}
+.q:first-child{padding-top:4px}
+.q+.q{border-top:2px dashed var(--line)}
+.q-text{margin:0; display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px; font-size:20px; line-height:1.7}
+.q-text::before{
+  content:counter(q); width:1.8em; height:1.8em; margin-top:.25em; border:2px solid var(--ink); border-radius:50%;
+  display:grid; place-items:center; font-family:var(--font-display); font-weight:900; font-size:15px; line-height:1;
+}
+.given{align-self:flex-start; margin:0; padding:2px 14px; border:2px dashed var(--ink-soft); border-radius:8px; font-family:var(--font-display); font-weight:700}
+.given b{font-size:1.15em; margin-left:.4em}
+/* えらぶボタンのならべ方: なにもなし=3列、c2=2列、c1・stack=たて1列、cw=広い画面だけ3列、figs=図をえらぶ */
+.choices{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px}
+.choices.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.choices.c1,.choices.cw,.choices.stack{grid-template-columns:minmax(0,1fr)}
+.choices.c1 .choice{padding-inline:16px; text-align:left}
+.choices.figs{grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))}
+@media (min-width:600px){
+  .choices.cw{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+.choice{
+  min-height:56px; padding:10px 6px; border:2px solid var(--line); border-radius:12px; background:var(--sheet); color:var(--ink);
+  font-family:var(--font-display); font-weight:700; font-size:19px; line-height:1.4; cursor:pointer;
+  transition:border-color .15s, transform .1s;
+}
+.c1 .choice{padding:10px 14px}
+.choice:hover:not(:disabled){border-color:var(--ink)}
+.choice:active:not(:disabled){transform:translateY(1px)}
+.choice:disabled{cursor:default; opacity:1; color:var(--ink-soft)}
+.choice.is-right{border:3px solid var(--red); background:var(--red-tint); color:var(--ink)}
+.choice.is-miss{border-style:dashed; text-decoration:line-through}
+.choices.figs .choice{padding:12px 14px}
+.choices.figs .choice.is-right{background:var(--sheet)}
+.choices.figs .choice.is-miss{opacity:.55; text-decoration:none}
+.figchoice{display:flex; flex-direction:column; align-items:stretch; gap:10px}
+.figchoice .kana{align-self:flex-start}
+.fb{display:flex; flex-direction:column; gap:8px; background:var(--note); border-radius:10px; padding:12px 16px}
+.fb p{margin:0}
+.fb-head{font-family:var(--font-display); font-weight:900; font-size:20px}
+.fb.ok .fb-head{color:var(--red)}
+.fb.ng .fb-head{color:var(--blue)}
+.fb .check{font-size:16px; color:var(--ink-soft)}
+.back{font-family:var(--font-display); font-weight:700}
+
+/* ---- 結果 ---- */
+.result{display:flex; flex-wrap:wrap; align-items:center; gap:12px 16px; padding-top:18px; border-top:2px solid var(--line)}
+.result-text{flex:1 1 12em; min-width:0; margin:0; font-family:var(--font-display); font-weight:900; font-size:20px}
+.btn{
+  min-height:48px; padding:8px 20px; border:2px solid var(--ink); border-radius:999px; background:var(--sheet); color:var(--ink);
+  font-family:var(--font-display); font-weight:700; font-size:16px; cursor:pointer;
+}
+.btn.primary{background:var(--ink); color:var(--on-ink)}
+.btn:disabled{opacity:.35; cursor:default}
+.hana:empty{display:none}
+.hanamaru{display:block; width:84px; height:84px}
+.hanamaru path{fill:none; stroke:var(--red); stroke-width:4; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:1; stroke-dashoffset:1; animation:draw 1.4s ease-out forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){
+  .hanamaru path{animation:none; stroke-dashoffset:0}
+  .choice,.toc-item{transition:none}
+}
+
+/* ---- おうちの方へ ---- */
+.parent{background:var(--sheet); border:2px solid var(--line); border-radius:14px; padding:12px 18px; font-weight:400; font-size:15px; line-height:1.8; color:var(--ink-soft)}
+.parent summary{font-family:var(--font-display); font-weight:700; color:var(--ink); cursor:pointer}
+.parent ul{margin:8px 0 4px; padding-left:1.3em}
+.parent p{margin:10px 0 4px}
+.parent .btn{min-height:40px; padding:4px 16px; font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <main>
+    <!-- もくじ -->
+    <section class="home" id="home">
+      <header>
+        <p class="eyebrow">算数</p>
+        <h1><ruby>割合<rt>わりあい</rt></ruby>ノート</h1>
+        <p class="lead">「もとにする<ruby>量<rt>りょう</rt></ruby>」を見つけるところから、%や<ruby>割<rt>わり</rt></ruby>引きまで。チャプター1から、じゅんに進もう。</p>
+      </header>
+
+      <nav aria-label="もくじ">
+        <ol class="toc">
+          <li><button type="button" class="toc-item" data-ch="1">
+            <span class="toc-n">1</span>
+            <span class="toc-title">もとはどっち？</span>
+            <span class="toc-desc">「1とみる方」を見つけて、図にかく。</span>
+            <span class="toc-marks"><i></i><i></i><i></i><i></i><span class="toc-count"></span></span>
+          </button></li>
+          <li><button type="button" class="toc-item" data-ch="2">
+            <span class="toc-n">2</span>
+            <span class="toc-title">2.5倍ってなに？</span>
+            <span class="toc-desc">2.5倍、0.4倍、<span class="frac" role="img" aria-label="5分の3"><span>3</span><span>5</span></span>倍。はんぱな倍を、分けて数える。</span>
+            <span class="toc-marks"><i></i><i></i><i></i><i></i><span class="toc-count"></span></span>
+          </button></li>
+          <li><button type="button" class="toc-item" data-ch="3">
+            <span class="toc-n">3</span>
+            <span class="toc-title">3<ruby>割<rt>わり</rt></ruby>引きはいくら？</span>
+            <span class="toc-desc">40%、3<ruby>割<rt>わり</rt></ruby>、20%引き。さいごは、もとのねだんを当てる。</span>
+            <span class="toc-marks"><i></i><i></i><i></i><i></i><span class="toc-count"></span></span>
+          </button></li>
+          <li><button type="button" class="toc-item" data-ch="4">
+            <span class="toc-n">4</span>
+            <span class="toc-title"><ruby>定員<rt>ていいん</rt></ruby>をもとにすると？</span>
+            <span class="toc-desc">「〜をもとにした<ruby>割合<rt>わりあい</rt></ruby>」。言い方から、もとを見つける。</span>
+            <span class="toc-marks"><i></i><i></i><i></i><i></i><span class="toc-count"></span></span>
+          </button></li>
+        </ol>
+      </nav>
+
+      <details class="parent">
+        <summary>おうちの方へ</summary>
+        <ul>
+          <li>4年生の「倍の見方」から5年生の割合までを、チャプターごとに少しずつ進めるノートです。1日に進めるのは1〜2ステップが目安です。</li>
+          <li>ステップの練習を全問正解すると、もくじに印(◎)がつきます。印はこのブラウザにだけ記録され、別の端末やブラウザには引きつがれません。</li>
+          <li>チャプターごとの見どころは、それぞれのチャプターの下にある「おうちの方へ」に書いてあります。</li>
+        </ul>
+        <p><button type="button" class="btn" id="resetMarks">印を全部消す</button></p>
+      </details>
+    </section>
+
+    <!-- チャプター1 -->
+    <article class="chapter c1" id="c1" hidden>
+      <button type="button" class="btn to-home">← もくじ</button>
+      <header>
+        <p class="eyebrow">チャプター1</p>
+        <h1>もとはどっち？</h1>
+        <p class="lead">「1とみる方」を見つければ、倍の問題はとける。ステップ1からじゅんにやってみよう。</p>
+      </header>
+
+      <nav aria-label="ステップ">
+        <ol class="steps">
+          <li><button type="button" class="tab" id="c1-tab1"><span class="n">1</span><span>もとさがし</span><span class="score"></span></button></li>
+          <li><button type="button" class="tab" id="c1-tab2"><span class="n">2</span><span>図にかく</span><span class="score"></span></button></li>
+          <li><button type="button" class="tab" id="c1-tab3"><span class="n">3</span><span>□はどこ</span><span class="score"></span></button></li>
+          <li><button type="button" class="tab" id="c1-tab4"><span class="n">4</span><span>たしかめ</span><span class="score"></span></button></li>
+        </ol>
+      </nav>
+
+      <div class="chapter-body">
+        <!-- ステップ1 -->
+        <section class="step" id="c1-step1">
+          <h2><span class="n">1</span>もとを見つけよう</h2>
+
+          <div class="block">
+            <p class="tag point">ポイント</p>
+            <p class="pointbox">「○倍」のすぐ前にある「<b>〜の</b>」が、もとにする<ruby>量<rt>りょう</rt></ruby>。1とみる方のことだよ。</p>
+          </div>
+
+          <div class="block">
+            <p class="tag ex"><ruby>例題<rt>れいだい</rt></ruby></p>
+            <p class="sentence">兄の体重は、<span class="key on">弟の2倍</span>です。</p>
+            <div class="fig" data-tape="弟||兄||2"></div>
+            <p>「弟の2倍」と書いてあるから、もとにする量は<b>弟</b>。弟を2つ分ならべると、兄の体重と同じになる。</p>
+            <p class="tag care">まちがえやすい</p>
+            <div class="careful">
+              <p class="careful-q">「2倍になっているのは兄だから、兄がもと？」</p>
+              <p>ちがうよ。<b>2倍する前</b>の方が、もとにする量。弟を2倍すると、兄になる。兄は<b>2倍したあと</b>の方。</p>
+              <p class="flow"><span>弟<small>もと</small></span><span class="flow-arrow">2倍する →</span><span class="flow-b">兄</span></p>
+              <p>数を入れて、たしかめよう。弟が20kgなら、兄は 20 × 2 = 40kg。兄の方が重くて、文と合う。</p>
+              <p>もし兄がもとなら、弟が兄の2倍になって、弟の方が重くなる。文と合わない。</p>
+            </div>
+            <p>文のじゅん番がかわっても同じ。「<span class="key on">弟の2倍</span>が、兄の体重です。」でも、もとにする量は弟。</p>
+          </div>
+
+          <div class="block practice">
+            <p class="tag pr">練習</p>
+            <p>もとにする量(1とみる方)は、どっち？</p>
+            <ol class="qs"></ol>
+          </div>
+
+          <div class="result">
+            <div class="hana"></div>
+            <p class="result-text" aria-live="polite"></p>
+            <button type="button" class="btn retry" id="c1-retry1">もう一度やる</button>
+            <button type="button" class="btn primary next" id="c1-next1" data-to="1">ステップ2へ</button>
+          </div>
+        </section>
+
+        <!-- ステップ2 -->
+        <section class="step" id="c1-step2" hidden>
+          <h2><span class="n">2</span>図にかこう</h2>
+
+          <div class="block">
+            <p class="tag point">ポイント</p>
+            <p class="pointbox">図は、<b>もとにする量から</b>かく。もとを1つ分かいてから、もう1つを「いくつ分」でかこう。</p>
+          </div>
+
+          <div class="block" data-demo="demo">
+            <p class="tag ex"><ruby>例題<rt>れいだい</rt></ruby></p>
+            <p class="sentence">赤いリボンは15cmで、<span class="key on">青いリボンの3倍</span>です。青いリボンは何cmですか。</p>
+            <div class="fig demo-fig"></div>
+            <p class="demo-cap" aria-live="polite"></p>
+            <div class="demo-ctl">
+              <button type="button" class="btn demo-prev" id="c1-demo2Prev">もどる</button>
+              <span class="demo-pos">1 / 4</span>
+              <button type="button" class="btn primary demo-next" id="c1-demo2Next">つぎへ</button>
+            </div>
+          </div>
+
+          <div class="block practice">
+            <p class="tag pr">練習</p>
+            <p>正しい図は、どっち？ 「1とみる」がついている方が、もとにする量。</p>
+            <ol class="qs"></ol>
+          </div>
+
+          <div class="result">
+            <div class="hana"></div>
+            <p class="result-text" aria-live="polite"></p>
+            <button type="button" class="btn retry" id="c1-retry2">もう一度やる</button>
+            <button type="button" class="btn primary next" id="c1-next2" data-to="2">ステップ3へ</button>
+          </div>
+        </section>
+
+        <!-- ステップ3 -->
+        <section class="step" id="c1-step3" hidden>
+          <h2><span class="n">3</span>□はどこ？</h2>
+
+          <div class="block">
+            <p class="tag point">ポイント</p>
+            <p class="pointbox">「倍」と書いてあっても、かけ算とはかぎらない。<b>□がどこにあるか</b>で、かけ算かわり算かが決まる。</p>
+          </div>
+
+          <div class="block">
+            <p class="tag ex"><ruby>例題<rt>れいだい</rt></ruby></p>
+            <p>同じ数字の問題を、2つならべてみよう。</p>
+            <div class="pair">
+              <div class="pair-item">
+                <p><span class="kana">ア</span> 青いリボンは5cmです。赤いリボンは、青いリボンの3倍です。赤いリボンは何cmですか。</p>
+                <div class="fig" data-tape="青いリボン|5cm|赤いリボン|□cm|3"></div>
+                <p class="shiki">式<b>5 × 3 = 15</b>答え<b>15cm</b></p>
+              </div>
+              <div class="pair-item">
+                <p><span class="kana">イ</span> 赤いリボンは15cmで、青いリボンの3倍です。青いリボンは何cmですか。</p>
+                <div class="fig" data-tape="青いリボン|□cm|赤いリボン|15cm|3"></div>
+                <p class="shiki">式<b>15 ÷ 3 = 5</b>答え<b>5cm</b></p>
+              </div>
+            </div>
+            <p>図の形は同じで、□のばしょだけがちがう。□が<b>もとにする量</b>にあるときは、わり算になる。</p>
+          </div>
+
+          <div class="block practice">
+            <p class="tag pr">練習</p>
+            <p>式は、どっち？ こまったら、紙に図をかいてみよう。</p>
+            <ol class="qs"></ol>
+          </div>
+
+          <div class="result">
+            <div class="hana"></div>
+            <p class="result-text" aria-live="polite"></p>
+            <button type="button" class="btn retry" id="c1-retry3">もう一度やる</button>
+            <button type="button" class="btn primary next" id="c1-next3" data-to="3">ステップ4へ</button>
+          </div>
+        </section>
+
+        <!-- ステップ4 -->
+        <section class="step" id="c1-step4" hidden>
+          <h2><span class="n">4</span>文にもどして、たしかめよう</h2>
+
+          <div class="block">
+            <p class="tag point">ポイント</p>
+            <p class="pointbox">答えが出たら、<b>もとの文に入れて読んでみる</b>。おかしな文になったら、どこかがちがう。</p>
+          </div>
+
+          <div class="block">
+            <p class="tag ex"><ruby>例題<rt>れいだい</rt></ruby></p>
+            <p class="sentence">赤いリボンは15cmで、青いリボンの3倍です。青いリボンは何cmですか。</p>
+            <ul class="checks">
+              <li>
+                <span class="cand">45cm</span>
+                <span><span class="back">「赤は15cmで、青45cmの3倍」</span><br>45 × 3 = 135。15にならない。青の方が長くなってしまう。</span>
+                <span class="mark ng" aria-label="ちがう">×</span>
+              </li>
+              <li>
+                <span class="cand">5cm</span>
+                <span><span class="back">「赤は15cmで、青5cmの3倍」</span><br>5 × 3 = 15。合っている。</span>
+                <span class="mark ok" aria-label="合っている">◯</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="block practice">
+            <p class="tag pr">練習</p>
+            <p>出てきた答えは、合っている？ 文にもどして、たしかめよう。</p>
+            <ol class="qs"></ol>
+          </div>
+
+          <div class="result">
+            <div class="hana"></div>
+            <p class="result-text" aria-live="polite"></p>
+            <button type="button" class="btn retry" id="c1-retry4">もう一度やる</button>
+            <button type="button" class="btn primary go-ch" data-ch="2">チャプター2へ</button>
+          </div>
+        </section>
+      </div>
+
+      <details class="parent">
+        <summary>おうちの方へ</summary>
+        <ul>
+          <li>1日に進めるのは1〜2ステップが目安です。数日あけてステップ1と3をもう一度やると、定着したか確かめられます。</li>
+          <li>答えを選ぶ前に「どっちを1とみる?」と聞いてください。</li>
+          <li>正解でも「どうしてそう思った?」と理由を聞くと、当てずっぽうかどうかがわかります。</li>
+          <li>ステップ2と3は、画面を見るだけでなく、紙にも自分で図をかかせると身につきやすくなります。</li>
+        </ul>
+      </details>
+    </article>
+
+    <!-- チャプター2 -->
+    <article class="chapter c2" id="c2" hidden>
+      <button type="button" class="btn to-home">← もくじ</button>
+      <header>
+        <p class="eyebrow">チャプター2</p>
+        <h1>2.5倍ってなに？</h1>
+        <p class="lead">2.5倍、0.4倍、<span class="frac" role="img" aria-label="5分の3"><span>3</span><span>5</span></span>倍。はんぱな倍も「もとを分けて、数える」でとける。</p>
+      </header>
+
+      <nav aria-label="ステップ">
+        <ol class="steps">
+          <li><button type="button" class="tab" id="c2-tab1"><span class="n">1</span><span>2.5倍</span><span class="score"></span></button></li>
+          <li><button type="button" class="tab" id="c2-tab2"><span class="n">2</span><span>0.4倍</span><span class="score"></span></button></li>
+          <li><button type="button" class="tab" id="c2-tab3"><span class="n">3</span><span>分数の倍</span><span class="score"></span></button></li>
+          <li><button type="button" class="tab" id="c2-tab4"><span class="n">4</span><span>何倍かな</span><span class="score"></span></button></li>
+        </ol>
+      </nav>
+
+      <div class="chapter-body">
+        <!-- ステップ1 -->
+        <section class="step" id="c2-step1">
+          <h2><span class="n">1</span><span>2.5倍は、2つ分と半分</span></h2>
+
+          <div class="block">
+            <p class="tag point">ポイント</p>
+            <p class="pointbox">倍は、<b>はんぱな数</b>にもなる。2.5倍は「2つ分と、あと半分」。0.5倍は、もとの半分のこと。</p>
+          </div>
+
+          <div class="block" data-demo="demo1">
+            <p class="tag ex"><ruby>例題<rt>れいだい</rt></ruby></p>
+            <p class="sentence">青いリボンは40cmです。赤いリボンは、<span class="key on">青いリボンの2.5倍</span>です。赤いリボンは何cmですか。</p>
+            <div class="fig demo-fig"></div>
+            <p class="demo-cap" aria-live="polite"></p>
+            <div class="demo-ctl">
+              <button type="button" class="btn demo-prev" id="c2-demo1Prev">もどる</button>
+              <span class="demo-pos">1 / 4</span>
+              <button type="button" class="btn primary demo-next" id="c2-demo1Next">つぎへ</button>
+            </div>
+          </div>
+
+          <div class="block practice">
+            <p class="tag pr">練習</p>
+            <p>答えは、どれ？ 先に「何倍と何倍の間かな」と考えてみよう。</p>
+            <ol class="qs"></ol>
+          </div>
+
+          <div class="result">
+            <div class="hana"></div>
+            <p class="result-text" aria-live="polite"></p>
+            <button type="button" class="btn retry" id="c2-retry1">もう一度やる</button>
+            <button type="button" class="btn primary next" id="c2-next1" data-to="1">ステップ2へ</button>
+          </div>
+        </section>
+
+        <!-- ステップ2 -->
+        <section class="step" id="c2-step2" hidden>
+          <h2><span class="n">2</span><span>0.4倍は、もとより小さい</span></h2>
+
+          <div class="block">
+            <p class="tag point">ポイント</p>
+            <p class="pointbox"><b>0.1倍</b>は、もとを10こに分けた1こ分。0.4倍は、その4こ分。1倍より小さいから、<b>もとより小さくなる</b>。</p>
+          </div>
+
+          <div class="block" data-demo="demo2">
+            <p class="tag ex"><ruby>例題<rt>れいだい</rt></ruby></p>
+            <p class="sentence">青いテープは50cmです。赤いテープは、<span class="key on">青いテープの0.4倍</span>です。赤いテープは何cmですか。</p>
+            <div class="fig demo-fig"></div>
+            <p class="demo-cap" aria-live="polite"></p>
+            <div class="demo-ctl">
+              <button type="button" class="btn demo-prev" id="c2-demo2Prev">もどる</button>
+              <span class="demo-pos">1 / 4</span>
+              <button type="button" class="btn primary demo-next" id="c2-demo2Next">つぎへ</button>
+            </div>
+          </div>
+
+          <div class="block practice">
+            <p class="tag pr">練習</p>
+            <p>答えは、どれ？ 先に「もとより大きい？ 小さい？」と考えてみよう。</p>
+            <ol class="qs"></ol>
+          </div>
+
+          <div class="result">
+            <div class="hana"></div>
+            <p class="result-text" aria-live="polite"></p>
+            <button type="button" class="btn retry" id="c2-retry2">もう一度やる</button>
+            <button type="button" class="btn primary next" id="c2-next2" data-to="2">ステップ3へ</button>
+          </div>
+        </section>
+
+        <!-- ステップ3 -->
+        <section class="step" id="c2-step3" hidden>
+          <h2><span class="n">3</span><span><span class="frac" role="img" aria-label="5分の3"><span>3</span><span>5</span></span>倍は、5こに分けた3こ分</span></h2>
+
+          <div class="block">
+            <p class="tag point">ポイント</p>
+            <p class="pointbox">分数の倍は、<b>分母の数で分けて、分子の数だけ数える</b>。「青いリボンの<span class="frac" role="img" aria-label="5分の3"><span>3</span><span>5</span></span>」ということもある。同じいみ。</p>
+          </div>
+
+          <div class="block" data-demo="demo3">
+            <p class="tag ex"><ruby>例題<rt>れいだい</rt></ruby></p>
+            <p class="sentence">青いリボンは20cmです。赤いリボンは、<span class="key on">青いリボンの<span class="frac" role="img" aria-label="5分の3"><span>3</span><span>5</span></span>倍</span>です。赤いリボンは何cmですか。</p>
+            <div class="fig demo-fig"></div>
+            <p class="demo-cap" aria-live="polite"></p>
+            <div class="demo-ctl">
+              <button type="button" class="btn demo-prev" id="c2-demo3Prev">もどる</button>
+              <span class="demo-pos">1 / 4</span>
+              <button type="button" class="btn primary demo-next" id="c2-demo3Next">つぎへ</button>
+            </div>
+          </div>
+
+          <div class="block practice">
+            <p class="tag pr">練習</p>
+            <p>答えは、どれ？ 「何こに分ける？ 何こ分？」と考えてみよう。</p>
+            <ol class="qs"></ol>
+          </div>
+
+          <div class="result">
+            <div class="hana"></div>
+            <p class="result-text" aria-live="polite"></p>
+            <button type="button" class="btn retry" id="c2-retry3">もう一度やる</button>
+            <button type="button" class="btn primary next" id="c2-next3" data-to="3">ステップ4へ</button>
+          </div>
+        </section>
+
+        <!-- ステップ4 -->
+        <section class="step" id="c2-step4" hidden>
+          <h2><span class="n">4</span><span>何倍かな？</span></h2>
+
+          <div class="block">
+            <p class="tag point">ポイント</p>
+            <p class="pointbox">何倍かをもとめるときも同じ。<b>もとを分けて、いくつ分か数える</b>。もとをとりちがえると、倍がかわる。</p>
+          </div>
+
+          <div class="block">
+            <p class="tag ex"><ruby>例題<rt>れいだい</rt></ruby></p>
+            <p class="sentence">テープAは50cm、テープBは20cmです。</p>
+            <div class="pair">
+              <div class="pair-item">
+                <p><span class="kana">ア</span> テープBは、<span class="key on">テープAの何倍</span>ですか。</p>
+                <div class="fig" data-stape='{"base":{"label":"テープA","value":"50cm"},"comp":{"label":"テープB","value":"20cm"},"k":0.4,"div":10}'></div>
+                <p>もとはテープA。10こに分けた1こ分は 50 ÷ 10 = 5cm。20cmは、その4こ分。だから<b>0.4倍</b>。</p>
+              </div>
+              <div class="pair-item">
+                <p><span class="kana">イ</span> テープAは、<span class="key on">テープBの何倍</span>ですか。</p>
+                <div class="fig" data-stape='{"base":{"label":"テープB","value":"20cm"},"comp":{"label":"テープA","value":"50cm"},"k":2.5,"div":2}'></div>
+                <p>もとはテープB。2つ分で40cm。のこりの10cmは、20cmの半分。だから<b>2.5倍</b>。</p>
+              </div>
+            </div>
+            <p>同じ2本でも、もとがかわると倍もかわる。「〜の何倍」の「〜」が、もとにする量。</p>
+          </div>
+
+          <div class="block practice">
+            <p class="tag pr">練習</p>
+            <p>何倍かな？ まず、もとにする量を見つけよう。</p>
+            <ol class="qs"></ol>
+          </div>
+
+          <div class="result">
+            <div class="hana"></div>
+            <p class="result-text" aria-live="polite"></p>
+            <button type="button" class="btn retry" id="c2-retry4">もう一度やる</button>
+            <button type="button" class="btn primary go-ch" data-ch="3">チャプター3へ</button>
+          </div>
+        </section>
+      </div>
+
+      <details class="parent">
+        <summary>おうちの方へ</summary>
+        <ul>
+          <li>このチャプターは、倍が小数や分数になる場合です。計算は「もとを分ける(わり算)」と「いくつ分(かけ算)」の2段階にしてあり、小数のかけ算やわり算は使いません。</li>
+          <li>いちばんの山は、0.4倍のように「倍なのに小さくなる」ことです。「どうして小さくなるの?」と聞いて、図の目もりで説明させてみてください。</li>
+          <li>答えを選ぶ前に「もとより大きくなる? 小さくなる?」と見当をつけさせると、たし算やけたのまちがいに自分で気づけます。</li>
+          <li>ステップ4の分数の問題は、選択肢の分母をヒントに「何こに分ける?」と聞いてください。</li>
+        </ul>
+      </details>
+    </article>
+
+    <!-- チャプター3 -->
+    <article class="chapter c3" id="c3" hidden>
+      <button type="button" class="btn to-home">← もくじ</button>
+      <header>
+        <p class="eyebrow">チャプター3</p>
+        <h1>3<ruby>割<rt>わり</rt></ruby>引きはいくら？</h1>
+        <p class="lead">40%、3割、20%引き。どれも「何倍か」の言いかえ。さいごは、もとのねだんを当てよう。</p>
+      </header>
+
+      <nav aria-label="ステップ">
+        <ol class="steps">
+          <li><button type="button" class="tab" id="c3-tab1"><span class="n">1</span><span>40%</span><span class="score"></span></button></li>
+          <li><button type="button" class="tab" id="c3-tab2"><span class="n">2</span><span>3割</span><span class="score"></span></button></li>
+          <li><button type="button" class="tab" id="c3-tab3"><span class="n">3</span><span>20%引き</span><span class="score"></span></button></li>
+          <li><button type="button" class="tab" id="c3-tab4"><span class="n">4</span><span>もとは？</span><span class="score"></span></button></li>
+        </ol>
+      </nav>
+
+      <div class="chapter-body">
+        <!-- ステップ1 -->
+        <section class="step" id="c3-step1">
+          <h2><span class="n">1</span><span>40%は、0.4倍のこと</span></h2>
+
+          <div class="block">
+            <p class="tag point">ポイント</p>
+            <div class="pointbox">
+              <p>もとの何倍にあたるかを表す数を、<ruby>割合<rt>わりあい</rt></ruby>という。0.01倍を<b>1%</b>(パーセント)と書く。この表し方が<ruby>百分率<rt>ひゃくぶんりつ</rt></ruby>。</p>
+              <ul class="conv">
+                <li>1倍 = 100%</li>
+                <li>0.1倍 = 10%</li>
+                <li>0.01倍 = 1%</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="block" data-demo="demo1">
+            <p class="tag ex"><ruby>例題<rt>れいだい</rt></ruby></p>
+            <p class="sentence">クラスの人数は30人です。そのうちの<span class="key on">40%</span>が、めがねをかけています。めがねをかけている人は何人ですか。</p>
+            <div class="fig demo-fig"></div>
+            <p class="demo-cap" aria-live="polite"></p>
+            <div class="demo-ctl">
+              <button type="button" class="btn demo-prev" id="c3-demo1Prev">もどる</button>
+              <span class="demo-pos">1 / 4</span>
+              <button type="button" class="btn primary demo-next" id="c3-demo1Next">つぎへ</button>
+            </div>
+          </div>
+
+          <div class="block practice">
+            <p class="tag pr">練習</p>
+            <p>答えは、どれ？ 10%(10こに分けた1こ分)から考えよう。</p>
+            <ol class="qs"></ol>
+          </div>
+
+          <div class="result">
+            <div class="hana"></div>
+            <p class="result-text" aria-live="polite"></p>
+            <button type="button" class="btn retry" id="c3-retry1">もう一度やる</button>
+            <button type="button" class="btn primary next" id="c3-next1" data-to="1">ステップ2へ</button>
+          </div>
+        </section>
+
+        <!-- ステップ2 -->
+        <section class="step" id="c3-step2" hidden>
+          <h2><span class="n">2</span><span>3<ruby>割<rt>わり</rt></ruby>は、0.3倍のこと</span></h2>
+
+          <div class="block">
+            <p class="tag point">ポイント</p>
+            <div class="pointbox">
+              <p>0.1倍を<b>1<ruby>割<rt>わり</rt></ruby></b>、0.01倍を<b>1<ruby>分<rt>ぶ</rt></ruby></b>ともいう。この表し方が<ruby>歩合<rt>ぶあい</rt></ruby>。お店のね引きや、野球のせいせきで使う。</p>
+              <ul class="conv">
+                <li>1割 = 0.1倍 = 10%</li>
+                <li>1分 = 0.01倍 = 1%</li>
+                <li>2割5分 = 0.25倍 = 25%</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="block" data-demo="demo2">
+            <p class="tag ex"><ruby>例題<rt>れいだい</rt></ruby></p>
+            <p class="sentence">野球で40回打って、そのうちの<span class="key on">3割</span>がヒットでした。ヒットは何本ですか。</p>
+            <div class="fig demo-fig"></div>
+            <p class="demo-cap" aria-live="polite"></p>
+            <div class="demo-ctl">
+              <button type="button" class="btn demo-prev" id="c3-demo2Prev">もどる</button>
+              <span class="demo-pos">1 / 4</span>
+              <button type="button" class="btn primary demo-next" id="c3-demo2Next">つぎへ</button>
+            </div>
+          </div>
+
+          <div class="block practice">
+            <p class="tag pr">練習</p>
+            <p>答えは、どれ？ 1割(10こに分けた1こ分)から考えよう。</p>
+            <ol class="qs"></ol>
+          </div>
+
+          <div class="result">
+            <div class="hana"></div>
+            <p class="result-text" aria-live="polite"></p>
+            <button type="button" class="btn retry" id="c3-retry2">もう一度やる</button>
+            <button type="button" class="btn primary next" id="c3-next2" data-to="2">ステップ3へ</button>
+          </div>
+        </section>
+
+        <!-- ステップ3 -->
+        <section class="step" id="c3-step3" hidden>
+          <h2><span class="n">3</span><span>20%引きは、0.8倍</span></h2>
+
+          <div class="block">
+            <p class="tag point">ポイント</p>
+            <div class="pointbox">
+              <p>「20%引き」は、もとから20%をひくこと。<b>のこりは80%</b>で、0.8倍。「20%まし」は、もとに20%をたすこと。合わせて120%で、1.2倍。もとのねだんを<ruby>定価<rt>ていか</rt></ruby>という。</p>
+              <ul class="conv">
+                <li>20%引き → 100 − 20 = 80%</li>
+                <li>20%まし → 100 + 20 = 120%</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="block" data-demo="demo3">
+            <p class="tag ex"><ruby>例題<rt>れいだい</rt></ruby></p>
+            <p class="sentence"><ruby>定価<rt>ていか</rt></ruby>1000円のくつが、<span class="key on">20%引き</span>で売られています。いくらで買えますか。</p>
+            <div class="fig demo-fig"></div>
+            <p class="demo-cap" aria-live="polite"></p>
+            <div class="demo-ctl">
+              <button type="button" class="btn demo-prev" id="c3-demo3Prev">もどる</button>
+              <span class="demo-pos">1 / 4</span>
+              <button type="button" class="btn primary demo-next" id="c3-demo3Next">つぎへ</button>
+            </div>
+          </div>
+
+          <div class="block practice">
+            <p class="tag pr">練習</p>
+            <p>答えは、どれ？ 先に「もとの何%になるかな」と考えよう。</p>
+            <ol class="qs"></ol>
+          </div>
+
+          <div class="result">
+            <div class="hana"></div>
+            <p class="result-text" aria-live="polite"></p>
+            <button type="button" class="btn retry" id="c3-retry3">もう一度やる</button>
+            <button type="button" class="btn primary next" id="c3-next3" data-to="3">ステップ4へ</button>
+          </div>
+        </section>
+
+        <!-- ステップ4 -->
+        <section class="step" id="c3-step4" hidden>
+          <h2><span class="n">4</span><span>もとは、いくつ？</span></h2>
+
+          <div class="block">
+            <p class="tag point">ポイント</p>
+            <div class="pointbox">
+              <p>もとにする量がわからないときは、<b>1こ分にもどしてから、もとの数だけ集める</b>。今までと、ぎゃくのじゅん番。</p>
+              <ul class="conv">
+                <li>もと → くらべる方：分けて、数える</li>
+                <li>くらべる方 → もと：1こ分にもどして、集める</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="block" data-demo="demo4">
+            <p class="tag ex"><ruby>例題<rt>れいだい</rt></ruby></p>
+            <p class="sentence">本を60ページ読みました。これは、<span class="key on">本全体の30%</span>にあたります。本は全部で何ページですか。</p>
+            <div class="fig demo-fig"></div>
+            <p class="demo-cap" aria-live="polite"></p>
+            <div class="demo-ctl">
+              <button type="button" class="btn demo-prev" id="c3-demo4Prev">もどる</button>
+              <span class="demo-pos">1 / 4</span>
+              <button type="button" class="btn primary demo-next" id="c3-demo4Next">つぎへ</button>
+            </div>
+          </div>
+
+          <div class="block practice">
+            <p class="tag pr">練習</p>
+            <p>もとにする量は、いくつ？ 先に「1こ分」をもとめよう。</p>
+            <ol class="qs"></ol>
+          </div>
+
+          <div class="result">
+            <div class="hana"></div>
+            <p class="result-text" aria-live="polite"></p>
+            <button type="button" class="btn retry" id="c3-retry4">もう一度やる</button>
+            <button type="button" class="btn primary go-ch" data-ch="4">チャプター4へ</button>
+          </div>
+        </section>
+      </div>
+
+      <details class="parent">
+        <summary>おうちの方へ</summary>
+        <ul>
+          <li>このチャプターは、百分率、歩合、割引き(学校では5年生の内容)と、もとにする量の逆算です。計算はチャプター2と同じ「分けて数える」だけで解けるようにしてあります。</li>
+          <li>ステップ3でいちばん多いまちがいは、「3割引き」のねだんを「3割」で計算することです。「買うねだんは、のこりの何割?」と聞いてください。</li>
+          <li>ステップ4は、中学受験の「相当算」の入口です。図を見ながら「わかっているのは何こ分?」「1こ分はいくつ?」の順に聞いてください。</li>
+          <li>答えが出たら、もとの文にもどして確かめる習慣(チャプター1のステップ4)を続けてください。</li>
+        </ul>
+      </details>
+    </article>
+
+    <!-- チャプター4 -->
+    <article class="chapter c4" id="c4" hidden>
+      <button type="button" class="btn to-home">← もくじ</button>
+      <header>
+        <p class="eyebrow">チャプター4</p>
+        <h1><ruby>定員<rt>ていいん</rt></ruby>をもとにすると？</h1>
+        <p class="lead">「定員をもとにした、乗客の割合」。むずかしそうだけれど、聞いているのは「定員の何倍？」と同じこと。</p>
+      </header>
+
+      <nav aria-label="ステップ">
+        <ol class="steps">
+          <li><button type="button" class="tab" id="c4-tab1"><span class="n">1</span><span>言いかえ</span><span class="score"></span></button></li>
+          <li><button type="button" class="tab" id="c4-tab2"><span class="n">2</span><span>予想</span><span class="score"></span></button></li>
+          <li><button type="button" class="tab" id="c4-tab3"><span class="n">3</span><span>もとでわる</span><span class="score"></span></button></li>
+          <li><button type="button" class="tab" id="c4-tab4"><span class="n">4</span><span>まぜこぜ</span><span class="score"></span></button></li>
+        </ol>
+      </nav>
+
+      <div class="chapter-body">
+        <!-- ステップ1 -->
+        <section class="step" id="c4-step1">
+          <h2><span class="n">1</span><span>言いかえると、いつもの形</span></h2>
+
+          <div class="block">
+            <p class="tag point">ポイント</p>
+            <div class="pointbox">
+              <p>「定員をもとにした、乗客の<ruby>割合<rt>わりあい</rt></ruby>」は、「乗客は、定員の何倍？」と同じ意味。言い方がちがうだけ。</p>
+              <p>つぎの言葉の<b>すぐ前</b>が、もとにする<ruby>量<rt>りょう</rt></ruby>。</p>
+              <ul class="conv">
+                <li>〜をもとにした</li>
+                <li>〜に<ruby>対<rt>たい</rt></ruby>する</li>
+                <li>〜を1とみた</li>
+                <li>〜の何倍</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="block" data-demo="demo1">
+            <p class="tag ex"><ruby>例題<rt>れいだい</rt></ruby></p>
+            <p class="sentence">定員300人の電車に、乗客が360人乗っています。<span class="key on">定員をもとにした</span>ときの、乗客の割合をもとめなさい。</p>
+            <div class="fig demo-fig"></div>
+            <p class="demo-cap" aria-live="polite"></p>
+            <div class="demo-ctl">
+              <button type="button" class="btn demo-prev" id="c4-demo1Prev">もどる</button>
+              <span class="demo-pos">1 / 4</span>
+              <button type="button" class="btn primary demo-next" id="c4-demo1Next">つぎへ</button>
+            </div>
+          </div>
+
+          <div class="block">
+            <p class="tag care">まちがえやすい</p>
+            <div class="careful">
+              <p class="careful-q">「乗客の割合だから、乗客がもと？」</p>
+              <p>ちがうよ。同じ「の」でも、後ろの言葉で役目がかわる。</p>
+              <ul class="conv">
+                <li><span class="w w-moto">定員</span>の何倍 → 定員が、もと</li>
+                <li><span class="w w-kurabe">乗客</span>の割合 → くらべる方</li>
+              </ul>
+              <p>「〜の割合」の「〜」は、割合を知りたい方。まよったら、「何倍」の形に言いかえよう。</p>
+            </div>
+          </div>
+
+          <div class="block practice">
+            <p class="tag pr">練習</p>
+            <p>もとにする量を見つけよう。計算はしないよ。</p>
+            <ol class="qs"></ol>
+          </div>
+
+          <div class="result">
+            <div class="hana"></div>
+            <p class="result-text" aria-live="polite"></p>
+            <button type="button" class="btn retry" id="c4-retry1">もう一度やる</button>
+            <button type="button" class="btn primary next" id="c4-next1" data-to="1">ステップ2へ</button>
+          </div>
+        </section>
+
+        <!-- ステップ2 -->
+        <section class="step" id="c4-step2" hidden>
+          <h2><span class="n">2</span><span>計算の前に、予想する</span></h2>
+
+          <div class="block">
+            <p class="tag point">ポイント</p>
+            <div class="pointbox">
+              <p>もとにする量を1とみる。くらべる方が、もとより大きければ、割合は<b>1より大きい</b>。小さければ、<b>1より小さい</b>。</p>
+              <p>先に予想しておくと、式がぎゃくになったときに気づける。</p>
+              <ul class="conv">
+                <li>もとより大きい → 1より大きい</li>
+                <li>もとと同じ → ちょうど1</li>
+                <li>もとより小さい → 1より小さい</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="block" data-demo="demo2">
+            <p class="tag ex"><ruby>例題<rt>れいだい</rt></ruby></p>
+            <p>ステップ1の電車の問題を、もう一歩すすめるよ。</p>
+            <p class="sentence">定員300人の電車に、乗客が360人乗っています。<span class="key on">定員をもとにした</span>ときの、乗客の割合は、1より大きいですか。小さいですか。</p>
+            <div class="fig demo-fig"></div>
+            <p class="demo-cap" aria-live="polite"></p>
+            <div class="demo-ctl">
+              <button type="button" class="btn demo-prev" id="c4-demo2Prev">もどる</button>
+              <span class="demo-pos">1 / 4</span>
+              <button type="button" class="btn primary demo-next" id="c4-demo2Next">つぎへ</button>
+            </div>
+          </div>
+
+          <div class="block practice">
+            <p class="tag pr">練習</p>
+            <p>割合は、1より大きい？ 小さい？ 先に、もとを見つけよう。計算はしないよ。</p>
+            <ol class="qs"></ol>
+          </div>
+
+          <div class="result">
+            <div class="hana"></div>
+            <p class="result-text" aria-live="polite"></p>
+            <button type="button" class="btn retry" id="c4-retry2">もう一度やる</button>
+            <button type="button" class="btn primary next" id="c4-next2" data-to="2">ステップ3へ</button>
+          </div>
+        </section>
+
+        <!-- ステップ3 -->
+        <section class="step" id="c4-step3" hidden>
+          <h2><span class="n">3</span><span>もとでわって、割合を出す</span></h2>
+
+          <div class="block">
+            <p class="tag point">ポイント</p>
+            <div class="pointbox">
+              <p>割合をもとめるときは、□の式を書く。□は、<b>くらべる方 ÷ もと</b>でわかる。わる数は、いつも、もとにする量。</p>
+              <ul class="conv">
+                <li>もと × □ = くらべる方</li>
+                <li>□ = くらべる方 ÷ もと</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="block" data-demo="demo3">
+            <p class="tag ex"><ruby>例題<rt>れいだい</rt></ruby></p>
+            <p>電車の問題を、さいごまでとくよ。</p>
+            <p class="sentence">定員300人の電車に、乗客が360人乗っています。<span class="key on">定員をもとにした</span>ときの、乗客の割合をもとめなさい。</p>
+            <div class="fig demo-fig"></div>
+            <p class="demo-cap" aria-live="polite"></p>
+            <div class="demo-ctl">
+              <button type="button" class="btn demo-prev" id="c4-demo3Prev">もどる</button>
+              <span class="demo-pos">1 / 4</span>
+              <button type="button" class="btn primary demo-next" id="c4-demo3Next">つぎへ</button>
+            </div>
+          </div>
+
+          <div class="block practice">
+            <p class="tag pr">練習</p>
+            <p>割合は、いくつ？ 「もとはどれ」「1より大きいか」をたしかめてから、もとでわろう。</p>
+            <ol class="qs"></ol>
+          </div>
+
+          <div class="result">
+            <div class="hana"></div>
+            <p class="result-text" aria-live="polite"></p>
+            <button type="button" class="btn retry" id="c4-retry3">もう一度やる</button>
+            <button type="button" class="btn primary next" id="c4-next3" data-to="3">ステップ4へ</button>
+          </div>
+        </section>
+
+        <!-- ステップ4 -->
+        <section class="step" id="c4-step4" hidden>
+          <h2><span class="n">4</span><span>じゅん番がかわっても、同じ</span></h2>
+
+          <div class="block">
+            <p class="tag point">ポイント</p>
+            <div class="pointbox">
+              <p>数が出てくるじゅん番や、数の大きさで、式を決めない。いつも、同じ3つをたしかめる。</p>
+              <ul class="conv">
+                <li>① もとは、どれ？</li>
+                <li>② 1より大きい？</li>
+                <li>③ くらべる方 ÷ もと</li>
+              </ul>
+              <p>%で聞かれたら、さいごに言いかえる。0.01倍が1%だったね。</p>
+            </div>
+          </div>
+
+          <div class="block" data-demo="demo4">
+            <p class="tag ex"><ruby>例題<rt>れいだい</rt></ruby></p>
+            <p class="sentence">バスに、乗客が45人乗っています。このバスの定員は50人です。<span class="key on">定員に対する</span>乗客の割合は、何%ですか。</p>
+            <div class="fig demo-fig"></div>
+            <p class="demo-cap" aria-live="polite"></p>
+            <div class="demo-ctl">
+              <button type="button" class="btn demo-prev" id="c4-demo4Prev">もどる</button>
+              <span class="demo-pos">1 / 4</span>
+              <button type="button" class="btn primary demo-next" id="c4-demo4Next">つぎへ</button>
+            </div>
+          </div>
+
+          <div class="block practice">
+            <p class="tag pr">練習</p>
+            <p>答えは、どれ？ 数のじゅん番に、だまされないでね。</p>
+            <ol class="qs"></ol>
+          </div>
+
+          <div class="result">
+            <div class="hana"></div>
+            <p class="result-text" aria-live="polite"></p>
+            <button type="button" class="btn retry" id="c4-retry4">もう一度やる</button>
+            <button type="button" class="btn primary go-home">もくじへ</button>
+          </div>
+        </section>
+      </div>
+
+      <details class="parent">
+        <summary>おうちの方へ</summary>
+        <ul>
+          <li>このチャプターは、「〜をもとにした」「〜に対する」という言い方から、もとにする量を読み取る練習です。チャプター1〜3の問題文は「AはBの何倍」の形だけだったので、ここで言い方の種類をおぎないます。</li>
+          <li>「乗客の割合」の「の」に引かれて、乗客をもとだと思うまちがいが多いです。「乗客は、定員の何倍?」と言いかえさせると、自分で気づけます。</li>
+          <li>式を書く前に「もとはどれ?」「1より大きい?」の2つを声に出させてください。大きい数を小さい数でわるくせがあると、答えが1より小さい問題(ステップ3の3問め、ステップ4の1問め)でまちがえます。</li>
+          <li>「割合をもとめなさい」の答えは、教科書では「1.2」のように数だけで書きます。「1.2倍」と意味は同じです。</li>
+          <li>ニュースで聞く電車の「乗車率120%」は、定員をもとにした乗客の割合です。話題にしてみてください。</li>
+        </ul>
+      </details>
+    </article>
+  </main>
+</div>
+
+<script>
+(function(){
+'use strict';
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+function el(tag,cls,html){
+  const e=document.createElement(tag);
+  if(cls) e.className=cls;
+  if(html!=null) e.innerHTML=html;
+  return e;
+}
+const fr=function(n,d){
+  return '<span class="frac" role="img" aria-label="'+d+'分の'+n+'"><span>'+n+'</span><span>'+d+'</span></span>';
+};
+const k=function(s){return '<span class="key">'+s+'</span>';};
+const mo=function(s){return '<span class="w w-moto">'+s+'</span>';};
+const ku=function(s){return '<span class="w w-kurabe">'+s+'</span>';};
+
+/* ---------- 印(全問正かいしたステップ)。見ている人のブラウザにだけのこす ---------- */
+const STORE_KEY='wariai-note:v1';
+let cleared={};
+try{cleared=JSON.parse(localStorage.getItem(STORE_KEY))||{};}catch(e){cleared={};}
+function saveCleared(){
+  try{localStorage.setItem(STORE_KEY,JSON.stringify(cleared));}catch(e){}
+}
+
+/* ---------- ます目のテープ図(チャプター1) ---------- */
+function tapeRow(role,label,units,value,chip){
+  const r=el('span','tape-row '+role);
+  r.appendChild(el('span','tape-label',label));
+  const body=el('span','tape-body');
+  const bar=el('span','tape-bar');
+  bar.style.setProperty('--n',units);
+  for(let i=0;i<units;i++) bar.appendChild(el('i'));
+  body.appendChild(bar);
+  if(value||chip){
+    const n=el('span','tape-note');
+    if(value) n.appendChild(el('b','',value));
+    if(chip) n.appendChild(el('span','chip',chip));
+    body.appendChild(n);
+  }
+  r.appendChild(body);
+  return r;
+}
+// d = {base:{label,value}, comp:{label,value}, times}
+function tape(d,opt){
+  opt=opt||{};
+  const t=el('span','tape');
+  t.setAttribute('role','img');
+  t.setAttribute('aria-label',d.base.label+' 1つ分 '+(d.base.value||'')+'、'+d.comp.label+' '+d.times+'つ分 '+(d.comp.value||''));
+  t.appendChild(tapeRow('moto',d.base.label,1,d.base.value,'1とみる'));
+  if(opt.comp!==false){
+    const note=opt.compNote!==false;
+    t.appendChild(tapeRow('kurabe',d.comp.label,d.times,note?d.comp.value:'',note?d.times+'倍':''));
+  }
+  return t;
+}
+
+/* ---------- 言いかえカード(チャプター4) ---------- */
+// d = {a:もとの言い方, b:「何倍」の形, legend:色のせつ明をつける}
+function reCard(d){
+  const t=el('div','re');
+  t.appendChild(el('p','',d.a));
+  if(d.b){
+    t.appendChild(el('p','re-arrow','↓ 言いかえると'));
+    t.appendChild(el('p','',d.b));
+  }
+  if(d.legend) t.appendChild(el('p','re-legend',mo('青')+' もとにする量　'+ku('赤')+' くらべる方'));
+  return t;
+}
+
+/* ---------- 目もりつきのテープ図(チャプター2から) ---------- */
+function stRow(role,label,value,chip,times,div,ghost){
+  const row=el('span','st-row '+role);
+  const head=el('span','st-head');
+  head.appendChild(el('span','st-label',label));
+  if(value) head.appendChild(el('b','',value));
+  if(chip) head.appendChild(el('span','chip',chip));
+  row.appendChild(head);
+  const bar=el('span','st-bar');
+  bar.style.setProperty('--k',times+(ghost||0));
+  const full=Math.floor(times+1e-9), rest=times-full;
+  for(let i=0;i<full;i++){
+    const c=el('i');
+    c.style.setProperty('--w',1);
+    c.style.setProperty('--div',div);
+    bar.appendChild(c);
+  }
+  if(rest>1e-9){
+    const c=el('i');
+    c.style.setProperty('--w',rest);
+    c.style.setProperty('--div',Math.max(1,Math.round(rest*div)));
+    bar.appendChild(c);
+  }
+  if(ghost){
+    const c=el('i','ghost');
+    c.style.setProperty('--w',ghost);
+    bar.appendChild(c);
+  }
+  row.appendChild(bar);
+  return row;
+}
+function altText(v,alt){
+  if(alt==='%') return Math.round(v*100)+'%';
+  if(alt==='割') return (Math.round(v*100)/10)+'割';
+  return '';
+}
+// d = {base:{label,value}, comp:{label,value}, k, div, max, chip, baseChip, kText, kSay,
+//      alt:'%'|'割'(数直線に言いかえをそえる), kAlt, ghost:引かれる分,
+//      noK:倍の目もりを出さない, say:読み上げ用の言い方}
+// opt = {comp:false} でくらべる方をかくす、{kTick:false} で答えの目もりをかくす
+function stape(d,opt){
+  opt=opt||{};
+  const div=d.div||1, max=d.max||Math.max(1,Math.ceil(d.k+(d.ghost||0)-1e-9)), showComp=opt.comp!==false;
+  const t=el('span','stape');
+  t.style.setProperty('--max',max);
+  t.setAttribute('role','img');
+  t.setAttribute('aria-label',d.base.label+' '+(d.base.value||'')+' を1とみる'+
+    (showComp?'。'+d.comp.label+' '+(d.comp.value||'')+(opt.kTick===false?'':' は '+(d.say||(d.kSay||d.k)+'倍')):''));
+  t.appendChild(stRow('moto',d.base.label,d.base.value,d.baseChip||'1とみる',1,div));
+  if(showComp) t.appendChild(stRow('kurabe',d.comp.label,d.comp.value,d.chip||(d.k+'倍'),d.k,div,d.ghost));
+  const ax=el('span','st-axis'+(d.alt?' has-alt':''));
+  for(let v=0;v<=max;v++){
+    const s=el('span','st-t'+(v===0?' is-first':v===max?' is-last':''),v===max?v+'<small>(倍)</small>':String(v));
+    s.style.setProperty('--v',v);
+    ax.appendChild(s);
+  }
+  if(showComp&&!d.noK&&opt.kTick!==false&&Math.abs(d.k-Math.round(d.k))>1e-9){
+    const p=d.k/max;
+    let cls='st-t is-k', text=d.kText||String(d.k);
+    if(d.alt){
+      cls+=' is-low'+(p<0.2?' at-left':p>0.8?' at-right':'');
+      text+='倍 = '+(d.kAlt||altText(d.k,d.alt));
+    }
+    const s=el('span',cls,text);
+    s.style.setProperty('--v',d.k);
+    ax.appendChild(s);
+  }
+  t.appendChild(ax);
+  return t;
+}
+function figBox(node){
+  const f=el('div','fig');
+  f.appendChild(node);
+  return f;
+}
+function figOf(d,opt){
+  return figBox(stape(d,opt));
+}
+
+// HTMLに書いてある図
+$$('[data-tape]').forEach(function(box){
+  const p=box.dataset.tape.split('|');
+  box.appendChild(tape({base:{label:p[0],value:p[1]},comp:{label:p[2],value:p[3]},times:+p[4]}));
+});
+$$('[data-stape]').forEach(function(box){
+  box.appendChild(stape(JSON.parse(box.dataset.stape)));
+});
+
+/* ---------- はなまる ---------- */
+function hanamaru(){
+  const NS='http://www.w3.org/2000/svg', c=50, R=26, turns=2.25, pts=[];
+  for(let i=4;i<=100;i++){
+    const t=i/100, a=-Math.PI/2+t*turns*2*Math.PI, r=R*t;
+    pts.push([c+r*Math.cos(a),c+r*Math.sin(a)]);
+  }
+  const a0=-Math.PI/2+turns*2*Math.PI;
+  for(let i=1;i<=140;i++){
+    const t=i/140, a=a0+t*2*Math.PI, r=R+4+13*Math.abs(Math.sin(t*7*Math.PI));
+    pts.push([c+r*Math.cos(a),c+r*Math.sin(a)]);
+  }
+  const svg=document.createElementNS(NS,'svg');
+  svg.setAttribute('viewBox','0 0 100 100');
+  svg.setAttribute('class','hanamaru');
+  svg.setAttribute('role','img');
+  svg.setAttribute('aria-label','はなまる');
+  const path=document.createElementNS(NS,'path');
+  path.setAttribute('d','M'+pts.map(function(p){return p[0].toFixed(1)+' '+p[1].toFixed(1);}).join('L'));
+  path.setAttribute('pathLength','1');
+  path.setAttribute('fill','none');
+  svg.appendChild(path);
+  return svg;
+}
+
+/* ---------- 問題の組み立て ----------
+   チャプター2からの問題:
+     opts: [ラベル, 正しいか, まちがえたときのひとこと]
+     cols: えらぶボタンのならべ方(2=2列、1=たて、'w'=広いときだけ3列。なければ3列)、stack: たて1列
+     qfig: 問題といっしょに出す図、re: 答えのあとに出す言いかえカード、fig: 答えのあとに出す図、
+     lines: とき方、check: たしかめ */
+function question(it,report){
+  const li=el('li','q');
+  const p=el('p','q-text');
+  p.appendChild(el('span','',it.text));
+  li.appendChild(p);
+  if(it.qfig) li.appendChild(figOf(it.qfig,{kTick:false}));
+  const box=el('div','choices'+(it.stack?' stack':'')+(it.cols?' c'+it.cols:''));
+  const fb=el('div','fb');
+  fb.hidden=true;
+  fb.setAttribute('aria-live','polite');
+  const btns=it.opts.map(function(o){
+    const b=el('button','choice',o[0]);
+    b.type='button';
+    b.addEventListener('click',function(){
+      btns.forEach(function(x,j){
+        x.disabled=true;
+        if(it.opts[j][1]) x.classList.add('is-right');
+      });
+      if(!o[1]) b.classList.add('is-miss');
+      li.classList.add('answered');
+      fb.className='fb '+(o[1]?'ok':'ng');
+      fb.innerHTML='';
+      fb.appendChild(el('p','fb-head',o[1]?'◯ 正かい！':'おしい！'));
+      if(!o[1]&&o[2]) fb.appendChild(el('p','',o[2]));
+      if(it.re) fb.appendChild(figBox(reCard(it.re)));
+      if(it.fig) fb.appendChild(figOf(it.fig));
+      it.lines.forEach(function(s){fb.appendChild(el('p','',s));});
+      if(it.check) fb.appendChild(el('p','check','たしかめ　'+it.check));
+      fb.hidden=false;
+      report(o[1]);
+    });
+    box.appendChild(b);
+    return b;
+  });
+  li.appendChild(box);
+  li.appendChild(fb);
+  return li;
+}
+// チャプター1の問題: cfg = {text, extra, figs, choices:[{html|node, correct}], explain(fb)}
+function questionCfg(cfg,report){
+  const li=el('li','q');
+  const p=el('p','q-text');
+  p.appendChild(el('span','',cfg.text));
+  li.appendChild(p);
+  if(cfg.extra) li.appendChild(cfg.extra);
+  const box=el('div',cfg.figs?'choices figs':'choices c2');
+  const fb=el('div','fb');
+  fb.hidden=true;
+  fb.setAttribute('aria-live','polite');
+  cfg.choices.forEach(function(c){
+    const b=el('button','choice');
+    b.type='button';
+    if(c.node) b.appendChild(c.node); else b.innerHTML=c.html;
+    c.btn=b;
+    b.addEventListener('click',function(){
+      cfg.choices.forEach(function(x){
+        x.btn.disabled=true;
+        if(x.correct) x.btn.classList.add('is-right');
+      });
+      if(!c.correct) b.classList.add('is-miss');
+      li.classList.add('answered');
+      fb.className='fb '+(c.correct?'ok':'ng');
+      fb.innerHTML='';
+      fb.appendChild(el('p','fb-head',c.correct?'◯ 正かい！':'おしい！'));
+      cfg.explain(fb);
+      fb.hidden=false;
+      report(c.correct);
+    });
+    box.appendChild(b);
+  });
+  li.appendChild(box);
+  li.appendChild(fb);
+  return li;
+}
+
+/* ---------- 例題(図を1手ずつかく) ---------- */
+// stage = {cap, fig:目もりつきのテープ図, opt} / {cap, re:言いかえカード} / {cap, node:図を作る関数}
+function setupDemoIn(root,id,stages){
+  const box=$('[data-demo="'+id+'"]',root), fig=$('.demo-fig',box), cap=$('.demo-cap',box), pos=$('.demo-pos',box);
+  const prev=$('.demo-prev',box), next=$('.demo-next',box);
+  let s=0;
+  function draw(){
+    const st=stages[s];
+    fig.innerHTML='';
+    fig.appendChild(st.node?st.node():st.re?reCard(st.re):stape(st.fig,st.opt));
+    cap.innerHTML=st.cap;
+    pos.textContent=(s+1)+' / '+stages.length;
+    prev.disabled=s===0;
+    next.disabled=s===stages.length-1;
+  }
+  prev.addEventListener('click',function(){if(s>0){s--; draw();}});
+  next.addEventListener('click',function(){if(s<stages.length-1){s++; draw();}});
+  draw();
+}
+function demoFig(base,comp,more){
+  return Object.assign({base:base,comp:comp},more);
+}
+
+/* ---------- チャプターごとの問題と例題 ----------
+   それぞれ {steps:[ステップ1〜4の問題], make:問題の作り方(なければ question)} を返す。
+   setupDemo(id,stages) は、そのチャプターの中の data-demo="id" の例題を動かす。 */
+/* ===== チャプター1 ===== */
+function chapter1(setupDemo){
+  const S1=[
+    {text:'りんごのねだんは、'+k('みかんの3倍')+'です。', choices:['りんご','みかん'], answer:1,
+     why:'「みかんの3倍」だから、もとにする量は<b>みかん</b>。'},
+    {text:k('わたしの4倍')+'が、父の年れいです。', choices:['わたし','父'], answer:0,
+     why:'「わたしの4倍」だから、もとにする量は<b>わたし</b>。文のはじめにあっても同じ。'},
+    {text:'赤いリボンは15cmで、'+k('青いリボンの3倍')+'です。', choices:['赤いリボン','青いリボン'], answer:1,
+     why:'「青いリボンの3倍」だから、もとにする量は<b>青いリボン</b>。'},
+    {text:'大きい水そうには、'+k('小さい水そうの5倍')+'の水が入ります。', choices:['大きい水そう','小さい水そう'], answer:1,
+     why:'「小さい水そうの5倍」だから、もとにする量は<b>小さい水そう</b>。'},
+    {text:k('妹の6倍')+'のシールを、姉が持っています。', choices:['妹','姉'], answer:0,
+     why:'「妹の6倍」だから、もとにする量は<b>妹</b>。'},
+    {text:'白組の点数は、'+k('赤組の2倍')+'でした。', choices:['白組','赤組'], answer:1,
+     why:'「赤組の2倍」だから、もとにする量は<b>赤組</b>。'}
+  ];
+
+  const S2=[
+    {text:'父の体重は60kgで、'+k('わたしの2倍')+'です。', pos:0,
+     base:{label:'わたし',value:'□kg'}, comp:{label:'父',value:'60kg'}, times:2,
+     why:'「わたしの2倍」だから、わたしがもと。わたし2つ分で60kg。60 ÷ 2 = 30 で、わたしは30kg。'},
+    {text:'やかんには、'+k('水とうの4倍')+'の水が入ります。水とうには2dL入ります。', pos:1,
+     base:{label:'水とう',value:'2dL'}, comp:{label:'やかん',value:'□dL'}, times:4,
+     why:'「水とうの4倍」だから、水とうがもと。2 × 4 = 8 で、やかんには8dL入る。'},
+    {text:k('わたしの3倍')+'が、兄のおこづかいです。兄のおこづかいは900円です。', pos:1,
+     base:{label:'わたし',value:'□円'}, comp:{label:'兄',value:'900円'}, times:3,
+     why:'「わたしの3倍」だから、わたしがもと。わたし3つ分で900円。900 ÷ 3 = 300 で、わたしは300円。'},
+    {text:'なわとびを、妹は20回とびました。姉は、'+k('妹の3倍')+'とびました。', pos:0,
+     base:{label:'妹',value:'20回'}, comp:{label:'姉',value:'□回'}, times:3,
+     why:'「妹の3倍」だから、妹がもと。20 × 3 = 60 で、姉は60回。'}
+  ];
+
+  const S3=[
+    {text:'えんぴつは1本60円です。ノートのねだんは、'+k('えんぴつの2倍')+'です。ノートは何円ですか。', a:60, b:2, op:'×',
+     base:{label:'えんぴつ',value:'60円'}, comp:{label:'ノート',value:'□円'}, times:2, shiki:'60 × 2 = 120', ans:'120円',
+     why:'□はノート。60 × 2 = □ だから、かけ算。'},
+    {text:'ノートは120円で、'+k('えんぴつの2倍')+'のねだんです。えんぴつは何円ですか。', a:120, b:2, op:'÷',
+     base:{label:'えんぴつ',value:'□円'}, comp:{label:'ノート',value:'120円'}, times:2, shiki:'120 ÷ 2 = 60', ans:'60円',
+     why:'□はえんぴつ(もとにする量)。□ × 2 = 120 だから、わり算。'},
+    {text:'姉の年れいは12才で、'+k('妹の3倍')+'です。妹は何才ですか。', a:12, b:3, op:'÷',
+     base:{label:'妹',value:'□才'}, comp:{label:'姉',value:'12才'}, times:3, shiki:'12 ÷ 3 = 4', ans:'4才',
+     why:'□は妹(もとにする量)。□ × 3 = 12 だから、わり算。'},
+    {text:'子犬の体重は6kgです。親犬の体重は、'+k('子犬の3倍')+'です。親犬は何kgですか。', a:6, b:3, op:'×',
+     base:{label:'子犬',value:'6kg'}, comp:{label:'親犬',value:'□kg'}, times:3, shiki:'6 × 3 = 18', ans:'18kg',
+     why:'□は親犬。6 × 3 = □ だから、かけ算。'},
+    {text:'大きいバケツには水が8L入ります。これは、'+k('小さいバケツの4倍')+'です。小さいバケツには何L入りますか。', a:8, b:4, op:'÷',
+     base:{label:'小さいバケツ',value:'□L'}, comp:{label:'大きいバケツ',value:'8L'}, times:4, shiki:'8 ÷ 4 = 2', ans:'2L',
+     why:'□は小さいバケツ(もとにする量)。□ × 4 = 8 だから、わり算。'},
+    {text:k('わたしの5倍')+'が、おじいさんの年れいです。わたしは10才です。おじいさんは何才ですか。', a:10, b:5, op:'×',
+     base:{label:'わたし',value:'10才'}, comp:{label:'おじいさん',value:'□才'}, times:5, shiki:'10 × 5 = 50', ans:'50才',
+     why:'□はおじいさん。10 × 5 = □ だから、かけ算。'}
+  ];
+
+  const S4=[
+    {text:'父の年れいは40才で、わたしの4倍です。わたしは何才ですか。', given:'160才', ok:false,
+     back:'「父は40才で、わたし160才の4倍」', calc:'160 × 4 = 640。40にならない。', fix:'正しくは 40 ÷ 4 = 10 で、<b>10才</b>。'},
+    {text:'大きい箱にはクッキーが24まい入っています。これは、小さい箱の3倍です。小さい箱には何まい入っていますか。', given:'8まい', ok:true,
+     back:'「大きい箱は24まいで、小さい箱8まいの3倍」', calc:'8 × 3 = 24。合っている。'},
+    {text:'ジュースは120円で、あめの4倍のねだんです。あめは何円ですか。', given:'30円', ok:true,
+     back:'「ジュースは120円で、あめ30円の4倍」', calc:'30 × 4 = 120。合っている。'},
+    {text:'テープAは8mです。テープBの長さは、テープAの2倍です。テープBは何mですか。', given:'4m', ok:false,
+     back:'「テープBは4mで、テープA 8mの2倍」', calc:'8 × 2 = 16。4にならない。', fix:'正しくは 8 × 2 = 16 で、<b>16m</b>。'},
+    {text:'弟の体重は20kgです。兄の体重は、弟の2倍です。兄は何kgですか。', given:'40kg', ok:true,
+     back:'「兄は40kgで、弟20kgの2倍」', calc:'20 × 2 = 40。合っている。'}
+  ];
+
+  /* ---------- 問題の組み立て ---------- */
+  const BUILD=[
+    function(it){
+      return {text:it.text,
+        choices:it.choices.map(function(c,j){return {html:c,correct:j===it.answer};}),
+        explain:function(fb){fb.appendChild(el('p','',it.why));}};
+    },
+    function(it){
+      const right={base:it.base,comp:it.comp,times:it.times};
+      const wrong={base:it.comp,comp:it.base,times:it.times};
+      const order=it.pos===0?[right,wrong]:[wrong,right];
+      return {text:it.text, figs:true,
+        choices:order.map(function(d,j){
+          const n=el('span','figchoice');
+          n.appendChild(el('span','kana',j===0?'ア':'イ'));
+          n.appendChild(tape(d));
+          return {node:n,correct:d===right};
+        }),
+        explain:function(fb){fb.appendChild(el('p','',it.why));}};
+    },
+    function(it){
+      return {text:it.text,
+        choices:[{html:it.a+' × '+it.b,correct:it.op==='×'},{html:it.a+' ÷ '+it.b,correct:it.op==='÷'}],
+        explain:function(fb){
+          const f=el('div','fig');
+          f.appendChild(tape({base:it.base,comp:it.comp,times:it.times}));
+          fb.appendChild(f);
+          fb.appendChild(el('p','shiki','式<b>'+it.shiki+'</b>答え<b>'+it.ans+'</b>'));
+          fb.appendChild(el('p','',it.why));
+        }};
+    },
+    function(it){
+      return {text:it.text, extra:el('p','given','出てきた答え<b>'+it.given+'</b>'),
+        choices:[{html:'◯ 合っている',correct:it.ok},{html:'× ちがう',correct:!it.ok}],
+        explain:function(fb){
+          fb.appendChild(el('p','','文にもどすと<br><span class="back">'+it.back+'</span><br>'+it.calc));
+          if(it.fix) fb.appendChild(el('p','',it.fix));
+        }};
+    }
+  ];
+
+  /* ---------- ステップ2の例題 ---------- */
+  const DEMO=[
+    {cap:'<b>①</b> もとにする量(青いリボン)を、1つ分かく。長さはまだわからないから □cm。', base:'□cm', comp:false},
+    {cap:'<b>②</b> 赤いリボンを、青いリボンの3つ分でかく。', base:'□cm', comp:true, note:false},
+    {cap:'<b>③</b> わかっている数を書く。赤いリボンは15cm。', base:'□cm', comp:true, note:true},
+    {cap:'<b>④</b> 青3つ分で15cm。1つ分は 15 ÷ 3 = 5。青いリボンは <b>5cm</b>。', base:'5cm', comp:true, note:true}
+  ];
+  setupDemo('demo',DEMO.map(function(s){
+    return {cap:s.cap, node:function(){
+      return tape({base:{label:'青いリボン',value:s.base},comp:{label:'赤いリボン',value:'15cm'},times:3},{comp:s.comp,compNote:s.note});
+    }};
+  }));
+  return {steps:[S1,S2,S3,S4], make:function(it,n,report){return questionCfg(BUILD[n](it),report);}};
+}
+
+/* ===== チャプター2 ===== */
+function chapter2(setupDemo){
+  const S1=[
+    {text:'赤いテープは、青いテープの何倍ですか。図を見て答えましょう。',
+     qfig:{base:{label:'青いテープ'},comp:{label:'赤いテープ'},k:1.5,div:2,chip:'□倍'},
+     opts:[['2倍',false,'2つ分には、半分たりない。'],['1.5倍',true],['2.5倍',false,'2つ分より短い。']],
+     lines:['1つ分と、あと半分。だから<b>1.5倍</b>。']},
+    {text:'青いリボンは20cmです。赤いリボンは、'+k('青いリボンの1.5倍')+'です。赤いリボンは何cmですか。',
+     opts:[['21.5cm',false,'21.5は 20 + 1.5。たし算ではなく、20の1つ分と半分。'],['30cm',true],['25cm',false,'半分は5ではなく、もとの半分。20 ÷ 2 = 10。']],
+     fig:{base:{label:'青いリボン',value:'20cm'},comp:{label:'赤いリボン',value:'30cm'},k:1.5,div:2},
+     lines:['1つ分は20。半分は 20 ÷ 2 = 10。','20 + 10 = 30。答え <b>30cm</b>'],
+     check:'1倍(20)と2倍(40)の間になっている。'},
+    {text:'えんぴつは1本60円です。ふでばこのねだんは、'+k('えんぴつの2.5倍')+'です。ふでばこは何円ですか。',
+     opts:[['150円',true],['125円',false,'125は 60 × 2 + 5。半分は5ではなく、60 ÷ 2 = 30。'],['62.5円',false,'62.5は 60 + 2.5。たし算ではない。']],
+     fig:{base:{label:'えんぴつ',value:'60円'},comp:{label:'ふでばこ',value:'150円'},k:2.5,div:2},
+     lines:['2つ分は 60 × 2 = 120。半分は 60 ÷ 2 = 30。','120 + 30 = 150。答え <b>150円</b>'],
+     check:'2倍(120)と3倍(180)の間になっている。'},
+    {text:'子犬の体重は8kgです。親犬の体重は、'+k('子犬の3.5倍')+'です。親犬は何kgですか。',
+     opts:[['11.5kg',false,'11.5は 8 + 3.5。たし算ではない。'],['29kg',false,'29は 8 × 3 + 5。半分は5ではなく、8 ÷ 2 = 4。'],['28kg',true]],
+     fig:{base:{label:'子犬',value:'8kg'},comp:{label:'親犬',value:'28kg'},k:3.5,div:2},
+     lines:['3つ分は 8 × 3 = 24。半分は 8 ÷ 2 = 4。','24 + 4 = 28。答え <b>28kg</b>'],
+     check:'3倍(24)と4倍(32)の間になっている。'},
+    {text:'やかんには、'+k('水とうの1.5倍')+'の水が入ります。水とうには12dL入ります。やかんには何dL入りますか。',
+     opts:[['18dL',true],['17dL',false,'17は 12 + 5。半分は5ではなく、12 ÷ 2 = 6。'],['13.5dL',false,'13.5は 12 + 1.5。たし算ではない。']],
+     fig:{base:{label:'水とう',value:'12dL'},comp:{label:'やかん',value:'18dL'},k:1.5,div:2},
+     lines:['1つ分は12。半分は 12 ÷ 2 = 6。','12 + 6 = 18。答え <b>18dL</b>'],
+     check:'1倍(12)と2倍(24)の間になっている。'},
+    {text:'もとにする量が30のとき、'+k('2.5倍')+'の数は、どの間にありますか。', stack:true,
+     opts:[['30と60の間',false,'30と60の間は、1倍と2倍の間。'],['90と120の間',false,'90と120の間は、3倍と4倍の間。'],['60と90の間',true]],
+     fig:{base:{label:'もと',value:'30'},comp:{label:'',value:'75'},k:2.5,div:2},
+     lines:['2.5倍は、2倍と3倍の間。','2倍は 30 × 2 = 60、3倍は 30 × 3 = 90。だから<b>60と90の間</b>。']}
+  ];
+
+  const S2=[
+    {text:'もとにする量の'+k('0.8倍')+'は、もとより大きいですか、小さいですか。',
+     opts:[['大きい',false,'0.8は1より小さい。1倍より小さいと、もとより小さくなる。'],['同じ',false,'同じになるのは、ちょうど1倍のとき。'],['小さい',true]],
+     fig:{base:{label:'もと'},comp:{label:''},k:0.8,div:10},
+     lines:['0.8倍は、もとを10こに分けた8こ分。10こ分にたりないから、<b>もとより小さい</b>。']},
+    {text:'もとにする量の'+k('1.3倍')+'は、もとより大きいですか、小さいですか。',
+     opts:[['大きい',true],['同じ',false,'同じになるのは、ちょうど1倍のとき。'],['小さい',false,'1.3は1より大きい。1倍より大きいと、もとより大きくなる。']],
+     fig:{base:{label:'もと'},comp:{label:''},k:1.3,div:10},
+     lines:['1.3倍は、1つ分と、あと0.1倍の3こ分。だから、<b>もとより大きい</b>。']},
+    {text:'青いテープは30cmです。赤いテープは、'+k('青いテープの0.7倍')+'です。赤いテープは何cmですか。',
+     opts:[['210cm',false,'210は 30 × 7。7倍になっている。0.7倍は、もとより小さくなる。'],['21cm',true],['3cm',false,'3cmは0.1倍。0.7倍は、その7こ分。']],
+     fig:{base:{label:'青いテープ',value:'30cm'},comp:{label:'赤いテープ',value:'21cm'},k:0.7,div:10},
+     lines:['0.1倍は 30 ÷ 10 = 3。','0.7倍は、その7こ分。3 × 7 = 21。答え <b>21cm</b>'],
+     check:'1倍より小さいから、30より小さくなっている。'},
+    {text:'ノートは80円です。けしゴムのねだんは、'+k('ノートの0.5倍')+'です。けしゴムは何円ですか。',
+     opts:[['40円',true],['400円',false,'400は 80 × 5。5倍になっている。0.5倍は、もとより小さくなる。'],['8円',false,'8円は0.1倍。0.5倍は、その5こ分。']],
+     fig:{base:{label:'ノート',value:'80円'},comp:{label:'けしゴム',value:'40円'},k:0.5,div:10},
+     lines:['0.1倍は 80 ÷ 10 = 8。','0.5倍は、その5こ分。8 × 5 = 40。答え <b>40円</b>'],
+     check:'0.5倍は、もとの半分。80の半分は40。'},
+    {text:'弟の体重は20kgです。兄の体重は、'+k('弟の1.2倍')+'です。兄は何kgですか。',
+     opts:[['240kg',false,'240は 20 × 12。12倍になっている。1.2倍は、1倍より少し大きいだけ。'],['21.2kg',false,'21.2は 20 + 1.2。たし算ではない。'],['24kg',true]],
+     fig:{base:{label:'弟',value:'20kg'},comp:{label:'兄',value:'24kg'},k:1.2,div:10},
+     lines:['0.1倍は 20 ÷ 10 = 2。','1.2倍は、その12こ分。2 × 12 = 24。答え <b>24kg</b>'],
+     check:'1つ分(20)と、0.2倍(4)を合わせても24。'},
+    {text:'家から学校までは200mです。家からポストまでは、'+k('学校までの0.3倍')+'です。ポストまでは何mですか。',
+     opts:[['20m',false,'20mは0.1倍。0.3倍は、その3こ分。'],['60m',true],['600m',false,'600は 200 × 3。3倍になっている。0.3倍は、もとより小さくなる。']],
+     fig:{base:{label:'学校まで',value:'200m'},comp:{label:'ポストまで',value:'60m'},k:0.3,div:10},
+     lines:['0.1倍は 200 ÷ 10 = 20。','0.3倍は、その3こ分。20 × 3 = 60。答え <b>60m</b>'],
+     check:'1倍より小さいから、200より小さくなっている。'}
+  ];
+
+  const S3=[
+    {text:k(fr(3,4)+'倍')+'は、どんな大きさですか。', stack:true,
+     opts:[['もとを3こに分けた4こ分',false,'分けるのは、分母の数。'],['もとを4こに分けた3こ分',true],['もとの3倍と4倍の間',false,fr(3,4)+'は1より小さい。もとより小さくなる。']],
+     fig:{base:{label:'もと'},comp:{label:''},k:0.75,div:4,chip:fr(3,4)+'倍',kText:fr(3,4),kSay:'4分の3'},
+     lines:['分母の4で分けて、分子の3だけ数える。だから<b>4こに分けた3こ分</b>。']},
+    {text:'青いリボンは30cmです。赤いリボンは、'+k('青いリボンの'+fr(3,5)+'倍')+'です。赤いリボンは何cmですか。',
+     opts:[['50cm',false,'50は 30 ÷ 3 × 5。分けるのは、分母の5。'],['6cm',false,'6cmは、5こに分けた1こ分。その3こ分をもとめる。'],['18cm',true]],
+     fig:{base:{label:'青いリボン',value:'30cm'},comp:{label:'赤いリボン',value:'18cm'},k:0.6,div:5,chip:fr(3,5)+'倍',kText:fr(3,5),kSay:'5分の3'},
+     lines:['5こに分けた1こ分は 30 ÷ 5 = 6。','その3こ分。6 × 3 = 18。答え <b>18cm</b>'],
+     check:'1倍より小さいから、30より小さくなっている。'},
+    {text:'姉はシールを12まい持っています。妹のシールは、'+k('姉の'+fr(2,3)+'倍')+'です。妹は何まい持っていますか。',
+     opts:[['8まい',true],['18まい',false,'18は 12 ÷ 2 × 3。分けるのは、分母の3。'],['4まい',false,'4まいは、3こに分けた1こ分。その2こ分をもとめる。']],
+     fig:{base:{label:'姉',value:'12まい'},comp:{label:'妹',value:'8まい'},k:2/3,div:3,chip:fr(2,3)+'倍',kText:fr(2,3),kSay:'3分の2'},
+     lines:['3こに分けた1こ分は 12 ÷ 3 = 4。','その2こ分。4 × 2 = 8。答え <b>8まい</b>'],
+     check:'1倍より小さいから、12より小さくなっている。'},
+    {text:'バケツには水が20dL入ります。なべには、'+k('バケツの'+fr(1,4)+'倍')+'の水が入ります。なべには何dL入りますか。',
+     opts:[['80dL',false,'80は 20 × 4。4倍になっている。'+fr(1,4)+'倍は、もとより小さい。'],['5dL',true],['15dL',false,'15dLは、4こに分けた3こ分。'+fr(1,4)+'は1こ分。']],
+     fig:{base:{label:'バケツ',value:'20dL'},comp:{label:'なべ',value:'5dL'},k:0.25,div:4,chip:fr(1,4)+'倍',kText:fr(1,4),kSay:'4分の1'},
+     lines:['4こに分けた1こ分は 20 ÷ 4 = 5。',fr(1,4)+'倍は、その1こ分。答え <b>5dL</b>']},
+    {text:k(fr(7,10)+'倍')+'と同じ倍は、どれですか。',
+     opts:[['7倍',false,'7倍は、もとの7つ分。'+fr(7,10)+'は1より小さい。'],['1.7倍',false,'1.7は1より大きい。'+fr(7,10)+'は1より小さい。'],['0.7倍',true]],
+     fig:{base:{label:'もと'},comp:{label:fr(7,10)+'倍'},k:0.7,div:10,chip:'0.7倍',kText:'0.7'},
+     lines:[fr(1,10)+'は0.1と同じ。'+fr(7,10)+'は、0.1の7こ分で<b>0.7</b>。','どちらも「10こに分けた7こ分」。']},
+    {text:'チョコレートは40円です。ガムのねだんは、'+k('チョコレートの'+fr(7,10)+'倍')+'です。ガムは何円ですか。',
+     opts:[['4円',false,'4円は、10こに分けた1こ分。その7こ分をもとめる。'],['28円',true],['280円',false,'280は 40 × 7。7倍になっている。'+fr(7,10)+'倍は、もとより小さい。']],
+     fig:{base:{label:'チョコレート',value:'40円'},comp:{label:'ガム',value:'28円'},k:0.7,div:10,chip:fr(7,10)+'倍',kText:fr(7,10),kSay:'10分の7'},
+     lines:['10こに分けた1こ分は 40 ÷ 10 = 4。','その7こ分。4 × 7 = 28。答え <b>28円</b>'],
+     check:fr(7,10)+'倍は、0.7倍と同じ。'}
+  ];
+
+  const S4=[
+    {text:'大きい水そうには水が50L、小さい水そうには20L入っています。小さい水そうの水は、'+k('大きい水そうの何倍')+'ですか。',
+     opts:[['2.5倍',false,'2.5倍は、小さい水そうをもとにしたとき。「大きい水そうの何倍」だから、もとは大きい水そう。'],['0.4倍',true],['4倍',false,'4倍だと、もとより大きくなる。20は50より小さい。']],
+     fig:{base:{label:'大きい水そう',value:'50L'},comp:{label:'小さい水そう',value:'20L'},k:0.4,div:10},
+     lines:['もとは大きい水そう(50L)。10こに分けた1こ分は 50 ÷ 10 = 5。','20は、5の4こ分。だから<b>0.4倍</b>。']},
+    {text:'えんぴつは60円、ノートは90円です。ノートのねだんは、'+k('えんぴつの何倍')+'ですか。',
+     opts:[['1.5倍',true],['30倍',false,'30は、ねだんのちがい(90 − 60)。何倍かは、もとのいくつ分かで考える。'],['0.5倍',false,'0.5倍だと、もとより小さくなる。90は60より大きい。']],
+     fig:{base:{label:'えんぴつ',value:'60円'},comp:{label:'ノート',value:'90円'},k:1.5,div:2},
+     lines:['もとはえんぴつ(60円)。1つ分で60。のこりは 90 − 60 = 30。','30は、60の半分。1つ分と半分で<b>1.5倍</b>。']},
+    {text:'先月は本を30さつ、今月は21さつ読みました。今月読んだ数は、'+k('先月の何倍')+'ですか。',
+     opts:[['7倍',false,'7倍だと、もとより大きくなる。21は30より小さい。'],['0.9倍',false,'9は、ちがい(30 − 21)。何倍かは、もとのいくつ分かで考える。'],['0.7倍',true]],
+     fig:{base:{label:'先月',value:'30さつ'},comp:{label:'今月',value:'21さつ'},k:0.7,div:10},
+     lines:['もとは先月(30さつ)。10こに分けた1こ分は 30 ÷ 10 = 3。','21は、3の7こ分。だから<b>0.7倍</b>。']},
+    {text:'テープAは20cm、テープBは12cmです。テープBの長さは、'+k('テープAの何倍')+'ですか。分数で答えましょう。',
+     opts:[[fr(5,3)+'倍',false,fr(5,3)+'は1より大きい。12は20より小さいから、1より小さい倍になる。'],[fr(3,5)+'倍',true],[fr(2,5)+'倍',false,fr(2,5)+'は、のこりの8cmの方。']],
+     fig:{base:{label:'テープA',value:'20cm'},comp:{label:'テープB',value:'12cm'},k:0.6,div:5,chip:fr(3,5)+'倍',kText:fr(3,5),kSay:'5分の3'},
+     lines:['もとはテープA(20cm)。5こに分けた1こ分は 20 ÷ 5 = 4。','12は、4の3こ分。だから<b>'+fr(3,5)+'倍</b>。']},
+    {text:'大きいびんには12dL、小さいびんには9dL入ります。小さいびんに入る量は、'+k('大きいびんの何倍')+'ですか。分数で答えましょう。',
+     opts:[[fr(3,4)+'倍',true],[fr(4,3)+'倍',false,fr(4,3)+'は1より大きい。9は12より小さいから、1より小さい倍になる。'],[fr(1,4)+'倍',false,fr(1,4)+'は、のこりの3dLの方。']],
+     fig:{base:{label:'大きいびん',value:'12dL'},comp:{label:'小さいびん',value:'9dL'},k:0.75,div:4,chip:fr(3,4)+'倍',kText:fr(3,4),kSay:'4分の3'},
+     lines:['もとは大きいびん(12dL)。4こに分けた1こ分は 12 ÷ 4 = 3。','9は、3の3こ分。だから<b>'+fr(3,4)+'倍</b>。']},
+    {text:'わたしは10才、父は45才です。父の年れいは、'+k('わたしの何倍')+'ですか。',
+     opts:[['35倍',false,'35は、年れいのちがい(45 − 10)。何倍かは、もとのいくつ分かで考える。'],['4倍',false,'4倍は40才。あと5才のこっている。5は10の半分。'],['4.5倍',true]],
+     fig:{base:{label:'わたし',value:'10才'},comp:{label:'父',value:'45才'},k:4.5,div:2},
+     lines:['もとはわたし(10才)。4つ分で40。のこりは 45 − 40 = 5。','5は、10の半分。4つ分と半分で<b>4.5倍</b>。']}
+  ];
+
+  /* ---------- 例題 ---------- */
+  (function(){
+    const b={label:'青いリボン',value:'40cm'}, c={label:'赤いリボン',value:'□cm'}, c2={label:'赤いリボン',value:'100cm'};
+    const f={k:2.5,div:2,max:3};
+    setupDemo('demo1',[
+      {cap:'<b>①</b> もとにする量は青いリボン。40cmを1とみる。', fig:demoFig(b,c,f), opt:{comp:false}},
+      {cap:'<b>②</b> 2.5倍は、2つ分と、あと半分(0.5)。', fig:demoFig(b,c,f)},
+      {cap:'<b>③</b> 2つ分は 40 × 2 = 80。半分は 40 ÷ 2 = 20。', fig:demoFig(b,c,f)},
+      {cap:'<b>④</b> 80 + 20 = 100。赤いリボンは <b>100cm</b>。2倍(80)と3倍(120)の間になっている。', fig:demoFig(b,c2,f)}
+    ]);
+  })();
+  (function(){
+    const b={label:'青いテープ',value:'50cm'}, c={label:'赤いテープ',value:'□cm'}, c2={label:'赤いテープ',value:'20cm'};
+    setupDemo('demo2',[
+      {cap:'<b>①</b> もとにする量は青いテープ。50cmを1とみる。', fig:demoFig(b,c,{k:0.4,div:1,max:1}), opt:{comp:false}},
+      {cap:'<b>②</b> もとを10こに分ける。1こ分が <b>0.1倍</b>。50 ÷ 10 = 5cm。', fig:demoFig(b,c,{k:0.4,div:10,max:1}), opt:{comp:false}},
+      {cap:'<b>③</b> 0.4倍は、その4こ分。5 × 4 = 20cm。', fig:demoFig(b,c,{k:0.4,div:10,max:1})},
+      {cap:'<b>④</b> 赤いテープは <b>20cm</b>。1倍より小さいから、もとより短い。', fig:demoFig(b,c2,{k:0.4,div:10,max:1})}
+    ]);
+  })();
+  (function(){
+    const b={label:'青いリボン',value:'20cm'}, c={label:'赤いリボン',value:'□cm'}, c2={label:'赤いリボン',value:'12cm'};
+    const f={k:0.6,max:1,chip:fr(3,5)+'倍',kText:fr(3,5),kSay:'5分の3'};
+    setupDemo('demo3',[
+      {cap:'<b>①</b> もとにする量は青いリボン。20cmを1とみる。', fig:demoFig(b,c,Object.assign({div:1},f)), opt:{comp:false}},
+      {cap:'<b>②</b> 分母は5。もとを5こに分ける。1こ分は 20 ÷ 5 = 4cm。', fig:demoFig(b,c,Object.assign({div:5},f)), opt:{comp:false}},
+      {cap:'<b>③</b> 分子は3。その3こ分。4 × 3 = 12cm。', fig:demoFig(b,c,Object.assign({div:5},f))},
+      {cap:'<b>④</b> 赤いリボンは <b>12cm</b>。1倍より小さいから、もとより短い。', fig:demoFig(b,c2,Object.assign({div:5},f))}
+    ]);
+  })();
+  return {steps:[S1,S2,S3,S4]};
+}
+
+/* ===== チャプター3 ===== */
+function chapter3(setupDemo){
+  const P100='1とみる(100%)', W10='1とみる(10割)';
+
+  const S1=[
+    {text:k('0.7倍')+'を、百分率で表すと何%ですか。',
+     opts:[['7%',false,'7%は0.07倍。0.1倍が10%。'],['70%',true],['700%',false,'700%は7倍。100%が1倍。']],
+     fig:{base:{label:'もと'},comp:{label:''},k:0.7,div:10,alt:'%',chip:'70%',baseChip:P100},
+     lines:['0.1倍が10%。0.7倍は、その7こ分で<b>70%</b>。']},
+    {text:k('120%')+'は、何倍のことですか。',
+     opts:[['12倍',false,'12倍は1200%。100%が1倍。'],['0.12倍',false,'0.12倍は12%。100%が1倍。'],['1.2倍',true]],
+     fig:{base:{label:'もと'},comp:{label:''},k:1.2,div:10,alt:'%',chip:'120%',baseChip:P100},
+     lines:['100%が1倍。120%は、1倍と、あと20%(0.2倍)。だから<b>1.2倍</b>。']},
+    {text:'ジュースが300mLあります。そのうちの'+k('20%')+'が、くだもののしるです。くだもののしるは何mLですか。',
+     opts:[['6mL',false,'6mLは2%。10%は 300 ÷ 10 = 30。'],['60mL',true],['600mL',false,'600は 300 × 2。2倍(200%)になっている。20%は、もとより小さい。']],
+     fig:{base:{label:'ジュース',value:'300mL'},comp:{label:'くだもののしる',value:'60mL'},k:0.2,div:10,alt:'%',chip:'20%',baseChip:P100},
+     lines:['10%は 300 ÷ 10 = 30。','20%は、その2こ分。30 × 2 = 60。答え <b>60mL</b>'],
+     check:'100%より小さいから、300より小さくなっている。'},
+    {text:'子どもが80人います。そのうちの'+k('50%')+'が女の子です。女の子は何人ですか。',
+     opts:[['40人',true],['30人',false,'30は 80 − 50。ひき算ではない。50%は、もとの半分。'],['4人',false,'4人は5%。50%は、10%(8人)の5こ分。']],
+     fig:{base:{label:'子ども',value:'80人'},comp:{label:'女の子',value:'40人'},k:0.5,div:10,alt:'%',chip:'50%',baseChip:P100},
+     lines:['10%は 80 ÷ 10 = 8。','50%は、その5こ分。8 × 5 = 40。答え <b>40人</b>'],
+     check:'50%は、もとの半分。80の半分は40。'},
+    {text:'本が200さつあります。そのうちの'+k('7%')+'が図かんです。図かんは何さつですか。',
+     opts:[['14さつ',true],['140さつ',false,'140さつは70%。7%は、1%の7こ分。'],['7さつ',false,'7さつになるのは、もとが100さつのとき。もとは200さつ。']],
+     fig:{base:{label:'本',value:'200さつ'},comp:{label:'図かん',value:'14さつ'},k:0.07,div:10,alt:'%',chip:'7%',baseChip:P100},
+     lines:['1%は、もとを100こに分けた1こ分。200 ÷ 100 = 2。','7%は、その7こ分。2 × 7 = 14。答え <b>14さつ</b>'],
+     check:'10%(20さつ)より少し小さい。'},
+    {text:'たまごが50こあります。そのうち20こを使いました。使ったのは、'+k('全体の何%')+'ですか。',
+     opts:[['20%',false,'20は使った数。数と%が同じになるのは、もとが100このときだけ。'],['30%',false,'30は、のこりの数。'],['40%',true]],
+     fig:{base:{label:'全体',value:'50こ'},comp:{label:'使った分',value:'20こ'},k:0.4,div:10,alt:'%',chip:'40%',baseChip:P100},
+     lines:['もとは全体(50こ)。10%は 50 ÷ 10 = 5。','20は、5の4こ分。10%の4こ分で<b>40%</b>。']}
+  ];
+
+  const S2=[
+    {text:k('3割')+'は、何%ですか。',
+     opts:[['3%',false,'3%は3分。1割が10%。'],['30%',true],['300%',false,'300%は3倍。3割は、1倍より小さい。']],
+     fig:{base:{label:'もと'},comp:{label:''},k:0.3,div:10,alt:'割',chip:'30%',baseChip:W10},
+     lines:['1割は0.1倍で、10%。3割は、その3こ分で<b>30%</b>。']},
+    {text:k('0.6倍')+'を、歩合で表すとどうなりますか。',
+     opts:[['6割',true],['6分',false,'6分は0.06倍。0.1倍が1割。'],['60割',false,'60割は6倍。10割が1倍。']],
+     fig:{base:{label:'もと'},comp:{label:''},k:0.6,div:10,alt:'割',chip:'6割',baseChip:W10},
+     lines:['0.1倍が1割。0.6倍は、その6こ分で<b>6割</b>。']},
+    {text:'お店にパンが500こあります。そのうちの'+k('3割')+'が売れました。売れたのは何こですか。',
+     opts:[['150こ',true],['15こ',false,'15こは3分。1割は 500 ÷ 10 = 50。'],['1500こ',false,'1500は 500 × 3。3倍になっている。3割は、もとより小さい。']],
+     fig:{base:{label:'パン',value:'500こ'},comp:{label:'売れた分',value:'150こ'},k:0.3,div:10,alt:'割',chip:'3割',baseChip:W10},
+     lines:['1割は 500 ÷ 10 = 50。','3割は、その3こ分。50 × 3 = 150。答え <b>150こ</b>'],
+     check:'10割より小さいから、500より小さくなっている。'},
+    {text:'40人のクラスで、'+k('2割5分')+'の人が、かぜで休みました。休んだ人は何人ですか。',
+     opts:[['8人',false,'8人は2割。あと5分(1割の半分)がある。'],['25人',false,'25人になるのは、もとが100人のとき。もとは40人。'],['10人',true]],
+     fig:{base:{label:'クラス',value:'40人'},comp:{label:'休んだ人',value:'10人'},k:0.25,div:20,alt:'割',kAlt:'2割5分',chip:'2割5分',baseChip:W10},
+     lines:['1割は 40 ÷ 10 = 4。2割は 4 × 2 = 8。','5分は、1割の半分。4 ÷ 2 = 2。','8 + 2 = 10。答え <b>10人</b>'],
+     check:'2割5分は25%で、'+fr(1,4)+'と同じ。40 ÷ 4 = 10。'},
+    {text:'くじを20本ひいて、当たりが4本でした。当たりは、'+k('ひいた数の何割')+'ですか。',
+     opts:[['4割',false,'4は当たりの数。1割は 20 ÷ 10 = 2本。'],['2割',true],['5割',false,'5割は半分。20本の半分は10本。']],
+     fig:{base:{label:'ひいた数',value:'20本'},comp:{label:'当たり',value:'4本'},k:0.2,div:10,alt:'割',chip:'2割',baseChip:W10},
+     lines:['もとはひいた数(20本)。1割は 20 ÷ 10 = 2。','4は、2の2こ分。だから<b>2割</b>。']},
+    {text:k('7割')+'と同じ割合は、どれですか。',
+     opts:[['0.07倍',false,'0.07倍は7分。1割が0.1倍。'],['7%',false,'7%は7分。1割が10%。'],['70%',true]],
+     fig:{base:{label:'もと'},comp:{label:''},k:0.7,div:10,alt:'割',chip:'70%',baseChip:W10},
+     lines:['7割は0.7倍。0.7倍は<b>70%</b>。','小数、百分率、歩合は、同じ割合の3つの表し方。']}
+  ];
+
+  const S3=[
+    {text:k('30%引き')+'にすると、もとの何倍になりますか。',
+     opts:[['0.3倍',false,'0.3倍は、引かれる方。のこりは 100 − 30 = 70%。'],['0.7倍',true],['1.3倍',false,'1.3倍は「30%まし」のとき。']],
+     fig:{base:{label:'もと'},comp:{label:'引いたあと'},k:0.7,ghost:0.3,div:10,alt:'%',chip:'70%',baseChip:P100},
+     lines:['のこりは 100 − 30 = 70%。70%は<b>0.7倍</b>。']},
+    {text:k('2割まし')+'にすると、もとの何倍になりますか。',
+     opts:[['1.2倍',true],['0.8倍',false,'0.8倍は「2割引き」のとき。'],['2倍',false,'2倍は20割。2割ましは、もとに2割をたすだけ。']],
+     fig:{base:{label:'もと'},comp:{label:'ましたあと'},k:1.2,div:10,alt:'割',chip:'12割',baseChip:W10},
+     lines:['もとの10割に、2割をたす。10 + 2 = 12割で、<b>1.2倍</b>。']},
+    {text:'定価500円の本が、'+k('3割引き')+'で売られています。いくらで買えますか。',
+     opts:[['150円',false,'150円は、安くなる分(3割)。買うねだんは、のこりの7割。'],['350円',true],['470円',false,'470は 500 − 30。3割は30円ではなく、500円の0.3倍。']],
+     fig:{base:{label:'定価',value:'500円'},comp:{label:'買うねだん',value:'350円'},k:0.7,ghost:0.3,div:10,alt:'割',chip:'7割',baseChip:W10},
+     lines:['のこりは 10 − 3 = 7割。1割は 500 ÷ 10 = 50。','7割は、その7こ分。50 × 7 = 350。答え <b>350円</b>'],
+     check:'安くなる分(3割で150円)を引いても、500 − 150 = 350。'},
+    {text:'300円のおかしを買います。しょうひぜいが'+k('10%')+'かかります。はらうお金は何円ですか。',
+     opts:[['310円',false,'310は 300 + 10。10%は10円ではなく、300円の0.1倍。'],['30円',false,'30円は、ぜいの分だけ。はらうのは、もとと合わせた110%。'],['330円',true]],
+     fig:{base:{label:'おかし',value:'300円'},comp:{label:'はらうお金',value:'330円'},k:1.1,div:10,alt:'%',chip:'110%',baseChip:P100},
+     lines:['もとの100%に、10%をたす。100 + 10 = 110%。','10%は 300 ÷ 10 = 30。110%は、その11こ分。30 × 11 = 330。答え <b>330円</b>'],
+     check:'もと(300円)に、ぜい(30円)をたしても330円。'},
+    {text:'200gのおかしが、'+k('20%ふえて')+'売られています。何gになりましたか。',
+     opts:[['240g',true],['220g',false,'220は 200 + 20。20%は20gではなく、200gの0.2倍。'],['40g',false,'40gは、ふえた分だけ。']],
+     fig:{base:{label:'もとの重さ',value:'200g'},comp:{label:'ふえたあと',value:'240g'},k:1.2,div:10,alt:'%',chip:'120%',baseChip:P100},
+     lines:['もとの100%に、20%をたす。100 + 20 = 120%。','10%は 200 ÷ 10 = 20。120%は、その12こ分。20 × 12 = 240。答え <b>240g</b>'],
+     check:'もと(200g)に、ふえた分(40g)をたしても240g。'},
+    {text:'定価800円のぼうしが、'+k('25%引き')+'で売られています。いくらで買えますか。',
+     opts:[['775円',false,'775は 800 − 25。25%は25円ではなく、800円の0.25倍。'],['200円',false,'200円は、安くなる分(25%)。買うねだんは、のこりの75%。'],['600円',true]],
+     fig:{base:{label:'定価',value:'800円'},comp:{label:'買うねだん',value:'600円'},k:0.75,ghost:0.25,div:4,alt:'%',chip:'75%',baseChip:P100},
+     lines:['25%は、'+fr(1,4)+'と同じ。800 ÷ 4 = 200。これが安くなる分。','800 − 200 = 600。答え <b>600円</b>'],
+     check:'のこりは75%で、'+fr(3,4)+'と同じ。200 × 3 = 600。'}
+  ];
+
+  const S4=[
+    {text:'赤いリボンは20cmで、'+k('青いリボンの0.4倍')+'です。青いリボンは何cmですか。',
+     opts:[['8cm',false,'8は 20の0.4倍。20cmは、もとではなく、くらべる方。'],['50cm',true],['80cm',false,'80は 20 × 4。先に4で分けて、1こ分(0.1倍)にもどす。']],
+     fig:{base:{label:'青いリボン',value:'50cm'},comp:{label:'赤いリボン',value:'20cm'},k:0.4,div:10},
+     lines:['0.4倍は、0.1倍の4こ分。1こ分は 20 ÷ 4 = 5。','もとは、その10こ分。5 × 10 = 50。答え <b>50cm</b>'],
+     check:'50cmの0.4倍は 5 × 4 = 20。文と合っている。'},
+    {text:'300円をちょ金しました。これは、'+k('おこづかいの60%')+'です。おこづかいは何円ですか。',
+     opts:[['500円',true],['180円',false,'180は 300の60%。300円は、もとではなく、くらべる方。'],['1800円',false,'1800は 300 × 6。先に6で分けて、1こ分(10%)にもどす。']],
+     fig:{base:{label:'おこづかい',value:'500円'},comp:{label:'ちょ金',value:'300円'},k:0.6,div:10,alt:'%',chip:'60%',baseChip:P100},
+     lines:['60%は、10%の6こ分。1こ分は 300 ÷ 6 = 50。','もとは100%で、その10こ分。50 × 10 = 500。答え <b>500円</b>'],
+     check:'500円の60%は 50 × 6 = 300。文と合っている。'},
+    {text:'妹はカードを12まい持っています。これは、'+k('姉のカードの'+fr(3,5))+'です。姉は何まい持っていますか。',
+     opts:[['4まい',false,'4まいは、5こに分けた1こ分。もとは、その5こ分。'],['60まい',false,'60は 12 × 5。先に3で分けて、1こ分にもどす。'],['20まい',true]],
+     fig:{base:{label:'姉',value:'20まい'},comp:{label:'妹',value:'12まい'},k:0.6,div:5,chip:fr(3,5),kText:fr(3,5),kSay:'5分の3'},
+     lines:[fr(3,5)+'は、5こに分けた3こ分。1こ分は 12 ÷ 3 = 4。','もとは、その5こ分。4 × 5 = 20。答え <b>20まい</b>'],
+     check:'20まいの'+fr(3,5)+'は 4 × 3 = 12。文と合っている。'},
+    {text:'兄の体重は36kgで、'+k('弟の1.2倍')+'です。弟は何kgですか。',
+     opts:[['3kg',false,'3kgは0.1倍(1こ分)。もとは、その10こ分。'],['30kg',true],['34.8kg',false,'34.8は 36 − 1.2。ひき算ではない。']],
+     fig:{base:{label:'弟',value:'30kg'},comp:{label:'兄',value:'36kg'},k:1.2,div:10},
+     lines:['1.2倍は、0.1倍の12こ分。1こ分は 36 ÷ 12 = 3。','もとは、その10こ分。3 × 10 = 30。答え <b>30kg</b>'],
+     check:'30kgの1.2倍は 3 × 12 = 36。文と合っている。'},
+    {text:'野球で、ヒットを12本打ちました。これは、'+k('打った回数の3割')+'です。打った回数は何回ですか。',
+     opts:[['40回',true],['4回',false,'4回は1割(1こ分)。もとは10割で、その10こ分。'],['36回',false,'36は 12 × 3。先に3で分けて、1割にもどす。']],
+     fig:{base:{label:'打った回数',value:'40回'},comp:{label:'ヒット',value:'12本'},k:0.3,div:10,alt:'割',chip:'3割',baseChip:W10},
+     lines:['3割は、1割の3こ分。1こ分は 12 ÷ 3 = 4。','もとは10割で、その10こ分。4 × 10 = 40。答え <b>40回</b>'],
+     check:'40回の3割は 4 × 3 = 12。文と合っている。'},
+    {text:'シャツが、'+k('定価の20%引き')+'の800円で売られています。定価は何円ですか。',
+     opts:[['640円',false,'640は 800の0.8倍。800円は、もう安くなったあとのねだん。'],['960円',false,'960は 800の1.2倍。800円は、定価の80%にあたる。'],['1000円',true]],
+     fig:{base:{label:'定価',value:'1000円'},comp:{label:'売るねだん',value:'800円'},k:0.8,ghost:0.2,div:10,alt:'%',chip:'80%',baseChip:P100},
+     lines:['20%引きだから、800円は定価の 100 − 20 = 80%。','80%は、10%の8こ分。1こ分は 800 ÷ 8 = 100。','定価は100%で、その10こ分。100 × 10 = 1000。答え <b>1000円</b>'],
+     check:'1000円の20%引きは、1000 − 200 = 800。文と合っている。'}
+  ];
+
+  /* ---------- 例題 ---------- */
+  (function(){
+    const b={label:'クラス全体',value:'30人'}, c={label:'めがねの人',value:'□人'}, c2={label:'めがねの人',value:'12人'};
+    const f={k:0.4,max:1,alt:'%',chip:'40%',baseChip:P100};
+    setupDemo('demo1',[
+      {cap:'<b>①</b> もとにする量はクラス全体。30人を1(100%)とみる。', fig:demoFig(b,c,Object.assign({div:1},f)), opt:{comp:false}},
+      {cap:'<b>②</b> 40%は0.4倍のこと。もとを10こに分けると、1こ分が10%。30 ÷ 10 = 3人。', fig:demoFig(b,c,Object.assign({div:10},f)), opt:{comp:false}},
+      {cap:'<b>③</b> 40%は、10%の4こ分。3 × 4 = 12人。', fig:demoFig(b,c,Object.assign({div:10},f))},
+      {cap:'<b>④</b> めがねをかけている人は <b>12人</b>。100%より小さいから、30人より少ない。', fig:demoFig(b,c2,Object.assign({div:10},f))}
+    ]);
+  })();
+  (function(){
+    const b={label:'打った回数',value:'40回'}, c={label:'ヒット',value:'□本'}, c2={label:'ヒット',value:'12本'};
+    const f={k:0.3,max:1,alt:'割',chip:'3割',baseChip:W10};
+    setupDemo('demo2',[
+      {cap:'<b>①</b> もとにする量は、打った回数。40回を1(10割)とみる。', fig:demoFig(b,c,Object.assign({div:1},f)), opt:{comp:false}},
+      {cap:'<b>②</b> 1割は0.1倍。もとを10こに分けた1こ分。40 ÷ 10 = 4本。', fig:demoFig(b,c,Object.assign({div:10},f)), opt:{comp:false}},
+      {cap:'<b>③</b> 3割は、その3こ分。4 × 3 = 12本。', fig:demoFig(b,c,Object.assign({div:10},f))},
+      {cap:'<b>④</b> ヒットは <b>12本</b>。3割は、0.3倍、30%と同じ。', fig:demoFig(b,c2,Object.assign({div:10},f))}
+    ]);
+  })();
+  (function(){
+    const b={label:'定価',value:'1000円'}, c={label:'買うねだん',value:'□円'}, c2={label:'買うねだん',value:'800円'};
+    const f={k:0.8,ghost:0.2,max:1,div:10,alt:'%',chip:'80%',baseChip:P100};
+    setupDemo('demo3',[
+      {cap:'<b>①</b> もとにする量は定価。1000円を1(100%)とみる。', fig:demoFig(b,c,f), opt:{comp:false}},
+      {cap:'<b>②</b> 20%引きだから、のこりは 100 − 20 = 80%。点線のところが、安くなる分。', fig:demoFig(b,c,f)},
+      {cap:'<b>③</b> 10%は 1000 ÷ 10 = 100円。80%は、その8こ分。100 × 8 = 800円。', fig:demoFig(b,c,f)},
+      {cap:'<b>④</b> <b>800円</b>で買える。安くなる分(20%で200円)を引いても、1000 − 200 = 800円。', fig:demoFig(b,c2,f)}
+    ]);
+  })();
+  (function(){
+    const b={label:'本全体',value:'□ページ'}, b2={label:'本全体',value:'200ページ'}, c={label:'読んだ分',value:'60ページ'};
+    const f={k:0.3,max:1,div:10,alt:'%',chip:'30%',baseChip:P100};
+    setupDemo('demo4',[
+      {cap:'<b>①</b> もとにする量は本全体。わかっているのは、30%が60ページということ。', fig:demoFig(b,c,f)},
+      {cap:'<b>②</b> 30%は、10%の3こ分。1こ分にもどすと 60 ÷ 3 = 20ページ。', fig:demoFig(b,c,f)},
+      {cap:'<b>③</b> もとは100%で、10%の10こ分。20 × 10 = 200ページ。', fig:demoFig(b2,c,f)},
+      {cap:'<b>④</b> たしかめ。200ページの30%は 20 × 3 = 60ページ。文と合っている。本は全部で <b>200ページ</b>。', fig:demoFig(b2,c,f)}
+    ]);
+  })();
+  return {steps:[S1,S2,S3,S4]};
+}
+
+/* ===== チャプター4 ===== */
+function chapter4(setupDemo){
+  const P100='1とみる(100%)';
+  const BIG='1より大きい', SML='1より小さい', ONE='ちょうど1';
+  const SAME='ちょうど1になるのは、2つの数が同じとき。';
+
+  const S1=[
+    {text:'「'+k('テープAをもとにした')+'、テープBの割合」の、もとにする量は？', cols:2,
+     opts:[['テープA',true],['テープB',false,'「テープBの割合」のテープBは、割合を知りたい方。「をもとにした」のすぐ前を見よう。']],
+     re:{a:'「'+mo('テープA')+'をもとにした、'+ku('テープB')+'の割合」', b:'「'+ku('テープB')+'は、'+mo('テープA')+'の何倍？」'},
+     lines:['「テープAをもとにした」と書いてある。もとにする量は<b>テープA</b>。']},
+    {text:'「'+k('先月読んだ数に対する')+'、今月読んだ数の割合」の、もとにする量は？', cols:2,
+     opts:[['先月の数',true],['今月の数',false,'「今月読んだ数の割合」の今月は、割合を知りたい方。「に対する」のすぐ前を見よう。']],
+     re:{a:'「'+mo('先月読んだ数')+'に対する、'+ku('今月読んだ数')+'の割合」', b:'「'+ku('今月読んだ数')+'は、'+mo('先月読んだ数')+'の何倍？」'},
+     lines:['「〜に対する」は、「〜をもとにして見た」という意味。もとにする量は<b>先月読んだ数</b>。']},
+    {text:'「兄の体重の、'+k('弟の体重に対する')+'割合」の、もとにする量は？', cols:2,
+     opts:[['兄の体重',false,'文のはじめにあっても、兄の体重は、割合を知りたい方。「に対する」のすぐ前を見よう。'],['弟の体重',true]],
+     re:{a:'「'+ku('兄の体重')+'の、'+mo('弟の体重')+'に対する割合」', b:'「'+ku('兄の体重')+'は、'+mo('弟の体重')+'の何倍？」'},
+     lines:['言葉のじゅん番がかわっても、「に対する」のすぐ前がもと。もとにする量は<b>弟の体重</b>。']},
+    {text:'「使った分は、'+k('全体を1とみる')+'と、いくつにあたりますか。」の、もとにする量は？', cols:2,
+     opts:[['使った分',false,'1とみる方が、もとにする量。「を1とみる」のすぐ前を見よう。'],['全体',true]],
+     re:{a:'「'+ku('使った分')+'は、'+mo('全体')+'を1とみると、いくつ？」', b:'「'+ku('使った分')+'は、'+mo('全体')+'の何倍？」'},
+     lines:['1とみる方が、もとにする量。もとにする量は<b>全体</b>。']},
+    {text:'「'+k('定員をもとにした')+'、乗客の割合」と同じ意味の文は、どれですか。', cols:1,
+     opts:[['定員は、乗客の何倍？',false,'それは「乗客をもとにした、定員の割合」。もとがぎゃく。'],['乗客は、定員の何倍？',true],['乗客は、定員より何人多い？',false,'それは、ちがい(ひき算)。割合は「何倍か」を表す数。']],
+     re:{a:'「'+mo('定員')+'をもとにした、'+ku('乗客')+'の割合」', b:'「'+ku('乗客')+'は、'+mo('定員')+'の何倍？」'},
+     lines:['もとにする量は定員。「何倍」の形では、「の何倍」のすぐ前に定員がくる。']},
+    {text:'「赤組の点数の、'+k('白組の点数に対する')+'割合」と同じ意味の文は、どれですか。', cols:1,
+     opts:[['白組は、赤組の何倍？',false,'もとがぎゃく。「に対する」のすぐ前の白組が、もと。'],['赤組と白組のちがいは？',false,'それは、ちがい(ひき算)。割合は「何倍か」を表す数。'],['赤組は、白組の何倍？',true]],
+     re:{a:'「'+ku('赤組の点数')+'の、'+mo('白組の点数')+'に対する割合」', b:'「'+ku('赤組の点数')+'は、'+mo('白組の点数')+'の何倍？」'},
+     lines:['もとにする量は白組の点数。「何倍」の形では、「の何倍」のすぐ前に白組がくる。']}
+  ];
+
+  const S2=[
+    {text:'定員40人のバスに、乗客が30人乗っています。'+k('定員をもとにした')+'、乗客の割合は？', cols:'w',
+     opts:[[BIG,false,'もとは定員(40人)。乗客の30人は、それより少ない。'],[SML,true],[ONE,false,'ちょうど1になるのは、乗客が定員と同じ40人のとき。']],
+     fig:{base:{label:'定員',value:'40人'},comp:{label:'乗客',value:'30人'},k:0.75,noK:true,chip:SML,say:SML},
+     lines:['もとは定員(40人)。乗客(30人)は、もとより少ない。だから<b>1より小さい</b>。']},
+    {text:'同じバス(定員40人、乗客30人)で、こんどは'+k('乗客をもとにした')+'、定員の割合は？', cols:'w',
+     opts:[[BIG,true],[SML,false,'こんどのもとは乗客(30人)。定員の40人は、それより多い。'],[ONE,false,SAME]],
+     fig:{base:{label:'乗客',value:'30人'},comp:{label:'定員',value:'40人'},k:4/3,noK:true,chip:BIG,say:BIG},
+     lines:['もとは乗客(30人)。定員(40人)は、もとより多い。だから<b>1より大きい</b>。','もとを入れかえると、大きい・小さいもぎゃくになる。']},
+    {text:'きのうは本を20ページ、今日は35ページ読みました。'+k('きのうに対する')+'、今日の割合は？', cols:'w',
+     opts:[[BIG,true],[SML,false,'もとは、きのう(20ページ)。今日の35ページは、それより多い。'],[ONE,false,SAME]],
+     fig:{base:{label:'きのう',value:'20ページ'},comp:{label:'今日',value:'35ページ'},k:1.75,noK:true,chip:BIG,say:BIG},
+     lines:['もとは、きのう(20ページ)。今日(35ページ)は、もとより多い。だから<b>1より大きい</b>。']},
+    {text:'弟の体重は24kg、兄の体重は40kgです。'+k('兄の体重を1とみる')+'と、弟の体重は？', cols:'w',
+     opts:[[BIG,false,'1とみるのは兄(40kg)。弟の24kgは、それより軽い。'],[SML,true],[ONE,false,SAME]],
+     fig:{base:{label:'兄',value:'40kg'},comp:{label:'弟',value:'24kg'},k:0.6,noK:true,chip:SML,say:SML},
+     lines:['もとは兄(40kg)。弟(24kg)は、もとより軽い。だから<b>1より小さい</b>。','先に出てきた数が、もととはかぎらない。']},
+    {text:'定員50人のバスに、乗客が50人乗っています。'+k('定員をもとにした')+'、乗客の割合は？', cols:'w',
+     opts:[[BIG,false,'乗客は、定員と同じ50人。多くも少なくもない。'],[SML,false,'乗客は、定員と同じ50人。多くも少なくもない。'],[ONE,true]],
+     fig:{base:{label:'定員',value:'50人'},comp:{label:'乗客',value:'50人'},k:1,chip:ONE,say:ONE},
+     lines:['もとは定員(50人)。乗客も50人で、もとと同じ。だから<b>ちょうど1</b>。','%で言うと100%。満員だね。']},
+    {text:'白組は80点、赤組は100点でした。白組の点数の、'+k('赤組の点数に対する')+'割合は？', cols:'w',
+     opts:[[BIG,false,'もとは「に対する」のすぐ前の赤組(100点)。白組の80点は、それより少ない。'],[SML,true],[ONE,false,SAME]],
+     fig:{base:{label:'赤組',value:'100点'},comp:{label:'白組',value:'80点'},k:0.8,noK:true,chip:SML,say:SML},
+     lines:['もとは赤組(100点)。白組(80点)は、もとより少ない。だから<b>1より小さい</b>。']}
+  ];
+
+  const S3=[
+    {text:'赤いテープは20cm、青いテープは50cmです。'+k('赤いテープをもとにした')+'、青いテープの割合をもとめなさい。',
+     opts:[['0.4',false,'0.4は、青いテープをもとにしたとき。もとは赤いテープ(20cm)。青い方が長いから、1より大きい。'],['2.5',true],['30',false,'30は、長さのちがい(50 − 20)。割合は、もとの何倍か。']],
+     fig:{base:{label:'赤いテープ',value:'20cm'},comp:{label:'青いテープ',value:'50cm'},k:2.5,div:2},
+     lines:['もとは赤いテープ(20cm)。式は 50 ÷ 20。','20の2つ分で40。のこりの10は、20の半分。2つ分と半分で<b>2.5</b>。'],
+     check:'青い方が長いから、1より大きい。合っている。'},
+    {text:'同じ2本(赤20cm、青50cm)で、こんどは'+k('青いテープをもとにした')+'、赤いテープの割合をもとめなさい。',
+     opts:[['0.4',true],['2.5',false,'2.5は、赤いテープをもとにしたとき。こんどのもとは青いテープ(50cm)。'],['4',false,'4だと、もとの4倍。赤い方が短いから、1より小さい。']],
+     fig:{base:{label:'青いテープ',value:'50cm'},comp:{label:'赤いテープ',value:'20cm'},k:0.4,div:10},
+     lines:['もとは青いテープ(50cm)。式は 20 ÷ 50。','50を10こに分けた1こ分は5。20は、5の4こ分。だから<b>0.4</b>。'],
+     check:'赤い方が短いから、1より小さい。合っている。'},
+    {text:'定員50人のバスに、乗客が40人乗っています。'+k('定員をもとにした')+'、乗客の割合をもとめなさい。',
+     opts:[['1.25',false,'1.25は 50 ÷ 40。大きい数を小さい数でわっている。わる数は、もとの定員(50人)。'],['10',false,'10は、ちがい(50 − 40)。割合は、もとの何倍か。'],['0.8',true]],
+     fig:{base:{label:'定員',value:'50人'},comp:{label:'乗客',value:'40人'},k:0.8,div:10},
+     lines:['もとは定員(50人)。式は 40 ÷ 50。','50を10こに分けた1こ分は5。40は、5の8こ分。だから<b>0.8</b>。'],
+     check:'乗客の方が少ないから、1より小さい。合っている。'},
+    {text:'同じバス(定員50人、乗客40人)で、こんどは'+k('乗客をもとにした')+'、定員の割合をもとめなさい。',
+     opts:[['1.25',true],['0.8',false,'0.8は、定員をもとにしたとき。こんどのもとは乗客(40人)。'],['1.1',false,'ちがいの10人を、0.1と考えていないかな。10人は、もとの40人を4こに分けた1こ分で、0.25。']],
+     fig:{base:{label:'乗客',value:'40人'},comp:{label:'定員',value:'50人'},k:1.25,div:4},
+     lines:['もとは乗客(40人)。式は 50 ÷ 40。','40の1つ分で40。のこりの10は、40を4こに分けた1こ分で、0.25。1と0.25で<b>1.25</b>。'],
+     check:'定員の方が多いから、1より大きい。合っている。'},
+    {text:'シュートを20本うって、12本入りました。'+k('うった数をもとにした')+'、入った数の割合をもとめなさい。',
+     opts:[['8',false,'8は、ちがい(20 − 12)。割合は、もとの何倍か。'],['0.6',true],['6',false,'6だと、もとの6倍。入った数は、うった数より少ないから、1より小さい。']],
+     fig:{base:{label:'うった数',value:'20本'},comp:{label:'入った数',value:'12本'},k:0.6,div:10},
+     lines:['もとは、うった数(20本)。式は 12 ÷ 20。','20を10こに分けた1こ分は2。12は、2の6こ分。だから<b>0.6</b>。'],
+     check:'入った数の方が少ないから、1より小さい。合っている。'},
+    {text:'去年の体重は30kgで、今年は36kgです。'+k('去年の体重に対する')+'、今年の体重の割合をもとめなさい。',
+     opts:[['0.2',false,'0.2は、ふえた分(6kg)だけの割合。くらべるのは、今年の体重ぜんぶ(36kg)。'],['6',false,'6は、ちがい(36 − 30)。割合は、もとの何倍か。'],['1.2',true]],
+     fig:{base:{label:'去年',value:'30kg'},comp:{label:'今年',value:'36kg'},k:1.2,div:10},
+     lines:['もとは去年の体重(30kg)。式は 36 ÷ 30。','30を10こに分けた1こ分は3。36は、3の12こ分。だから<b>1.2</b>。'],
+     check:'今年の方が重いから、1より大きい。合っている。'}
+  ];
+
+  const S4=[
+    {text:'乗客が240人乗っている電車があります。この電車の定員は300人です。'+k('定員をもとにした')+'、乗客の割合をもとめなさい。',
+     opts:[['1.25',false,'1.25は 300 ÷ 240。大きい数を小さい数でわっている。もとは定員(300人)で、乗客の方が少ないから、1より小さい。'],['0.8',true],['60',false,'60は、ちがい(300 − 240)。割合は、もとの何倍か。']],
+     fig:{base:{label:'定員',value:'300人'},comp:{label:'乗客',value:'240人'},k:0.8,div:10},
+     lines:['もとは定員(300人)。あとから出てきても、もとはもと。式は 240 ÷ 300。','300を10こに分けた1こ分は30。240は、30の8こ分。だから<b>0.8</b>。'],
+     check:'乗客の方が少ないから、1より小さい。合っている。'},
+    {text:'定員が80人の船に、100人が乗りました。乗った人数の、'+k('定員に対する')+'割合は、何%ですか。',
+     opts:[['80%',false,'80%は 80 ÷ 100。もとがぎゃく。もとは定員(80人)で、乗った人の方が多いから、100%より大きい。'],['20%',false,'20は、ちがい(100 − 80)。数をそのまま%にはできない。'],['125%',true]],
+     fig:{base:{label:'定員',value:'80人'},comp:{label:'乗った人',value:'100人'},k:1.25,div:4,alt:'%',chip:'125%',baseChip:P100},
+     lines:['もとは定員(80人)。式は 100 ÷ 80。','80の1つ分で80。のこりの20は、80を4こに分けた1こ分で、25%。100%と25%で<b>125%</b>。'],
+     check:'定員より多く乗っているから、100%より大きい。合っている。'},
+    {text:'くじを50本ひいて、当たりが15本でした。'+k('ひいた数に対する')+'、当たりの数の割合は、何%ですか。',
+     opts:[['30%',true],['15%',false,'15は当たりの数。数と%が同じになるのは、もとが100本のときだけ。'],['35%',false,'35は、はずれの数(50 − 15)。']],
+     fig:{base:{label:'ひいた数',value:'50本'},comp:{label:'当たり',value:'15本'},k:0.3,div:10,alt:'%',chip:'30%',baseChip:P100},
+     lines:['もとは、ひいた数(50本)。式は 15 ÷ 50。','50を10こに分けた1こ分は5で、これが10%。15は、5の3こ分。だから<b>30%</b>。'],
+     check:'当たりの方が少ないから、100%より小さい。合っている。'},
+    {text:'わたしのおこづかいは700円、兄のおこづかいは1000円です。'+k('兄のおこづかいを1とみる')+'と、わたしのおこづかいは、いくつにあたりますか。',
+     opts:[['7',false,'7だと、兄の7倍。わたしの方が少ないから、1より小さい。'],['300',false,'300は、ちがい(1000 − 700)。'],['0.7',true]],
+     fig:{base:{label:'兄',value:'1000円'},comp:{label:'わたし',value:'700円'},k:0.7,div:10},
+     lines:['もとは兄(1000円)。式は 700 ÷ 1000。','1000を10こに分けた1こ分は100。700は、100の7こ分。だから<b>0.7</b>。'],
+     check:'わたしの方が少ないから、1より小さい。合っている。'},
+    {text:'30人のクラスで、男子は18人、女子は12人です。'+k('クラス全体をもとにした')+'、女子の割合は、何%ですか。',
+     opts:[['12%',false,'12は女子の人数。数と%が同じになるのは、もとが100人のときだけ。'],['40%',true],['60%',false,'60%は、男子の割合(18 ÷ 30)。聞かれているのは女子。']],
+     fig:{base:{label:'クラス全体',value:'30人'},comp:{label:'女子',value:'12人'},k:0.4,div:10,alt:'%',chip:'40%',baseChip:P100},
+     lines:['もとはクラス全体(30人)。くらべるのは女子(12人)。男子の18人は使わない。','30を10こに分けた1こ分は3で、これが10%。12は、3の4こ分。だから<b>40%</b>。'],
+     check:'女子はクラスの一部だから、100%より小さい。合っている。'},
+    {text:'今日、図書室に来た人は90人でした。きのうは60人でした。'+k('きのうの人数に対する')+'、今日の人数の割合は、何%ですか。',
+     opts:[['50%',false,'50%は、ふえた分(30人)だけの割合。くらべるのは、今日の人数ぜんぶ(90人)。'],['150%',true],['30%',false,'30は、ちがい(90 − 60)。数をそのまま%にはできない。']],
+     fig:{base:{label:'きのう',value:'60人'},comp:{label:'今日',value:'90人'},k:1.5,div:2,alt:'%',chip:'150%',baseChip:P100},
+     lines:['もとは、きのう(60人)。あとから出てきても、もとはもと。式は 90 ÷ 60。','60の1つ分で60。のこりの30は、60の半分で50%。100%と50%で<b>150%</b>。'],
+     check:'今日の方が多いから、100%より大きい。合っている。'}
+  ];
+
+  /* ---------- 例題 ---------- */
+  const TRAIN_B={label:'定員',value:'300人'}, TRAIN_C={label:'乗客',value:'360人'};
+  (function(){
+    const a1='「'+mo('定員')+'をもとにした、乗客の割合」';
+    const a2='「'+mo('定員')+'をもとにした、'+ku('乗客')+'の割合」';
+    const b2='「'+ku('乗客')+'は、'+mo('定員')+'の何倍？」';
+    setupDemo('demo1',[
+      {cap:'<b>①</b> 「定員をもとにした」と書いてある。もとにする量は<b>定員</b>。定員は、乗れる人数のきまりのこと。', re:{a:a1,legend:true}},
+      {cap:'<b>②</b> 「乗客の割合」の乗客は、割合を知りたい方。こちらが、くらべる方。', re:{a:a2,legend:true}},
+      {cap:'<b>③</b> いつもの形に言いかえる。「乗客は、定員の何倍？」。チャプター1からやってきた形と同じ。', re:{a:a2,b:b2,legend:true}},
+      {cap:'<b>④</b> 図にすると、こうなる。定員を1とみて、乗客が何倍にあたるかを考える。', fig:demoFig(TRAIN_B,TRAIN_C,{k:1.2,max:2,chip:'□倍',kText:'□',say:'□倍'})}
+    ]);
+  })();
+  (function(){
+    const f={k:1.2,max:2,noK:true};
+    setupDemo('demo2',[
+      {cap:'<b>①</b> もとにする量は定員。300人を1とみる。', fig:demoFig(TRAIN_B,TRAIN_C,f), opt:{comp:false}},
+      {cap:'<b>②</b> 乗客は360人。定員の300人より多い。テープも、もとより長くなる。', fig:demoFig(TRAIN_B,TRAIN_C,Object.assign({chip:'□倍',say:'□倍'},f))},
+      {cap:'<b>③</b> だから、割合は<b>1より大きい</b>。定員をこえて乗っているんだね。', fig:demoFig(TRAIN_B,TRAIN_C,Object.assign({chip:BIG,say:BIG},f))},
+      {cap:'<b>④</b> もし、計算の答えが0.8のように1より小さくなったら、式がぎゃく。予想とくらべれば気づける。', fig:demoFig(TRAIN_B,TRAIN_C,Object.assign({chip:BIG,say:BIG},f))}
+    ]);
+  })();
+  (function(){
+    const q={k:1.2,max:2,chip:'□倍',kText:'□',say:'□倍'};
+    setupDemo('demo3',[
+      {cap:'<b>①</b> もとは定員。□の式にすると、300 × □ = 360。', fig:demoFig(TRAIN_B,TRAIN_C,q)},
+      {cap:'<b>②</b> □は、くらべる方 ÷ もと。式は <b>360 ÷ 300</b>。わる数は、もとの300。', fig:demoFig(TRAIN_B,TRAIN_C,q)},
+      {cap:'<b>③</b> 300を10こに分けた1こ分は30人。360人は、30人の12こ分。10こ分で1だから、12こ分は1.2。', fig:demoFig(TRAIN_B,TRAIN_C,Object.assign({},q,{div:10}))},
+      {cap:'<b>④</b> 360 ÷ 300 = <b>1.2</b>。予想は「1より大きい」だったから、合っている。300 ÷ 360 だと1より小さくなるので、ちがうと気づける。', fig:demoFig(TRAIN_B,TRAIN_C,{k:1.2,max:2,div:10})}
+    ]);
+  })();
+  (function(){
+    const b={label:'定員',value:'50人'}, c={label:'乗客',value:'45人'};
+    const f={k:0.9,max:1,alt:'%',baseChip:P100};
+    setupDemo('demo4',[
+      {cap:'<b>①</b> もとは？ 「定員に対する」だから、定員(50人)。あとから出てきた数でも、もとはもと。', fig:demoFig(b,c,f), opt:{comp:false}},
+      {cap:'<b>②</b> 予想。乗客の45人は、定員の50人より少ない。だから、1(100%)より小さい。', fig:demoFig(b,c,Object.assign({noK:true,chip:'100%より小さい',say:'100%より小さい'},f))},
+      {cap:'<b>③</b> 式は 45 ÷ 50。50を10こに分けた1こ分は5人。45人は、その9こ分。だから0.9。', fig:demoFig(b,c,Object.assign({div:10,noK:true,chip:'0.9倍'},f))},
+      {cap:'<b>④</b> 0.9倍は <b>90%</b>。予想どおり、100%より小さい。', fig:demoFig(b,c,Object.assign({div:10,chip:'90%'},f))}
+    ]);
+  })();
+  return {steps:[S1,S2,S3,S4]};
+}
+
+const CHAPTERS=[chapter1,chapter2,chapter3,chapter4];
+
+/* ---------- ステップ ---------- */
+const home=$('#home'), chapters=$$('.chapter'), tocItems=$$('.toc-item');
+const views=[], rerender=[];
+
+function drawMarks(){
+  tocItems.forEach(function(item,ci){
+    const dots=$$('.toc-marks i',item);
+    let n=0;
+    dots.forEach(function(d,si){
+      const on=!!cleared[(ci+1)+'-'+(si+1)];
+      d.classList.toggle('on',on);
+      if(on) n++;
+    });
+    $('.toc-count',item).textContent='はなまる '+n+'/'+dots.length;
+  });
+}
+
+function setupStep(ci,n,items,make,tab,sec){
+  const list=$('.qs',sec), txt=$('.result-text',sec), slot=$('.hana',sec), score=$('.score',tab);
+  const key=(ci+1)+'-'+(n+1), total=items.length;
+  let done=0, right=0;
+  function update(){
+    slot.innerHTML='';
+    if(done<total){
+      txt.textContent=done===0?'全部で'+total+'問':'あと'+(total-done)+'問';
+      score.textContent=cleared[key]?'◎':'';
+    }else if(right===total){
+      txt.textContent=total+'問 全部 正かい！';
+      slot.appendChild(hanamaru());
+      score.textContent='◎';
+      if(!cleared[key]){
+        cleared[key]=1;
+        saveCleared();
+        drawMarks();
+      }
+    }else{
+      txt.textContent=total+'問中 '+right+'問 正かい。「おしい！」のせつ明を読んでみよう。';
+      score.textContent=right+'/'+total;
+    }
+  }
+  function render(){
+    done=0; right=0; list.innerHTML='';
+    items.forEach(function(it){
+      list.appendChild(make(it,n,function(ok){done++; if(ok) right++; update();}));
+    });
+    update();
+  }
+  $('.retry',sec).addEventListener('click',function(){
+    render();
+    $('.practice',sec).scrollIntoView({block:'start'});
+  });
+  rerender.push(render);
+  render();
+}
+
+chapters.forEach(function(root,ci){
+  const tabs=$$('.tab',root), secs=$$('.step',root);
+  const def=CHAPTERS[ci](function(id,stages){setupDemoIn(root,id,stages);});
+  const make=def.make||function(it,n,report){return question(it,report);};
+  def.steps.forEach(function(items,n){setupStep(ci,n,items,make,tabs[n],secs[n]);});
+  views.push({root:root,tabs:tabs,secs:secs});
+  tabs.forEach(function(t,i){t.addEventListener('click',function(){go(ci,i,false,false);});});
+  $$('.next',root).forEach(function(b){b.addEventListener('click',function(){go(ci,+b.dataset.to,'steps',false);});});
+  $$('.go-ch',root).forEach(function(b){b.addEventListener('click',function(){openChapter(+b.dataset.ch-1);});});
+  $$('.to-home,.go-home',root).forEach(function(b){b.addEventListener('click',function(){go(-1,0,'top',true);});});
+});
+
+/* ---------- 画面の切りかえ(ch = -1 が、もくじ) ---------- */
+function showView(ch,step,scroll){
+  home.hidden=ch!==-1;
+  views.forEach(function(v,i){
+    v.root.hidden=i!==ch;
+    if(i!==ch) return;
+    v.secs.forEach(function(s,j){s.hidden=j!==step;});
+    v.tabs.forEach(function(t,j){
+      if(j===step) t.setAttribute('aria-current','step'); else t.removeAttribute('aria-current');
+    });
+  });
+  if(scroll==='top') window.scrollTo(0,0);
+  else if(scroll==='steps') $('.steps',views[ch].root).scrollIntoView({block:'start'});
+}
+function parseHash(){
+  const m=/^#c(\d)(?:-step([1-4]))?$/.exec(location.hash);
+  if(m&&+m[1]>=1&&+m[1]<=views.length) return {ch:+m[1]-1,step:m[2]?+m[2]-1:0};
+  return {ch:-1,step:0};
+}
+function go(ch,step,scroll,push){
+  const hash=ch<0?'#home':'#c'+(ch+1)+'-step'+(step+1);
+  try{history[push?'pushState':'replaceState'](null,'',hash);}catch(e){}
+  showView(ch,step,scroll);
+}
+// もくじから開くときは、まだ印のついていない、さいしょのステップへ
+function openChapter(ch){
+  let step=0;
+  for(let i=0;i<views[ch].secs.length;i++){
+    if(!cleared[(ch+1)+'-'+(i+1)]){step=i; break;}
+  }
+  go(ch,step,'top',true);
+}
+tocItems.forEach(function(item,ci){item.addEventListener('click',function(){openChapter(ci);});});
+window.addEventListener('popstate',function(){
+  const p=parseHash();
+  showView(p.ch,p.step,'top');
+});
+
+/* ---------- 印を消す(2回おして消す) ---------- */
+(function(){
+  const btn=$('#resetMarks'), label=btn.textContent;
+  let armed=false;
+  btn.addEventListener('click',function(){
+    if(!armed){
+      armed=true;
+      btn.textContent='もう一度おすと消えます';
+      return;
+    }
+    armed=false;
+    btn.textContent=label;
+    cleared={};
+    saveCleared();
+    rerender.forEach(function(f){f();});
+    drawMarks();
+  });
+  btn.addEventListener('blur',function(){armed=false; btn.textContent=label;});
+})();
+
+drawMarks();
+const p0=parseHash();
+showView(p0.ch,p0.step,false);
+})();
+</script>
+</body>
+</html>
